@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GreenInfer - Sustainable AI Inference</title>
+  <meta name="description" content="GreenInfer is a Green Orchestration Framework for energy-efficient LLM inference. Route every prompt to the right model, at maximum efficiency."/>
+  <style>
+/* ============================================================
+   GreenInfer - Global Styles
+   Aesthetic: Dark biomorphic tech - deep forest meets silicon
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+/* ── Variables ── */
+:root {
+  --bg-void:       #080d0e;
+  --bg-deep:       #0b1214;
+  --bg-surface:    #111c1e;
+  --bg-raised:     #172226;
+  --bg-card:       #1a272b;
+  --border:        rgba(0, 255, 160, 0.08);
+  --border-mid:    rgba(0, 255, 160, 0.18);
+  --border-bright: rgba(0, 255, 160, 0.4);
+
+  --green-core:    #00ffa0;
+  --green-soft:    #00d484;
+  --green-muted:   #009b62;
+  --green-dim:     rgba(0, 255, 160, 0.12);
+  --green-glow:    rgba(0, 255, 160, 0.06);
+
+  --teal-accent:   #00e5cc;
+  --amber-warn:    #f5a623;
+  --red-alert:     #ff4d6d;
+
+  --text-primary:  #e8f5f0;
+  --text-secondary:#8ab5a8;
+  --text-muted:    #4a7068;
+  --text-dim:      #2a4540;
+
+  --font-display:  'Syne', sans-serif;
+  --font-body:     'DM Sans', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+
+  --shadow-card:   0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+  --shadow-glow:   0 0 40px rgba(0,255,160,0.12);
+  --shadow-deep:   0 8px 48px rgba(0,0,0,0.6);
+
+  --nav-height: 64px;
+  --sidebar-width: 260px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--green-muted); border-radius: 3px; }
+
+/* ── Selection ── */
+::selection { background: rgba(0,255,160,0.2); color: var(--green-core); }
+
+/* ── Typography ── */
+h1,h2,h3,h4,h5 { font-family: var(--font-display); font-weight: 700; line-height: 1.15; }
+h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 800; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.6rem); }
+h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; }
+p  { color: var(--text-secondary); line-height: 1.75; }
+a  { color: var(--green-core); text-decoration: none; }
+a:hover { color: var(--teal-accent); }
+code, pre { font-family: var(--font-mono); }
+
+/* ── Utility ── */
+.mono { font-family: var(--font-mono); }
+.green { color: var(--green-core); }
+.teal  { color: var(--teal-accent); }
+.muted { color: var(--text-muted); }
+.dim   { color: var(--text-dim); }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--green-core);
+  color: #080d0e;
+  box-shadow: 0 0 20px rgba(0,255,160,0.3);
+}
+.btn-primary:hover {
+  background: #1fffb0;
+  color: #080d0e;
+  box-shadow: 0 0 32px rgba(0,255,160,0.5);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-mid);
+}
+.btn-ghost:hover {
+  border-color: var(--green-core);
+  color: var(--green-core);
+  background: var(--green-dim);
+}
+
+.btn-sm {
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-xl);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+.badge-green {
+  background: rgba(0,255,160,0.1);
+  color: var(--green-core);
+  border: 1px solid rgba(0,255,160,0.2);
+}
+.badge-teal {
+  background: rgba(0,229,204,0.1);
+  color: var(--teal-accent);
+  border: 1px solid rgba(0,229,204,0.2);
+}
+.badge-amber {
+  background: rgba(245,166,35,0.1);
+  color: var(--amber-warn);
+  border: 1px solid rgba(245,166,35,0.2);
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-mid), transparent);
+  margin: 48px 0;
+}
+
+/* ── Dot pulse animation ── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+.pulse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green-core);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* ── Glow ring ── */
+.glow-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.15;
+}
+
+/* ── NAV ── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: var(--nav-height);
+  background: rgba(8,13,14,0.85);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.nav-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-logo-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.nav-logo-text span { color: var(--green-core); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+.nav-links a {
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 400;
+  transition: all 0.15s;
+}
+.nav-links a:hover, .nav-links a.active {
+  background: var(--green-dim);
+  color: var(--green-core);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.nav-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0 32px;
+  margin-top: 80px;
+}
+.footer-inner {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+.footer-brand p {
+  font-size: 0.9rem;
+  margin-top: 12px;
+  max-width: 260px;
+}
+.footer-col h4 {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-family: var(--font-mono);
+}
+.footer-col a {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: var(--green-core); }
+.footer-bottom {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes scanline {
+  0%   { top: -4px; }
+  100% { top: 100%; }
+}
+
+.animate-fadeUp { animation: fadeUp 0.6s ease forwards; }
+.animate-fadeIn { animation: fadeIn 0.4s ease forwards; }
+.delay-1 { animation-delay: 0.1s; opacity: 0; }
+.delay-2 { animation-delay: 0.2s; opacity: 0; }
+.delay-3 { animation-delay: 0.3s; opacity: 0; }
+.delay-4 { animation-delay: 0.4s; opacity: 0; }
+.delay-5 { animation-delay: 0.5s; opacity: 0; }
+.delay-6 { animation-delay: 0.6s; opacity: 0; }
+
+/* ── Section spacing ── */
+.section { padding: 96px 0; }
+.section-sm { padding: 64px 0; }
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-core);
+  margin-bottom: 16px;
+}
+.section-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--green-core);
+}
+
+/* ── Grid layouts ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+/* ── Stat card ── */
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green-core), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-card:hover {
+  border-color: var(--border-mid);
+  transform: translateY(-2px);
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--green-core);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Live indicator ── */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--green-core);
+  letter-spacing: 0.08em;
+}
+.live-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green-core);
+  box-shadow: 0 0 8px var(--green-core);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+}
+
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--green-core) 0%, var(--teal-accent) 60%, #a8ffec 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: flex; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .section { padding: 64px 0; }
+}
+@media (max-width: 480px) {
+  .grid-4 { grid-template-columns: 1fr; }
+  .container { padding: 0 16px; }
+}
+
+</style>
+  <style>
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: var(--nav-height);
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .hero-bg .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      transform: translate(-50%, -50%);
+      left: 68%; top: 50%;
+    }
+    .hero-bg .ring-1 { width: 320px; height: 320px; }
+    .hero-bg .ring-2 { width: 560px; height: 560px; opacity: 0.5; }
+    .hero-bg .ring-3 { width: 800px; height: 800px; opacity: 0.25; }
+    .hero-bg .ring-4 { width: 1100px; height: 1100px; opacity: 0.1; }
+    .hero-glow-a {
+      position: absolute;
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(0,255,160,0.08) 0%, transparent 70%);
+      left: 40%; top: 20%;
+    }
+    .hero-glow-b {
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(ellipse, rgba(0,229,204,0.06) 0%, transparent 70%);
+      left: 60%; top: 60%;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      background: rgba(0,255,160,0.06);
+      border: 1px solid rgba(0,255,160,0.15);
+      border-radius: var(--radius-xl);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--green-core);
+      letter-spacing: 0.06em;
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 40px;
+      max-width: 540px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 64px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stat-item {}
+    .hero-stat-val {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--green-core);
+    }
+    .hero-stat-lbl {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ── Pipeline viz ── */
+    .pipeline-section {
+      background: linear-gradient(180deg, transparent, rgba(0,255,160,0.02) 50%, transparent);
+    }
+    .pipeline-track {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      overflow-x: auto;
+      padding: 8px 0 24px;
+    }
+    .pipeline-step {
+      flex: 1;
+      min-width: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .pipeline-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: 28px;
+      width: 2px; height: 24px;
+      background: linear-gradient(180deg, var(--green-core), transparent);
+      display: none;
+    }
+    .pipeline-node {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--bg-raised);
+      border: 1.5px solid var(--border-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+      transition: all 0.2s;
+    }
+    .pipeline-step:hover .pipeline-node {
+      border-color: var(--green-core);
+      background: var(--green-dim);
+      box-shadow: 0 0 24px rgba(0,255,160,0.2);
+    }
+    .pipeline-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      margin-top: -40px;
+      color: var(--text-dim);
+      font-size: 1.2rem;
+    }
+    .pipeline-label {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: var(--text-primary);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .pipeline-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.4;
+      max-width: 110px;
+    }
+    .pipeline-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+    }
+    .pipeline-connector {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      color: var(--border-mid);
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 0;
+    }
+
+    /* ── Feature grid ── */
+    .feature-icon {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--green-dim);
+      border: 1px solid var(--border-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+    .feature-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── How it works visual ── */
+    .routing-demo {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .routing-demo::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green-core), transparent);
+    }
+    .routing-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .routing-row:last-child { border-bottom: none; }
+    .routing-complexity {
+      width: 80px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+    .routing-bar-wrap {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-raised);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .routing-bar {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1s ease;
+    }
+    .routing-model {
+      width: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      text-align: right;
+    }
+    .routing-energy {
+      width: 70px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--green-core);
+      text-align: right;
+    }
+
+    /* ── CTA ── */
+    .cta-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      padding: 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-block::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, rgba(0,255,160,0.06), transparent 50%, rgba(0,229,204,0.04));
+      z-index: 0;
+      pointer-events: none;
+    }
+    .cta-block > * { position: relative; z-index: 1; }
+    .cta-block h2 { margin-bottom: 16px; }
+    .cta-block p { margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    /* ── Open source banner ── */
+    .oss-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .oss-banner .icon { font-size: 1.6rem; }
+    .oss-banner h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .oss-banner p {
+      font-size: 0.8rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.svg" alt="GreenInfer Logo" class="nav-logo-icon"/>
+      <span class="nav-logo-text">Green<span>Infer</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="chat.html">Chat</a></li>
+      <li><a href="framework.html">Framework</a></li>
+      <li><a href="impact.html">Impact</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="live-badge">Live</span>
+      <a href="chat.html" class="btn btn-primary btn-sm">Launch Chat</a>
+    </div>
+    <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor">
+        <rect y="3" width="22" height="2" rx="1"/>
+        <rect y="10" width="22" height="2" rx="1"/>
+        <rect y="17" width="22" height="2" rx="1"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="ring ring-4"></div>
+    <div class="hero-glow-a"></div>
+    <div class="hero-glow-b"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow animate-fadeUp">
+        <span class="pulse-dot"></span>
+        Green AI Orchestration Framework
+      </div>
+      <h1 class="animate-fadeUp delay-1">
+        AI that thinks about<br/>
+        <span class="gradient-text">the planet</span>
+      </h1>
+      <p class="hero-sub animate-fadeUp delay-2">
+        GreenInfer routes every prompt to the most energy-efficient model capable of answering it - combining prompt optimization, complexity analysis, and carbon-aware routing into one unified inference layer.
+      </p>
+      <div class="hero-actions animate-fadeUp delay-3">
+        <a href="chat.html" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2 2h12v9H2z" opacity="0.3"/><path d="M2 2h12v9H2V2zm1 1v7h10V3H3zm-1 8 2 3h8l2-3H2z"/>
+          </svg>
+          Try GreenInfer
+        </a>
+        <a href="framework.html" class="btn btn-ghost">
+          How it works →
+        </a>
+      </div>
+      <div class="hero-stats animate-fadeUp delay-4">
+        <div class="hero-stat-item">
+          <div class="hero-stat-val"><span class="counter" data-target="73" data-suffix="%">0%</span></div>
+          <div class="hero-stat-lbl">Avg Energy Saved</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-val"><span class="counter" data-target="41" data-suffix="%">0%</span></div>
+          <div class="hero-stat-lbl">Token Reduction</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-val"><span class="counter" data-target="3">0</span></div>
+          <div class="hero-stat-lbl">Model Tiers</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-val">Open</div>
+          <div class="hero-stat-lbl">Source Framework</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PIPELINE ── -->
+<section class="section pipeline-section">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 style="margin-bottom: 12px;">The Green Inference Pipeline</h2>
+    <p style="margin-bottom: 48px; max-width: 560px;">Every prompt passes through a multi-stage orchestration engine before a single GPU cycle is burned.</p>
+
+    <div class="pipeline-wrapper scroll-reveal">
+      <div class="pipeline-step">
+        <div class="pipeline-node">💬</div>
+        <div class="pipeline-label">User Input</div>
+        <div class="pipeline-desc">Raw prompt submitted</div>
+      </div>
+      <div class="pipeline-connector">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-node">✂️</div>
+        <div class="pipeline-label">Prompt Optimizer</div>
+        <div class="pipeline-desc">Token compression & semantic preservation</div>
+      </div>
+      <div class="pipeline-connector">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-node">🧠</div>
+        <div class="pipeline-label">Complexity Score</div>
+        <div class="pipeline-desc">Classifies reasoning demand 0–100</div>
+      </div>
+      <div class="pipeline-connector">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-node">⚡</div>
+        <div class="pipeline-label">Orchestrator</div>
+        <div class="pipeline-desc">Routes to optimal model tier</div>
+      </div>
+      <div class="pipeline-connector">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-node">🤖</div>
+        <div class="pipeline-label">Model Pool</div>
+        <div class="pipeline-desc">Small / Medium / Large LLMs</div>
+      </div>
+      <div class="pipeline-connector">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-node">🌿</div>
+        <div class="pipeline-label">Response + Carbon</div>
+        <div class="pipeline-desc">Answer + energy metrics shown</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── ROUTING DEMO ── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="grid-2" style="align-items: start; gap: 48px;">
+      <div>
+        <div class="section-label">Smart Routing</div>
+        <h2 style="margin-bottom: 16px;">Right model.<br/>Every prompt.</h2>
+        <p style="margin-bottom: 24px;">The orchestrator evaluates prompt complexity and accuracy requirements to assign the minimum viable model tier. Simple queries never touch large models.</p>
+        <div class="oss-banner scroll-reveal" style="margin-top: 32px;">
+          <div class="icon">🔓</div>
+          <div>
+            <h4>Open Source Framework</h4>
+            <p class="muted">Use GreenInfer in your own stack. Model-agnostic and developer-ready.</p>
+          </div>
+        </div>
+      </div>
+      <div class="routing-demo scroll-reveal">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <span style="font-size:0.78rem; color:var(--text-muted); font-family:var(--font-mono);">COMPLEXITY</span>
+          <span style="font-size:0.78rem; color:var(--text-muted); font-family:var(--font-mono);">ROUTED TO</span>
+          <span style="font-size:0.78rem; color:var(--text-muted); font-family:var(--font-mono);">ENERGY</span>
+        </div>
+        <div class="routing-row">
+          <span class="routing-complexity green">Low · 12</span>
+          <div class="routing-bar-wrap"><div class="routing-bar" style="width:12%; background:var(--green-core)"></div></div>
+          <span class="routing-model muted">SmolLM2</span>
+          <span class="routing-energy">0.8 mWh</span>
+        </div>
+        <div class="routing-row">
+          <span class="routing-complexity" style="color:var(--teal-accent)">Low · 28</span>
+          <div class="routing-bar-wrap"><div class="routing-bar" style="width:28%; background:var(--teal-accent)"></div></div>
+          <span class="routing-model muted">Phi-3 Mini</span>
+          <span class="routing-energy">2.1 mWh</span>
+        </div>
+        <div class="routing-row">
+          <span class="routing-complexity" style="color:var(--amber-warn)">Med · 55</span>
+          <div class="routing-bar-wrap"><div class="routing-bar" style="width:55%; background:var(--amber-warn)"></div></div>
+          <span class="routing-model muted">Mistral 7B</span>
+          <span class="routing-energy">8.4 mWh</span>
+        </div>
+        <div class="routing-row">
+          <span class="routing-complexity" style="color:#ff9b6b">High · 78</span>
+          <div class="routing-bar-wrap"><div class="routing-bar" style="width:78%; background:#ff9b6b"></div></div>
+          <span class="routing-model muted">Llama 3 70B</span>
+          <span class="routing-energy">31.2 mWh</span>
+        </div>
+        <div class="routing-row">
+          <span class="routing-complexity" style="color:var(--red-alert)">Max · 96</span>
+          <div class="routing-bar-wrap"><div class="routing-bar" style="width:96%; background:var(--red-alert)"></div></div>
+          <span class="routing-model muted">GPT-4 class</span>
+          <span class="routing-energy">58.7 mWh</span>
+        </div>
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.78rem; color:var(--text-muted); font-family:var(--font-mono);">BASELINE (always large model)</span>
+          <span class="green mono" style="font-size:0.85rem;">−73% avg</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── FEATURES ── -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Core Features</div>
+    <h2 style="margin-bottom: 48px;">Built for sustainable inference</h2>
+    <div class="grid-3 scroll-reveal">
+      <div class="card">
+        <div class="feature-icon">🧬</div>
+        <div class="feature-title">Prompt Optimizer</div>
+        <div class="feature-desc">Trained T5-based model compresses inputs 30–50%, removing redundancy while preserving full semantic meaning before any model call.</div>
+      </div>
+      <div class="card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Complexity Scoring</div>
+        <div class="feature-desc">Linguistic entropy, token analysis, and task classification produce a 0–100 complexity score that guards against under-routing difficult prompts.</div>
+      </div>
+      <div class="card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Sustainability Orchestrator</div>
+        <div class="feature-desc">Core routing engine balances accuracy, latency, and real-time carbon intensity to pick the minimum viable model for each inference.</div>
+      </div>
+      <div class="card">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-title">Carbon-Aware Routing</div>
+        <div class="feature-desc">Connects to real-time Texas grid carbon data via ERCOT. When the grid is dirty, inference automatically shifts to smaller, lower-emission models.</div>
+      </div>
+      <div class="card">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-title">Reinforcement Learning</div>
+        <div class="feature-desc">RL policy learns from historical accuracy, energy, and latency metrics - continuously improving routing decisions over time without manual tuning.</div>
+      </div>
+      <div class="card">
+        <div class="feature-icon">🔌</div>
+        <div class="feature-title">Model-Agnostic</div>
+        <div class="feature-desc">Works with any open-source or API model. Use GreenInfer as an inference layer for chatbots, code generation, summarization, or NLP pipelines.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── MODES ── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="section-label">Usage Modes</div>
+    <h2 style="margin-bottom: 40px;">You choose how green</h2>
+    <div class="grid-3 scroll-reveal">
+      <div class="card" style="border-color: rgba(0,255,160,0.25); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:16px;">🌿</div>
+        <div class="badge badge-green" style="margin-bottom:16px;">ECO MODE</div>
+        <h3 style="margin-bottom:8px; font-size:1.1rem;">Maximum Green</h3>
+        <p style="font-size:0.85rem;">Always routes to the smallest viable model. Carbon budget enforced. Best for simple queries and low-stakes tasks.</p>
+      </div>
+      <div class="card" style="border-color: rgba(0,229,204,0.2); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:16px;">⚖️</div>
+        <div class="badge badge-teal" style="margin-bottom:16px;">BALANCED</div>
+        <h3 style="margin-bottom:8px; font-size:1.1rem;">Smart Default</h3>
+        <p style="font-size:0.85rem;">Dynamically weighs accuracy needs vs energy cost. Grid-aware. The recommended mode for most users.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem; margin-bottom:16px;">🚀</div>
+        <div class="badge badge-amber" style="margin-bottom:16px;">PERFORMANCE</div>
+        <h3 style="margin-bottom:8px; font-size:1.1rem;">Full Capability</h3>
+        <p style="font-size:0.85rem;">Accuracy first - still energy-tracked and reported. Uses large models when needed. Eco gains from prompt optimization only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── CTA ── -->
+<section class="section">
+  <div class="container">
+    <div class="cta-block scroll-reveal">
+      <div class="section-label" style="justify-content:center;">Get Started</div>
+      <h2>Try it. Track it. Save it.</h2>
+      <p>Open GreenInfer, ask a question, and watch your carbon footprint in real time. Every session saves energy. Every prompt tracked.</p>
+      <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+        <a href="chat.html" class="btn btn-primary">Open Chat Interface</a>
+        <a href="framework.html" class="btn btn-ghost">Read the Framework Docs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="margin-bottom:12px; display:inline-flex;">
+          <img src="logo.svg" alt="GreenInfer" class="nav-logo-icon"/>
+          <span class="nav-logo-text">Green<span>Infer</span></span>
+        </a>
+        <p>A Green Orchestration Framework for energy-efficient LLM inference. Built as an ISM final project.</p>
+        <div style="margin-top:16px;">
+          <span class="badge badge-green">Open Source</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="chat.html">Chat Interface</a>
+        <a href="framework.html">Framework</a>
+        <a href="impact.html">Impact Stats</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="footer-col">
+        <h4>Framework</h4>
+        <a href="framework.html#optimizer">Prompt Optimizer</a>
+        <a href="framework.html#orchestrator">Orchestrator</a>
+        <a href="framework.html#routing">Carbon Routing</a>
+        <a href="framework.html#rl">RL Policy</a>
+      </div>
+      <div class="footer-col">
+        <h4>Research</h4>
+        <a href="about.html#mentor">Mentor</a>
+        <a href="about.html#background">Background</a>
+        <a href="about.html#papers">References</a>
+        <a href="about.html#ism">ISM Program</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 GreenInfer - Srinesh Toranala · ISM Final Product</span>
+      <span class="live-badge">Framework v0.1 · Beta</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   GreenInfer - Shared JS
+   ============================================================ */
+
+// ── Nav active state ──
+function setActiveNav() {
+  const path = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href === path || (path === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+}
+
+// ── Mobile nav toggle ──
+function initMobileNav() {
+  const toggle = document.getElementById('nav-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (!toggle) return;
+  toggle.addEventListener('click', () => {
+    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    navLinks.style.flexDirection = 'column';
+    navLinks.style.position = 'absolute';
+    navLinks.style.top = '64px';
+    navLinks.style.left = '0';
+    navLinks.style.right = '0';
+    navLinks.style.background = 'rgba(8,13,14,0.98)';
+    navLinks.style.padding = '16px';
+    navLinks.style.borderBottom = '1px solid rgba(0,255,160,0.1)';
+  });
+}
+
+// ── Animate on scroll ──
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.scroll-reveal').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+}
+
+// ── Counter animation ──
+function animateCounter(el, target, duration = 1800, suffix = '') {
+  const start = performance.now();
+  const isFloat = target % 1 !== 0;
+  const update = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const val = ease * target;
+    el.textContent = (isFloat ? val.toFixed(1) : Math.floor(val).toLocaleString()) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+function initCounters() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        animateCounter(el, target, 1800, suffix);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.counter').forEach(el => observer.observe(el));
+}
+
+// ── Carbon mode indicator ──
+const GRID_INTENSITY = {
+  eco: { label: 'Grid: Clean', color: '#00ffa0', bar: 18 },
+  moderate: { label: 'Grid: Moderate', color: '#f5a623', bar: 52 },
+  high: { label: 'Grid: Heavy', color: '#ff4d6d', bar: 88 }
+};
+
+function setGridMode(mode) {
+  const data = GRID_INTENSITY[mode];
+  const indicator = document.getElementById('grid-indicator');
+  const bar = document.getElementById('grid-bar');
+  if (indicator) {
+    indicator.textContent = data.label;
+    indicator.style.color = data.color;
+  }
+  if (bar) {
+    bar.style.width = data.bar + '%';
+    bar.style.background = data.color;
+  }
+}
+
+// ── Tooltip ──
+function initTooltips() {
+  document.querySelectorAll('[data-tooltip]').forEach(el => {
+    const tip = document.createElement('div');
+    tip.className = 'tooltip';
+    tip.textContent = el.dataset.tooltip;
+    tip.style.cssText = `
+      position:absolute; background:#1a272b; color:#e8f5f0;
+      font-size:0.78rem; font-family:var(--font-mono);
+      padding:6px 10px; border-radius:6px; white-space:nowrap;
+      border:1px solid rgba(0,255,160,0.2); z-index:100;
+      pointer-events:none; opacity:0; transition:opacity 0.15s;
+    `;
+    document.body.appendChild(tip);
+    el.addEventListener('mouseenter', (ev) => {
+      const r = el.getBoundingClientRect();
+      tip.style.left = r.left + 'px';
+      tip.style.top = (r.top - 36 + window.scrollY) + 'px';
+      tip.style.opacity = '1';
+    });
+    el.addEventListener('mouseleave', () => { tip.style.opacity = '0'; });
+  });
+}
+
+// ── Energy formatter ──
+function formatEnergy(wh) {
+  if (wh < 1) return (wh * 1000).toFixed(2) + ' mWh';
+  return wh.toFixed(3) + ' Wh';
+}
+function formatCO2(g) {
+  if (g < 1) return (g * 1000).toFixed(2) + ' mg';
+  return g.toFixed(3) + ' g CO₂';
+}
+
+// ── Init all ──
+document.addEventListener('DOMContentLoaded', () => {
+  setActiveNav();
+  initMobileNav();
+  initScrollAnimations();
+  initCounters();
+  initTooltips();
+});
+
+</script>
+</body>
+</html>
