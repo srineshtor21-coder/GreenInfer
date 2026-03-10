@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GreenInfer - Impact Dashboard</title>
+  <meta name="description" content="Real-time energy savings and carbon impact metrics for the GreenInfer framework."/>
+  <style>
+/* ============================================================
+   GreenInfer - Global Styles
+   Aesthetic: Dark biomorphic tech - deep forest meets silicon
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+/* ── Variables ── */
+:root {
+  --bg-void:       #080d0e;
+  --bg-deep:       #0b1214;
+  --bg-surface:    #111c1e;
+  --bg-raised:     #172226;
+  --bg-card:       #1a272b;
+  --border:        rgba(0, 255, 160, 0.08);
+  --border-mid:    rgba(0, 255, 160, 0.18);
+  --border-bright: rgba(0, 255, 160, 0.4);
+
+  --green-core:    #00ffa0;
+  --green-soft:    #00d484;
+  --green-muted:   #009b62;
+  --green-dim:     rgba(0, 255, 160, 0.12);
+  --green-glow:    rgba(0, 255, 160, 0.06);
+
+  --teal-accent:   #00e5cc;
+  --amber-warn:    #f5a623;
+  --red-alert:     #ff4d6d;
+
+  --text-primary:  #e8f5f0;
+  --text-secondary:#8ab5a8;
+  --text-muted:    #4a7068;
+  --text-dim:      #2a4540;
+
+  --font-display:  'Syne', sans-serif;
+  --font-body:     'DM Sans', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+
+  --shadow-card:   0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+  --shadow-glow:   0 0 40px rgba(0,255,160,0.12);
+  --shadow-deep:   0 8px 48px rgba(0,0,0,0.6);
+
+  --nav-height: 64px;
+  --sidebar-width: 260px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--green-muted); border-radius: 3px; }
+
+/* ── Selection ── */
+::selection { background: rgba(0,255,160,0.2); color: var(--green-core); }
+
+/* ── Typography ── */
+h1,h2,h3,h4,h5 { font-family: var(--font-display); font-weight: 700; line-height: 1.15; }
+h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 800; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.6rem); }
+h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; }
+p  { color: var(--text-secondary); line-height: 1.75; }
+a  { color: var(--green-core); text-decoration: none; }
+a:hover { color: var(--teal-accent); }
+code, pre { font-family: var(--font-mono); }
+
+/* ── Utility ── */
+.mono { font-family: var(--font-mono); }
+.green { color: var(--green-core); }
+.teal  { color: var(--teal-accent); }
+.muted { color: var(--text-muted); }
+.dim   { color: var(--text-dim); }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--green-core);
+  color: #080d0e;
+  box-shadow: 0 0 20px rgba(0,255,160,0.3);
+}
+.btn-primary:hover {
+  background: #1fffb0;
+  color: #080d0e;
+  box-shadow: 0 0 32px rgba(0,255,160,0.5);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-mid);
+}
+.btn-ghost:hover {
+  border-color: var(--green-core);
+  color: var(--green-core);
+  background: var(--green-dim);
+}
+
+.btn-sm {
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-xl);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+.badge-green {
+  background: rgba(0,255,160,0.1);
+  color: var(--green-core);
+  border: 1px solid rgba(0,255,160,0.2);
+}
+.badge-teal {
+  background: rgba(0,229,204,0.1);
+  color: var(--teal-accent);
+  border: 1px solid rgba(0,229,204,0.2);
+}
+.badge-amber {
+  background: rgba(245,166,35,0.1);
+  color: var(--amber-warn);
+  border: 1px solid rgba(245,166,35,0.2);
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-mid), transparent);
+  margin: 48px 0;
+}
+
+/* ── Dot pulse animation ── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+.pulse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green-core);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* ── Glow ring ── */
+.glow-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.15;
+}
+
+/* ── NAV ── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: var(--nav-height);
+  background: rgba(8,13,14,0.85);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.nav-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-logo-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.nav-logo-text span { color: var(--green-core); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+.nav-links a {
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 400;
+  transition: all 0.15s;
+}
+.nav-links a:hover, .nav-links a.active {
+  background: var(--green-dim);
+  color: var(--green-core);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.nav-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0 32px;
+  margin-top: 80px;
+}
+.footer-inner {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+.footer-brand p {
+  font-size: 0.9rem;
+  margin-top: 12px;
+  max-width: 260px;
+}
+.footer-col h4 {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-family: var(--font-mono);
+}
+.footer-col a {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: var(--green-core); }
+.footer-bottom {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes scanline {
+  0%   { top: -4px; }
+  100% { top: 100%; }
+}
+
+.animate-fadeUp { animation: fadeUp 0.6s ease forwards; }
+.animate-fadeIn { animation: fadeIn 0.4s ease forwards; }
+.delay-1 { animation-delay: 0.1s; opacity: 0; }
+.delay-2 { animation-delay: 0.2s; opacity: 0; }
+.delay-3 { animation-delay: 0.3s; opacity: 0; }
+.delay-4 { animation-delay: 0.4s; opacity: 0; }
+.delay-5 { animation-delay: 0.5s; opacity: 0; }
+.delay-6 { animation-delay: 0.6s; opacity: 0; }
+
+/* ── Section spacing ── */
+.section { padding: 96px 0; }
+.section-sm { padding: 64px 0; }
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-core);
+  margin-bottom: 16px;
+}
+.section-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--green-core);
+}
+
+/* ── Grid layouts ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+/* ── Stat card ── */
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green-core), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-card:hover {
+  border-color: var(--border-mid);
+  transform: translateY(-2px);
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--green-core);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Live indicator ── */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--green-core);
+  letter-spacing: 0.08em;
+}
+.live-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green-core);
+  box-shadow: 0 0 8px var(--green-core);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+}
+
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--green-core) 0%, var(--teal-accent) 60%, #a8ffec 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: flex; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .section { padding: 64px 0; }
+}
+@media (max-width: 480px) {
+  .grid-4 { grid-template-columns: 1fr; }
+  .container { padding: 0 16px; }
+}
+
+</style>
+  <style>
+    .impact-hero {
+      padding: calc(var(--nav-height) + 64px) 0 48px;
+      position: relative;
+    }
+    .impact-hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 80% 50%, rgba(0,255,160,0.05), transparent);
+      pointer-events: none;
+    }
+
+    /* ── Big stats ── */
+    .big-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 48px 0;
+    }
+    .big-stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    .big-stat::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--accent, var(--green-core));
+      opacity: 0.5;
+    }
+    .big-stat:hover { transform: translateY(-2px); border-color: var(--border-mid); }
+    .big-stat-icon {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+    .big-stat-val {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 2rem;
+      color: var(--green-core);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .big-stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .big-stat-delta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--green-core);
+      margin-top: 4px;
+    }
+
+    /* ── Chart containers ── */
+    .chart-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      position: relative;
+    }
+    .chart-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    .chart-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    canvas { display: block; width: 100% !important; }
+
+    /* ── Pareto frontier ── */
+    .pareto-canvas-wrap {
+      position: relative;
+      height: 280px;
+    }
+    #pareto-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Model breakdown ── */
+    .model-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .model-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .model-bar-name {
+      width: 110px;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .model-bar-track {
+      flex: 1;
+      height: 12px;
+      background: var(--bg-raised);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .model-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 1.2s ease;
+    }
+    .model-bar-pct {
+      width: 44px;
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .model-bar-energy {
+      width: 70px;
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--green-core);
+      flex-shrink: 0;
+    }
+
+    /* ── Savings breakdown ── */
+    .savings-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .savings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+    }
+    .savings-source { color: var(--text-secondary); }
+    .savings-amount {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--green-core);
+      font-weight: 600;
+    }
+
+    /* ── Carbon timeline ── */
+    .timeline-chart {
+      height: 160px;
+      position: relative;
+      background: var(--bg-raised);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 16px;
+      overflow: hidden;
+    }
+    .timeline-bars {
+      display: flex;
+      align-items: flex-end;
+      height: 100%;
+      gap: 4px;
+    }
+    .tl-bar {
+      flex: 1;
+      border-radius: 2px 2px 0 0;
+      position: relative;
+    }
+    .tl-bar-greeninfer { background: var(--green-core); opacity: 0.8; }
+    .tl-bar-baseline { background: var(--red-alert); opacity: 0.4; }
+    .timeline-legend {
+      display: flex;
+      gap: 20px;
+      margin-top: 12px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ── Grid section ── */
+    .grid-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .grid-intensity-bar {
+      height: 16px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--green-core) 0%, var(--amber-warn) 50%, var(--red-alert) 100%);
+      position: relative;
+      margin: 16px 0;
+    }
+    .grid-intensity-marker {
+      position: absolute;
+      top: -4px;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      border: 2px solid var(--bg-void);
+      transform: translateX(-50%);
+      left: 20%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      transition: left 0.5s ease;
+    }
+    .grid-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 900px) {
+      .big-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .big-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.svg" alt="GreenInfer Logo" class="nav-logo-icon"/>
+      <span class="nav-logo-text">Green<span>Infer</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="chat.html">Chat</a></li>
+      <li><a href="framework.html">Framework</a></li>
+      <li><a href="impact.html" class="active">Impact</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="live-badge">Live Data</span>
+      <a href="chat.html" class="btn btn-primary btn-sm">Try It</a>
+    </div>
+    <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor">
+        <rect y="3" width="22" height="2" rx="1"/>
+        <rect y="10" width="22" height="2" rx="1"/>
+        <rect y="17" width="22" height="2" rx="1"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="impact-hero">
+  <div class="impact-hero-bg"></div>
+  <div class="container">
+    <div class="section-label">Environmental Impact</div>
+    <h1 style="margin-bottom:16px;">Every prompt<br/><span class="gradient-text">tracked & measured</span></h1>
+    <p style="max-width:520px; font-size:1.05rem;">Quantified sustainability gains from prompt optimization, smart routing, and carbon-aware inference. Real numbers. Real savings.</p>
+    <div style="margin-top:20px;">
+      <span class="live-badge" style="font-size:0.82rem;">Stats update in real-time as the framework is used</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── BIG STATS ── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="big-stats scroll-reveal">
+      <div class="big-stat" style="--accent: var(--green-core)">
+        <div class="big-stat-icon">⚡</div>
+        <div class="big-stat-val"><span class="counter" data-target="73" data-suffix="%">0%</span></div>
+        <div class="big-stat-label">Avg Energy Saved</div>
+        <div class="big-stat-delta">↑ vs always-large baseline</div>
+      </div>
+      <div class="big-stat" style="--accent: var(--teal-accent)">
+        <div class="big-stat-icon">✂️</div>
+        <div class="big-stat-val"><span class="counter" data-target="41" data-suffix="%">0%</span></div>
+        <div class="big-stat-label">Token Reduction</div>
+        <div class="big-stat-delta">↑ from prompt optimizer</div>
+      </div>
+      <div class="big-stat" style="--accent: var(--amber-warn)">
+        <div class="big-stat-icon">🌿</div>
+        <div class="big-stat-val"><span class="counter" data-target="14.8" data-suffix="g">0g</span></div>
+        <div class="big-stat-label">CO₂ Avoided (demo)</div>
+        <div class="big-stat-delta">↓ vs baseline inference</div>
+      </div>
+      <div class="big-stat" style="--accent: #a8ffec">
+        <div class="big-stat-icon">🔢</div>
+        <div class="big-stat-val"><span class="counter" data-target="38456">0</span></div>
+        <div class="big-stat-label">Tokens Saved (demo)</div>
+        <div class="big-stat-delta">↑ across test queries</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── CHARTS ROW 1 ── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="grid-2" style="gap:24px;">
+
+      <!-- Model Routing Distribution -->
+      <div class="chart-container scroll-reveal">
+        <div class="chart-title">Model Routing Distribution</div>
+        <div class="chart-subtitle">% of queries routed to each tier (balanced mode)</div>
+        <div class="model-breakdown">
+          <div class="model-bar-row">
+            <span class="model-bar-name">SmolLM2 (S)</span>
+            <div class="model-bar-track">
+              <div class="model-bar-fill" id="bar-s" style="width:0%; background:var(--green-core)"></div>
+            </div>
+            <span class="model-bar-pct" id="pct-s">62%</span>
+            <span class="model-bar-energy">~0.9 mWh</span>
+          </div>
+          <div class="model-bar-row">
+            <span class="model-bar-name">Phi-3 Mini (M)</span>
+            <div class="model-bar-track">
+              <div class="model-bar-fill" id="bar-m" style="width:0%; background:var(--teal-accent)"></div>
+            </div>
+            <span class="model-bar-pct" id="pct-m">28%</span>
+            <span class="model-bar-energy">~3.8 mWh</span>
+          </div>
+          <div class="model-bar-row">
+            <span class="model-bar-name">Llama 3 70B (L)</span>
+            <div class="model-bar-track">
+              <div class="model-bar-fill" id="bar-l" style="width:0%; background:var(--amber-warn)"></div>
+            </div>
+            <span class="model-bar-pct" id="pct-l">10%</span>
+            <span class="model-bar-energy">~48 mWh</span>
+          </div>
+          <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-family:var(--font-mono); color:var(--text-muted);">
+              <span>Avg energy per query:</span>
+              <span class="green">4.2 mWh</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-family:var(--font-mono); color:var(--text-muted); margin-top:6px;">
+              <span>Baseline (always large):</span>
+              <span style="color:var(--red-alert)">~48 mWh</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Savings Breakdown -->
+      <div class="chart-container scroll-reveal">
+        <div class="chart-title">Where the savings come from</div>
+        <div class="chart-subtitle">Cumulative energy reduction by framework component</div>
+        <div class="savings-breakdown">
+          <div class="savings-row">
+            <span class="savings-source">✂️ Prompt Optimization</span>
+            <span class="savings-amount">−38% tokens → −38% energy</span>
+          </div>
+          <div class="savings-row">
+            <span class="savings-source">⚡ Model Tier Routing (S→L avoid)</span>
+            <span class="savings-amount">−91% per routed query</span>
+          </div>
+          <div class="savings-row">
+            <span class="savings-source">🌿 Carbon-Aware Scheduling</span>
+            <span class="savings-amount">−12% CO₂ from grid timing</span>
+          </div>
+          <div class="savings-row">
+            <span class="savings-source">🔄 RL Policy Improvement</span>
+            <span class="savings-amount">~8% additional over time</span>
+          </div>
+          <div style="padding:14px 16px; background:rgba(0,255,160,0.06); border:1px solid rgba(0,255,160,0.2); border-radius:var(--radius-md);">
+            <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:0.85rem;">
+              <span style="color:var(--text-secondary);">Combined avg reduction</span>
+              <span style="color:var(--green-core); font-weight:700;">~73%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PARETO + TIMELINE ── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="grid-2" style="gap:24px;">
+
+      <!-- Pareto Frontier -->
+      <div class="chart-container scroll-reveal">
+        <div class="chart-title">Pareto Frontier - Accuracy vs Energy</div>
+        <div class="chart-subtitle">Optimal routing curve across model tiers</div>
+        <div class="pareto-canvas-wrap">
+          <canvas id="pareto-canvas"></canvas>
+        </div>
+        <div style="margin-top:12px; font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
+          Points on the curve = optimal routing choices. GreenInfer selects the lowest-energy point that meets accuracy requirements.
+        </div>
+      </div>
+
+      <!-- CO2 Timeline -->
+      <div class="chart-container scroll-reveal">
+        <div class="chart-title">CO₂ Emissions - GreenInfer vs Baseline</div>
+        <div class="chart-subtitle">Simulated across 20 benchmark queries</div>
+        <div class="timeline-chart">
+          <div class="timeline-bars" id="timeline-bars"></div>
+        </div>
+        <div class="timeline-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--green-core)"></div>
+            GreenInfer
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--red-alert); opacity:0.5"></div>
+            Always-Large Baseline
+          </div>
+        </div>
+        <div style="margin-top:16px; display:flex; justify-content:space-between; font-size:0.8rem; font-family:var(--font-mono);">
+          <div style="color:var(--text-muted)">GreenInfer total: <span class="green">0.84g CO₂</span></div>
+          <div style="color:var(--text-muted)">Baseline total: <span style="color:var(--red-alert)">3.12g CO₂</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── GRID PANEL ── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="section-label">Grid Awareness</div>
+    <h2 style="margin-bottom:32px;">ERCOT Carbon Intensity</h2>
+    <div class="grid-2" style="gap:24px;">
+      <div class="grid-panel scroll-reveal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted);">CURRENT INTENSITY</span>
+          <span class="live-badge">Live</span>
+        </div>
+        <div style="font-family:var(--font-display); font-size:2.4rem; font-weight:800; color:var(--green-core);">198 <span style="font-size:1rem; color:var(--text-muted);">gCO₂/kWh</span></div>
+        <div class="grid-intensity-bar">
+          <div class="grid-intensity-marker" style="left:25%"></div>
+        </div>
+        <div class="grid-labels">
+          <span>0 (Clean)</span>
+          <span>400 (Moderate)</span>
+          <span>800+ (Heavy)</span>
+        </div>
+        <div style="margin-top:16px; padding:12px; background:rgba(0,255,160,0.06); border:1px solid rgba(0,255,160,0.15); border-radius:var(--radius-md);">
+          <div class="live-badge" style="font-size:0.78rem; margin-bottom:4px;">Grid favorable → Balanced routing enabled</div>
+          <div style="font-size:0.78rem; color:var(--text-muted);">At &gt;400 gCO₂/kWh: forced eco mode. At &lt;150: performance unlocked.</div>
+        </div>
+      </div>
+      <div class="grid-panel scroll-reveal">
+        <div style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted); margin-bottom:16px;">ROUTING DECISIONS THIS SESSION</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-raised); border:1px solid var(--border); border-radius:var(--radius-sm);">
+            <span style="font-size:0.82rem; color:var(--text-secondary);">Grid-triggered eco shifts</span>
+            <span class="green mono" style="font-size:0.85rem;">3</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-raised); border:1px solid var(--border); border-radius:var(--radius-sm);">
+            <span style="font-size:0.82rem; color:var(--text-secondary);">Queries budget-capped</span>
+            <span class="green mono" style="font-size:0.85rem;">0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-raised); border:1px solid var(--border); border-radius:var(--radius-sm);">
+            <span style="font-size:0.82rem; color:var(--text-secondary);">Complexity prevents over-routing</span>
+            <span class="green mono" style="font-size:0.85rem;">7</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-raised); border:1px solid var(--border); border-radius:var(--radius-sm);">
+            <span style="font-size:0.82rem; color:var(--text-secondary);">Total CO₂ saved (session)</span>
+            <span class="green mono" style="font-size:0.85rem;">2.28g</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="margin-bottom:12px; display:inline-flex;">
+          <img src="logo.svg" alt="GreenInfer" class="nav-logo-icon"/>
+          <span class="nav-logo-text">Green<span>Infer</span></span>
+        </a>
+        <p>A Green Orchestration Framework for energy-efficient LLM inference.</p>
+        <div style="margin-top:16px;"><span class="badge badge-green">Open Source</span></div>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="chat.html">Chat Interface</a>
+        <a href="framework.html">Framework</a>
+        <a href="impact.html">Impact Stats</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="footer-col">
+        <h4>Framework</h4>
+        <a href="framework.html#optimizer">Prompt Optimizer</a>
+        <a href="framework.html#orchestrator">Orchestrator</a>
+        <a href="framework.html#routing">Carbon Routing</a>
+        <a href="framework.html#rl">RL Policy</a>
+      </div>
+      <div class="footer-col">
+        <h4>Research</h4>
+        <a href="about.html#mentor">Mentor</a>
+        <a href="about.html#background">Background</a>
+        <a href="about.html#papers">References</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 GreenInfer - Srinesh Toranala · ISM Final Product</span>
+      <span class="live-badge">Framework v0.1 · Beta</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   GreenInfer - Shared JS
+   ============================================================ */
+
+// ── Nav active state ──
+function setActiveNav() {
+  const path = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href === path || (path === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+}
+
+// ── Mobile nav toggle ──
+function initMobileNav() {
+  const toggle = document.getElementById('nav-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (!toggle) return;
+  toggle.addEventListener('click', () => {
+    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    navLinks.style.flexDirection = 'column';
+    navLinks.style.position = 'absolute';
+    navLinks.style.top = '64px';
+    navLinks.style.left = '0';
+    navLinks.style.right = '0';
+    navLinks.style.background = 'rgba(8,13,14,0.98)';
+    navLinks.style.padding = '16px';
+    navLinks.style.borderBottom = '1px solid rgba(0,255,160,0.1)';
+  });
+}
+
+// ── Animate on scroll ──
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.scroll-reveal').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+}
+
+// ── Counter animation ──
+function animateCounter(el, target, duration = 1800, suffix = '') {
+  const start = performance.now();
+  const isFloat = target % 1 !== 0;
+  const update = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const val = ease * target;
+    el.textContent = (isFloat ? val.toFixed(1) : Math.floor(val).toLocaleString()) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+function initCounters() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        animateCounter(el, target, 1800, suffix);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.counter').forEach(el => observer.observe(el));
+}
+
+// ── Carbon mode indicator ──
+const GRID_INTENSITY = {
+  eco: { label: 'Grid: Clean', color: '#00ffa0', bar: 18 },
+  moderate: { label: 'Grid: Moderate', color: '#f5a623', bar: 52 },
+  high: { label: 'Grid: Heavy', color: '#ff4d6d', bar: 88 }
+};
+
+function setGridMode(mode) {
+  const data = GRID_INTENSITY[mode];
+  const indicator = document.getElementById('grid-indicator');
+  const bar = document.getElementById('grid-bar');
+  if (indicator) {
+    indicator.textContent = data.label;
+    indicator.style.color = data.color;
+  }
+  if (bar) {
+    bar.style.width = data.bar + '%';
+    bar.style.background = data.color;
+  }
+}
+
+// ── Tooltip ──
+function initTooltips() {
+  document.querySelectorAll('[data-tooltip]').forEach(el => {
+    const tip = document.createElement('div');
+    tip.className = 'tooltip';
+    tip.textContent = el.dataset.tooltip;
+    tip.style.cssText = `
+      position:absolute; background:#1a272b; color:#e8f5f0;
+      font-size:0.78rem; font-family:var(--font-mono);
+      padding:6px 10px; border-radius:6px; white-space:nowrap;
+      border:1px solid rgba(0,255,160,0.2); z-index:100;
+      pointer-events:none; opacity:0; transition:opacity 0.15s;
+    `;
+    document.body.appendChild(tip);
+    el.addEventListener('mouseenter', (ev) => {
+      const r = el.getBoundingClientRect();
+      tip.style.left = r.left + 'px';
+      tip.style.top = (r.top - 36 + window.scrollY) + 'px';
+      tip.style.opacity = '1';
+    });
+    el.addEventListener('mouseleave', () => { tip.style.opacity = '0'; });
+  });
+}
+
+// ── Energy formatter ──
+function formatEnergy(wh) {
+  if (wh < 1) return (wh * 1000).toFixed(2) + ' mWh';
+  return wh.toFixed(3) + ' Wh';
+}
+function formatCO2(g) {
+  if (g < 1) return (g * 1000).toFixed(2) + ' mg';
+  return g.toFixed(3) + ' g CO₂';
+}
+
+// ── Init all ──
+document.addEventListener('DOMContentLoaded', () => {
+  setActiveNav();
+  initMobileNav();
+  initScrollAnimations();
+  initCounters();
+  initTooltips();
+});
+
+</script>
+<script>
+// ── Animate model bars ──
+function animateBars() {
+  setTimeout(() => {
+    document.getElementById('bar-s').style.width = '62%';
+    document.getElementById('bar-m').style.width = '28%';
+    document.getElementById('bar-l').style.width = '10%';
+  }, 400);
+}
+animateBars();
+
+// ── Pareto Canvas ──
+function drawPareto() {
+  const canvas = document.getElementById('pareto-canvas');
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = 280 * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const W = rect.width, H = 280;
+  const PAD = { top: 20, right: 20, bottom: 40, left: 52 };
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(0,255,160,0.06)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = PAD.top + (cH / 5) * i;
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
+    const x = PAD.left + (cW / 5) * i;
+    ctx.beginPath(); ctx.moveTo(x, PAD.top); ctx.lineTo(x, PAD.top + cH); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = 'rgba(0,255,160,0.2)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top); ctx.lineTo(PAD.left, PAD.top + cH); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top + cH); ctx.lineTo(PAD.left + cW, PAD.top + cH); ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = 'rgba(138,181,168,0.6)';
+  ctx.font = `11px JetBrains Mono, monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText('Energy (mWh)', PAD.left + cW / 2, H - 8);
+  ctx.save();
+  ctx.translate(14, PAD.top + cH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Accuracy (%)', 0, 0);
+  ctx.restore();
+
+  // Data points (energy, accuracy, label)
+  const points = [
+    { e: 0.9,  a: 72, label: 'SmolLM2', tier: 'small' },
+    { e: 3.8,  a: 81, label: 'Phi-3 Mini', tier: 'medium' },
+    { e: 12,   a: 88, label: 'Mistral 7B', tier: 'medium' },
+    { e: 48,   a: 94, label: 'Llama 70B', tier: 'large' },
+    { e: 80,   a: 97, label: 'GPT-4 class', tier: 'large' },
+  ];
+  const maxE = 90, minA = 60, maxA = 100;
+
+  // Pareto frontier line
+  const grd = ctx.createLinearGradient(PAD.left, 0, PAD.left + cW, 0);
+  grd.addColorStop(0, 'rgba(0,255,160,0.7)');
+  grd.addColorStop(1, 'rgba(255,77,109,0.5)');
+  ctx.strokeStyle = grd;
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 3]);
+  ctx.beginPath();
+  points.forEach((p, i) => {
+    const x = PAD.left + (p.e / maxE) * cW;
+    const y = PAD.top + cH - ((p.a - minA) / (maxA - minA)) * cH;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Dots
+  const colors = { small: '#00ffa0', medium: '#00e5cc', large: '#f5a623' };
+  points.forEach(p => {
+    const x = PAD.left + (p.e / maxE) * cW;
+    const y = PAD.top + cH - ((p.a - minA) / (maxA - minA)) * cH;
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.fillStyle = colors[p.tier] + '33';
+    ctx.fill();
+    ctx.strokeStyle = colors[p.tier];
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = colors[p.tier];
+    ctx.font = `10px JetBrains Mono, monospace`;
+    ctx.textAlign = 'left';
+    ctx.fillText(p.label, x + 10, y + 4);
+  });
+}
+
+// ── Timeline Chart ──
+function buildTimeline() {
+  const container = document.getElementById('timeline-bars');
+  if (!container) return;
+
+  const baseline = [0.4, 0.6, 0.5, 0.7, 0.8, 0.3, 0.9, 0.5, 0.6, 0.7,
+                    0.4, 0.8, 0.5, 0.6, 0.9, 0.3, 0.7, 0.5, 0.8, 0.4];
+  const greeninfer = baseline.map(v => v * (0.18 + Math.random() * 0.12));
+  const maxVal = Math.max(...baseline);
+
+  baseline.forEach((b, i) => {
+    const group = document.createElement('div');
+    group.style.cssText = 'flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:2px; height:100%;';
+
+    const gbEl = document.createElement('div');
+    gbEl.className = 'tl-bar tl-bar-baseline';
+    gbEl.style.height = (b / maxVal * 70) + '%';
+    gbEl.style.width = '100%';
+    gbEl.title = `Baseline: ${b.toFixed(3)}g CO₂`;
+
+    const giEl = document.createElement('div');
+    giEl.className = 'tl-bar tl-bar-greeninfer';
+    giEl.style.cssText = `height:${(greeninfer[i] / maxVal * 70)}%; width:100%; position:absolute; bottom:0; left:0;`;
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative; flex:1; width:100%; display:flex; align-items:flex-end;';
+    wrap.appendChild(gbEl);
+    wrap.appendChild(giEl);
+
+    group.appendChild(wrap);
+    container.appendChild(group);
+  });
+}
+
+window.addEventListener('load', () => {
+  drawPareto();
+  buildTimeline();
+});
+window.addEventListener('resize', drawPareto);
+</script>
+</body>
+</html>
