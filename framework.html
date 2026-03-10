@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GreenInfer - Framework Architecture</title>
+  <meta name="description" content="Deep dive into the Green Orchestration Framework - how prompt optimization, complexity scoring, and carbon-aware routing work together."/>
+  <style>
+/* ============================================================
+   GreenInfer - Global Styles
+   Aesthetic: Dark biomorphic tech - deep forest meets silicon
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+/* ── Variables ── */
+:root {
+  --bg-void:       #080d0e;
+  --bg-deep:       #0b1214;
+  --bg-surface:    #111c1e;
+  --bg-raised:     #172226;
+  --bg-card:       #1a272b;
+  --border:        rgba(0, 255, 160, 0.08);
+  --border-mid:    rgba(0, 255, 160, 0.18);
+  --border-bright: rgba(0, 255, 160, 0.4);
+
+  --green-core:    #00ffa0;
+  --green-soft:    #00d484;
+  --green-muted:   #009b62;
+  --green-dim:     rgba(0, 255, 160, 0.12);
+  --green-glow:    rgba(0, 255, 160, 0.06);
+
+  --teal-accent:   #00e5cc;
+  --amber-warn:    #f5a623;
+  --red-alert:     #ff4d6d;
+
+  --text-primary:  #e8f5f0;
+  --text-secondary:#8ab5a8;
+  --text-muted:    #4a7068;
+  --text-dim:      #2a4540;
+
+  --font-display:  'Syne', sans-serif;
+  --font-body:     'DM Sans', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+
+  --shadow-card:   0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+  --shadow-glow:   0 0 40px rgba(0,255,160,0.12);
+  --shadow-deep:   0 8px 48px rgba(0,0,0,0.6);
+
+  --nav-height: 64px;
+  --sidebar-width: 260px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--green-muted); border-radius: 3px; }
+
+/* ── Selection ── */
+::selection { background: rgba(0,255,160,0.2); color: var(--green-core); }
+
+/* ── Typography ── */
+h1,h2,h3,h4,h5 { font-family: var(--font-display); font-weight: 700; line-height: 1.15; }
+h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 800; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.6rem); }
+h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; }
+p  { color: var(--text-secondary); line-height: 1.75; }
+a  { color: var(--green-core); text-decoration: none; }
+a:hover { color: var(--teal-accent); }
+code, pre { font-family: var(--font-mono); }
+
+/* ── Utility ── */
+.mono { font-family: var(--font-mono); }
+.green { color: var(--green-core); }
+.teal  { color: var(--teal-accent); }
+.muted { color: var(--text-muted); }
+.dim   { color: var(--text-dim); }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--green-core);
+  color: #080d0e;
+  box-shadow: 0 0 20px rgba(0,255,160,0.3);
+}
+.btn-primary:hover {
+  background: #1fffb0;
+  color: #080d0e;
+  box-shadow: 0 0 32px rgba(0,255,160,0.5);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-mid);
+}
+.btn-ghost:hover {
+  border-color: var(--green-core);
+  color: var(--green-core);
+  background: var(--green-dim);
+}
+
+.btn-sm {
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-xl);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+.badge-green {
+  background: rgba(0,255,160,0.1);
+  color: var(--green-core);
+  border: 1px solid rgba(0,255,160,0.2);
+}
+.badge-teal {
+  background: rgba(0,229,204,0.1);
+  color: var(--teal-accent);
+  border: 1px solid rgba(0,229,204,0.2);
+}
+.badge-amber {
+  background: rgba(245,166,35,0.1);
+  color: var(--amber-warn);
+  border: 1px solid rgba(245,166,35,0.2);
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-mid), transparent);
+  margin: 48px 0;
+}
+
+/* ── Dot pulse animation ── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+.pulse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green-core);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* ── Glow ring ── */
+.glow-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.15;
+}
+
+/* ── NAV ── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: var(--nav-height);
+  background: rgba(8,13,14,0.85);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.nav-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-logo-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.nav-logo-text span { color: var(--green-core); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+.nav-links a {
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 400;
+  transition: all 0.15s;
+}
+.nav-links a:hover, .nav-links a.active {
+  background: var(--green-dim);
+  color: var(--green-core);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.nav-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0 32px;
+  margin-top: 80px;
+}
+.footer-inner {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+.footer-brand p {
+  font-size: 0.9rem;
+  margin-top: 12px;
+  max-width: 260px;
+}
+.footer-col h4 {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-family: var(--font-mono);
+}
+.footer-col a {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: var(--green-core); }
+.footer-bottom {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes scanline {
+  0%   { top: -4px; }
+  100% { top: 100%; }
+}
+
+.animate-fadeUp { animation: fadeUp 0.6s ease forwards; }
+.animate-fadeIn { animation: fadeIn 0.4s ease forwards; }
+.delay-1 { animation-delay: 0.1s; opacity: 0; }
+.delay-2 { animation-delay: 0.2s; opacity: 0; }
+.delay-3 { animation-delay: 0.3s; opacity: 0; }
+.delay-4 { animation-delay: 0.4s; opacity: 0; }
+.delay-5 { animation-delay: 0.5s; opacity: 0; }
+.delay-6 { animation-delay: 0.6s; opacity: 0; }
+
+/* ── Section spacing ── */
+.section { padding: 96px 0; }
+.section-sm { padding: 64px 0; }
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-core);
+  margin-bottom: 16px;
+}
+.section-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--green-core);
+}
+
+/* ── Grid layouts ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+/* ── Stat card ── */
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green-core), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-card:hover {
+  border-color: var(--border-mid);
+  transform: translateY(-2px);
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--green-core);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Live indicator ── */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--green-core);
+  letter-spacing: 0.08em;
+}
+.live-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green-core);
+  box-shadow: 0 0 8px var(--green-core);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+}
+
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--green-core) 0%, var(--teal-accent) 60%, #a8ffec 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: flex; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .section { padding: 64px 0; }
+}
+@media (max-width: 480px) {
+  .grid-4 { grid-template-columns: 1fr; }
+  .container { padding: 0 16px; }
+}
+
+</style>
+  <style>
+    .fw-hero {
+      padding: calc(var(--nav-height) + 64px) 0 64px;
+      position: relative;
+    }
+    .fw-hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,255,160,0.04), transparent);
+      pointer-events: none;
+    }
+
+    /* ── Architecture diagram ── */
+    .arch-diagram {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      margin: 48px 0;
+    }
+    .arch-diagram::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, rgba(0,255,160,0.05), transparent 60%);
+    }
+    .arch-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .arch-layer {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      min-height: 68px;
+    }
+    .layer-number {
+      width: 32px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+    .layer-card {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .layer-card:hover {
+      border-color: var(--border-bright);
+      background: var(--bg-raised);
+    }
+    .layer-card.active {
+      border-color: var(--green-core);
+      background: rgba(0,255,160,0.04);
+    }
+    .layer-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .layer-info { flex: 1; }
+    .layer-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.92rem;
+      margin-bottom: 2px;
+    }
+    .layer-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .layer-badge { flex-shrink: 0; }
+    .arch-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 20px;
+      margin-left: 44px;
+      color: var(--border-mid);
+      font-size: 0.85rem;
+    }
+
+    /* ── Spec grid ── */
+    .spec-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .spec-card-head {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .spec-card-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      background: var(--green-dim);
+      border: 1px solid var(--border-mid);
+    }
+    .spec-card-title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
+    .spec-card-body { padding: 24px; }
+    .spec-list { list-style: none; }
+    .spec-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+    .spec-list li:last-child { border-bottom: none; }
+    .spec-list li::before {
+      content: '→';
+      color: var(--green-core);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Code block ── */
+    .code-block {
+      background: var(--bg-void);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .code-block-header {
+      padding: 10px 16px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .code-block pre {
+      padding: 20px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+    .code-block .kw { color: #c792ea; }
+    .code-block .fn { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .cm { color: var(--text-dim); }
+    .code-block .num { color: var(--amber-warn); }
+
+    /* ── Comparison table ── */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .comparison-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .comparison-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    .comparison-table tr:last-child td { border-bottom: none; }
+    .comparison-table tr:hover td { background: var(--bg-raised); }
+    .comparison-table .check { color: var(--green-core); }
+    .comparison-table .cross { color: var(--text-dim); }
+
+    /* ── Flowchart styles ── */
+    .flow-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .flow-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      text-align: center;
+      font-size: 0.88rem;
+      position: relative;
+    }
+    .flow-node.decision {
+      background: rgba(0,255,160,0.06);
+      border-color: var(--green-core);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      padding: 28px 40px;
+      color: var(--green-core);
+      font-weight: 600;
+      font-family: var(--font-display);
+    }
+    .flow-connector {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .flow-line {
+      width: 1px; height: 100%;
+      background: var(--border-mid);
+      margin: 0 auto;
+    }
+    .flow-label {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+    .flow-branches {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .flow-branch { flex: 1; }
+    .flow-branch-label {
+      text-align: center;
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    /* ── RL section ── */
+    .rl-formula {
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      text-align: center;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+    }
+    .rl-formula span { color: var(--green-core); }
+    .rl-formula .var { color: var(--teal-accent); }
+    .rl-formula .lambda { color: var(--amber-warn); }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.svg" alt="GreenInfer Logo" class="nav-logo-icon"/>
+      <span class="nav-logo-text">Green<span>Infer</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="chat.html">Chat</a></li>
+      <li><a href="framework.html" class="active">Framework</a></li>
+      <li><a href="impact.html">Impact</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="chat.html" class="btn btn-primary btn-sm">Launch Chat</a>
+    </div>
+    <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor">
+        <rect y="3" width="22" height="2" rx="1"/>
+        <rect y="10" width="22" height="2" rx="1"/>
+        <rect y="17" width="22" height="2" rx="1"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="fw-hero">
+  <div class="fw-hero-bg"></div>
+  <div class="container">
+    <div class="section-label">Technical Documentation</div>
+    <h1 style="max-width: 700px; margin-bottom: 20px;">
+      Green Orchestration<br/><span class="gradient-text">Framework Architecture</span>
+    </h1>
+    <p style="max-width: 600px; font-size: 1.05rem;">
+      A multi-stage pipeline that combines prompt optimization, complexity analysis, and carbon-aware routing to minimize the energy cost of LLM inference - without sacrificing response quality.
+    </p>
+    <div style="display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;">
+      <span class="badge badge-green">v0.1 Beta</span>
+      <span class="badge badge-teal">Open Source</span>
+      <span class="badge badge-amber">ISM Final Product</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── ARCHITECTURE ── -->
+<section class="section-sm" id="architecture">
+  <div class="container">
+    <div class="section-label">System Design</div>
+    <h2 style="margin-bottom: 8px;">The 7-Layer Pipeline</h2>
+    <p style="margin-bottom: 32px; max-width: 560px;">Each prompt passes through all layers sequentially before a model is invoked.</p>
+
+    <div class="arch-diagram scroll-reveal">
+      <div class="arch-layers">
+        <div class="arch-layer">
+          <span class="layer-number">1</span>
+          <div class="layer-card">
+            <div class="layer-icon">💬</div>
+            <div class="layer-info">
+              <div class="layer-title">User Interface Layer</div>
+              <div class="layer-subtitle">Web-based chat interface with real-time environmental metrics display</div>
+            </div>
+            <div class="layer-badge"><span class="badge badge-teal">Frontend</span></div>
+          </div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer">
+          <span class="layer-number">2</span>
+          <div class="layer-card" id="optimizer">
+            <div class="layer-icon">✂️</div>
+            <div class="layer-info">
+              <div class="layer-title">Prompt Optimization Layer</div>
+              <div class="layer-subtitle">T5-based model compresses tokens 30–50% while preserving semantic meaning - hosted on Hugging Face</div>
+            </div>
+            <div class="layer-badge"><span class="badge badge-green">GreenPromptsOptimizer</span></div>
+          </div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer">
+          <span class="layer-number">3</span>
+          <div class="layer-card">
+            <div class="layer-icon">🧠</div>
+            <div class="layer-info">
+              <div class="layer-title">Task Complexity Analyzer</div>
+              <div class="layer-subtitle">Estimates complexity 0–100 via linguistic entropy, token length, and task classification (factual / reasoning / code / creative)</div>
+            </div>
+            <div class="layer-badge"><span class="badge badge-green">Custom Model</span></div>
+          </div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer">
+          <span class="layer-number">4</span>
+          <div class="layer-card" id="orchestrator">
+            <div class="layer-icon">⚡</div>
+            <div class="layer-info">
+              <div class="layer-title">Sustainability-Aware Orchestrator</div>
+              <div class="layer-subtitle">Core engine: evaluates energy-accuracy tradeoffs and routes to the minimum-viable model tier. Integrates RL policy for adaptive routing.</div>
+            </div>
+            <div class="layer-badge"><span class="badge badge-green">Core</span></div>
+          </div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer">
+          <span class="layer-number">5</span>
+          <div class="layer-card">
+            <div class="layer-icon">🤖</div>
+            <div class="layer-info">
+              <div class="layer-title">Model Pool</div>
+              <div class="layer-subtitle">Dynamic registry of Small / Medium / Large models. Model-agnostic - works with chatbots, code gen, NLP pipelines, and more.</div>
+            </div>
+            <div class="layer-badge"><span class="badge badge-teal">Agnostic</span></div>
+          </div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer">
+          <span class="layer-number">6</span>
+          <div class="layer-card">
+            <div class="layer-icon">🌿</div>
+            <div class="layer-info">
+              <div class="layer-title">Energy & Carbon Estimation Module</div>
+              <div class="layer-subtitle">Calculates energy (FLOPs × token count) and CO₂ emissions (grid intensity × kWh) per inference. Uses CodeCarbon for benchmarking.</div>
+            </div>
+            <div class="layer-badge"><span class="badge badge-green">Metrics</span></div>
+          </div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer">
+          <span class="layer-number">7</span>
+          <div class="layer-card">
+            <div class="layer-icon">📊</div>
+            <div class="layer-info">
+              <div class="layer-title">Feedback & Logging Layer</div>
+              <div class="layer-subtitle">Logs all decisions and metrics. Provides data for RL training, Pareto visualization, and cumulative sustainability reporting.</div>
+            </div>
+            <div class="layer-badge"><span class="badge badge-teal">Analytics</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── DEEP DIVES ── -->
+<section class="section" id="routing">
+  <div class="container">
+    <div class="section-label">Deep Dive</div>
+    <h2 style="margin-bottom: 40px;">Component Specifications</h2>
+    <div class="grid-2" style="gap: 32px;">
+
+      <div class="spec-card scroll-reveal">
+        <div class="spec-card-head">
+          <div class="spec-card-icon">✂️</div>
+          <div>
+            <div class="spec-card-title">Prompt Optimizer</div>
+            <span class="badge badge-green" style="font-size:0.7rem; margin-top:4px;">GreenPromptsOptimizer</span>
+          </div>
+        </div>
+        <div class="spec-card-body">
+          <ul class="spec-list">
+            <li>Fine-tuned T5 encoder-decoder model trained on prompt compression pairs</li>
+            <li>Removes filler words, redundant context, and verbose phrasing</li>
+            <li>Preserves semantic intent - complexity score guards against over-compression</li>
+            <li>Achieves 30–50% token reduction across diverse prompt types</li>
+            <li>Hosted on Hugging Face Hub for API access</li>
+            <li>Input: raw user prompt → Output: optimized prompt + token delta</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="spec-card scroll-reveal">
+        <div class="spec-card-head">
+          <div class="spec-card-icon">🧠</div>
+          <div>
+            <div class="spec-card-title">Complexity Scorer</div>
+            <span class="badge badge-green" style="font-size:0.7rem; margin-top:4px;">Custom Classifier</span>
+          </div>
+        </div>
+        <div class="spec-card-body">
+          <ul class="spec-list">
+            <li>Scores prompts 0–100 based on estimated reasoning demand</li>
+            <li>Features: token length, Shannon entropy, task type, syntactic depth</li>
+            <li>Task classes: factual, summarization, reasoning, coding, creative</li>
+            <li>Prevents over-routing simple queries to expensive models</li>
+            <li>Prevents under-routing complex prompts to models that can't handle them</li>
+            <li>Output feeds directly into the orchestration routing decision</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="spec-card scroll-reveal">
+        <div class="spec-card-head">
+          <div class="spec-card-icon">⚡</div>
+          <div>
+            <div class="spec-card-title">Orchestration Engine</div>
+            <span class="badge badge-green" style="font-size:0.7rem; margin-top:4px;">Core Framework</span>
+          </div>
+        </div>
+        <div class="spec-card-body">
+          <ul class="spec-list">
+            <li>Multi-objective optimization: accuracy, latency, and carbon intensity</li>
+            <li>Three routing modes: Eco (minimize energy), Balanced (default), Performance</li>
+            <li>Carbon-aware: integrates real-time ERCOT grid carbon intensity data</li>
+            <li>Carbon budget enforcement: per-session CO₂ quota (default 5g)</li>
+            <li>Adaptive thresholds informed by empirical energy-performance benchmarking</li>
+            <li>Model-agnostic: integrates any model via standard API or local inference</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="spec-card scroll-reveal" id="rl">
+        <div class="spec-card-head">
+          <div class="spec-card-icon">🔄</div>
+          <div>
+            <div class="spec-card-title">Reinforcement Learning Router</div>
+            <span class="badge badge-teal" style="font-size:0.7rem; margin-top:4px;">Adaptive</span>
+          </div>
+        </div>
+        <div class="spec-card-body">
+          <ul class="spec-list">
+            <li>Policy gradient agent learns optimal routing from historical data</li>
+            <li>State: complexity score, task type, grid intensity, session budget</li>
+            <li>Action: select model tier (small / medium / large)</li>
+            <li>Continuously improves as usage data accumulates</li>
+            <li>Replaces static threshold routing over time for better decisions</li>
+          </ul>
+          <div class="rl-formula" style="margin-top:16px; font-size:0.9rem; padding:14px;">
+            <span>reward</span> = <span class="var">accuracy</span> − <span class="lambda">λ</span> × <span class="var">energy</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── COMPARISON ── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="section-label">Comparison</div>
+    <h2 style="margin-bottom: 32px;">GreenInfer vs Standard LLM APIs</h2>
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;" class="scroll-reveal">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>GreenInfer</th>
+            <th>Standard API (e.g. ChatGPT)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Energy transparency</td>
+            <td class="check">✓ Per-inference metrics shown</td>
+            <td class="cross">✗ Hidden</td>
+          </tr>
+          <tr>
+            <td>Prompt optimization</td>
+            <td class="check">✓ 30–50% token reduction</td>
+            <td class="cross">✗ None</td>
+          </tr>
+          <tr>
+            <td>Model routing</td>
+            <td class="check">✓ Complexity-based tiering</td>
+            <td class="cross">✗ Always same model</td>
+          </tr>
+          <tr>
+            <td>Carbon-aware routing</td>
+            <td class="check">✓ Real-time grid data</td>
+            <td class="cross">✗ None</td>
+          </tr>
+          <tr>
+            <td>Carbon budget control</td>
+            <td class="check">✓ Per-session quota</td>
+            <td class="cross">✗ None</td>
+          </tr>
+          <tr>
+            <td>Open source</td>
+            <td class="check">✓ Framework is open</td>
+            <td class="cross">✗ Closed</td>
+          </tr>
+          <tr>
+            <td>Reinforcement learning</td>
+            <td class="check">✓ Adaptive routing policy</td>
+            <td class="cross">✗ Static</td>
+          </tr>
+          <tr>
+            <td>Model-agnostic</td>
+            <td class="check">✓ Any LLM, any task type</td>
+            <td class="cross">✗ Vendor-locked</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ── ENERGY MODEL ── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="grid-2" style="gap:48px; align-items:start;">
+      <div>
+        <div class="section-label">Energy Modeling</div>
+        <h2 style="margin-bottom:16px;">How we estimate emissions</h2>
+        <p style="margin-bottom:20px;">Energy is estimated using a combination of token-based proxy metrics and runtime GPU utilization measurements. CO₂ is calculated using real-time grid carbon intensity.</p>
+        <ul class="spec-list" style="list-style:none;">
+          <li style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; gap:10px; font-size:0.88rem; color:var(--text-secondary);">
+            <span style="color:var(--green-core);">→</span> Energy ≈ FLOPs × token_count × model_efficiency_factor
+          </li>
+          <li style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; gap:10px; font-size:0.88rem; color:var(--text-secondary);">
+            <span style="color:var(--green-core);">→</span> CO₂ = Energy(kWh) × grid_intensity(gCO₂/kWh)
+          </li>
+          <li style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; gap:10px; font-size:0.88rem; color:var(--text-secondary);">
+            <span style="color:var(--green-core);">→</span> ERCOT average: ~200 gCO₂/kWh (varies by time of day)
+          </li>
+          <li style="padding:10px 0; display:flex; gap:10px; font-size:0.88rem; color:var(--text-secondary);">
+            <span style="color:var(--green-core);">→</span> CodeCarbon library used for empirical GPU benchmarking
+          </li>
+        </ul>
+      </div>
+      <div>
+        <div class="code-block scroll-reveal">
+          <div class="code-block-header">
+            <span>energy_estimator.py</span>
+            <span class="badge badge-green" style="font-size:0.65rem;">Framework Module</span>
+          </div>
+          <pre><code><span class="cm"># Energy estimation module</span>
+<span class="kw">def</span> <span class="fn">estimate_energy</span>(tokens, model_tier, grid_intensity):
+    <span class="str">"""
+    Estimate energy and CO2 for an inference call.
+    tokens: optimized token count
+    model_tier: 'small' | 'medium' | 'large'
+    grid_intensity: gCO2/kWh (from ERCOT API)
+    """</span>
+    ENERGY_COEFFICIENTS = {
+        <span class="str">'small'</span>:  <span class="num">4e-5</span>,   <span class="cm"># Wh per token</span>
+        <span class="str">'medium'</span>: <span class="num">1.8e-4</span>,
+        <span class="str">'large'</span>:  <span class="num">9.5e-4</span>,
+    }
+    energy_wh = tokens * ENERGY_COEFFICIENTS[model_tier]
+    energy_kwh = energy_wh / <span class="num">1000</span>
+    co2_grams = energy_kwh * grid_intensity
+
+    <span class="kw">return</span> {
+        <span class="str">'energy_wh'</span>:  energy_wh,
+        <span class="str">'co2_grams'</span>: co2_grams,
+        <span class="str">'savings_vs_large'</span>: <span class="fn">calc_savings</span>(tokens, model_tier),
+    }</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="margin-bottom:12px; display:inline-flex;">
+          <img src="logo.svg" alt="GreenInfer" class="nav-logo-icon"/>
+          <span class="nav-logo-text">Green<span>Infer</span></span>
+        </a>
+        <p>A Green Orchestration Framework for energy-efficient LLM inference.</p>
+        <div style="margin-top:16px;"><span class="badge badge-green">Open Source</span></div>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="chat.html">Chat Interface</a>
+        <a href="framework.html">Framework</a>
+        <a href="impact.html">Impact Stats</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="footer-col">
+        <h4>Framework</h4>
+        <a href="#optimizer">Prompt Optimizer</a>
+        <a href="#orchestrator">Orchestrator</a>
+        <a href="#routing">Carbon Routing</a>
+        <a href="#rl">RL Policy</a>
+      </div>
+      <div class="footer-col">
+        <h4>Research</h4>
+        <a href="about.html#mentor">Mentor</a>
+        <a href="about.html#background">Background</a>
+        <a href="about.html#papers">References</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 GreenInfer - Srinesh Toranala · ISM Final Product</span>
+      <span class="live-badge">Framework v0.1 · Beta</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   GreenInfer - Shared JS
+   ============================================================ */
+
+// ── Nav active state ──
+function setActiveNav() {
+  const path = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href === path || (path === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+}
+
+// ── Mobile nav toggle ──
+function initMobileNav() {
+  const toggle = document.getElementById('nav-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (!toggle) return;
+  toggle.addEventListener('click', () => {
+    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    navLinks.style.flexDirection = 'column';
+    navLinks.style.position = 'absolute';
+    navLinks.style.top = '64px';
+    navLinks.style.left = '0';
+    navLinks.style.right = '0';
+    navLinks.style.background = 'rgba(8,13,14,0.98)';
+    navLinks.style.padding = '16px';
+    navLinks.style.borderBottom = '1px solid rgba(0,255,160,0.1)';
+  });
+}
+
+// ── Animate on scroll ──
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.scroll-reveal').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+}
+
+// ── Counter animation ──
+function animateCounter(el, target, duration = 1800, suffix = '') {
+  const start = performance.now();
+  const isFloat = target % 1 !== 0;
+  const update = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const val = ease * target;
+    el.textContent = (isFloat ? val.toFixed(1) : Math.floor(val).toLocaleString()) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+function initCounters() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        animateCounter(el, target, 1800, suffix);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.counter').forEach(el => observer.observe(el));
+}
+
+// ── Carbon mode indicator ──
+const GRID_INTENSITY = {
+  eco: { label: 'Grid: Clean', color: '#00ffa0', bar: 18 },
+  moderate: { label: 'Grid: Moderate', color: '#f5a623', bar: 52 },
+  high: { label: 'Grid: Heavy', color: '#ff4d6d', bar: 88 }
+};
+
+function setGridMode(mode) {
+  const data = GRID_INTENSITY[mode];
+  const indicator = document.getElementById('grid-indicator');
+  const bar = document.getElementById('grid-bar');
+  if (indicator) {
+    indicator.textContent = data.label;
+    indicator.style.color = data.color;
+  }
+  if (bar) {
+    bar.style.width = data.bar + '%';
+    bar.style.background = data.color;
+  }
+}
+
+// ── Tooltip ──
+function initTooltips() {
+  document.querySelectorAll('[data-tooltip]').forEach(el => {
+    const tip = document.createElement('div');
+    tip.className = 'tooltip';
+    tip.textContent = el.dataset.tooltip;
+    tip.style.cssText = `
+      position:absolute; background:#1a272b; color:#e8f5f0;
+      font-size:0.78rem; font-family:var(--font-mono);
+      padding:6px 10px; border-radius:6px; white-space:nowrap;
+      border:1px solid rgba(0,255,160,0.2); z-index:100;
+      pointer-events:none; opacity:0; transition:opacity 0.15s;
+    `;
+    document.body.appendChild(tip);
+    el.addEventListener('mouseenter', (ev) => {
+      const r = el.getBoundingClientRect();
+      tip.style.left = r.left + 'px';
+      tip.style.top = (r.top - 36 + window.scrollY) + 'px';
+      tip.style.opacity = '1';
+    });
+    el.addEventListener('mouseleave', () => { tip.style.opacity = '0'; });
+  });
+}
+
+// ── Energy formatter ──
+function formatEnergy(wh) {
+  if (wh < 1) return (wh * 1000).toFixed(2) + ' mWh';
+  return wh.toFixed(3) + ' Wh';
+}
+function formatCO2(g) {
+  if (g < 1) return (g * 1000).toFixed(2) + ' mg';
+  return g.toFixed(3) + ' g CO₂';
+}
+
+// ── Init all ──
+document.addEventListener('DOMContentLoaded', () => {
+  setActiveNav();
+  initMobileNav();
+  initScrollAnimations();
+  initCounters();
+  initTooltips();
+});
+
+</script>
+</body>
+</html>
