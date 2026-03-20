@@ -16,7 +16,7 @@ Output:
 import json
 import os
 import random
-from complexity_scorer import score_prompt   # uses rule-based scorer to auto-label
+from greeninfer.complexity_scorer import score_prompt
 
 random.seed(42)
 

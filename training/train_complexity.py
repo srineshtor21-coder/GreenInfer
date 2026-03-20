@@ -32,8 +32,8 @@ from transformers import (
     DistilBertTokenizer,
     DistilBertForSequenceClassification,
     get_linear_schedule_with_warmup,
-    AdamW,
 )
+from torch.optim import AdamW
 from sklearn.metrics import mean_absolute_error, r2_score
 import numpy as np
 
