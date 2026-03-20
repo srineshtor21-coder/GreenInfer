@@ -22,8 +22,6 @@ Usage:
 import json
 import os
 import random
-from dataclasses import dataclass
-from typing import Optional
 
 import torch
 from torch import nn
@@ -34,8 +32,6 @@ from transformers import (
     get_linear_schedule_with_warmup,
 )
 from torch.optim import AdamW
-from sklearn.metrics import mean_absolute_error, r2_score
-import numpy as np
 
 # ── Config ──────────────────────────────────────────────────────────────────
 
