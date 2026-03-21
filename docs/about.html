@@ -6,679 +6,120 @@
   <title>GreenInfer - About the Project</title>
   <meta name="description" content="About GreenInfer - an ISM final product by Srinesh Toranala building a green orchestration framework for sustainable AI."/>
   <style>
-/* ============================================================
-   GreenInfer - Global Styles
-   Aesthetic: Dark biomorphic tech - deep forest meets silicon
-   ============================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+:root{--bg-void:#080d0e;--bg-deep:#0b1214;--bg-surface:#111c1e;--bg-raised:#172226;--bg-card:#1a272b;--border:rgba(0,255,160,0.08);--border-mid:rgba(0,255,160,0.18);--border-bright:rgba(0,255,160,0.4);--green-core:#00ffa0;--green-soft:#00d484;--green-muted:#009b62;--green-dim:rgba(0,255,160,0.12);--green-glow:rgba(0,255,160,0.06);--teal-accent:#00e5cc;--amber-warn:#f5a623;--red-alert:#ff4d6d;--text-primary:#e8f5f0;--text-secondary:#8ab5a8;--text-muted:#4a7068;--text-dim:#2a4540;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'JetBrains Mono',monospace;--radius-sm:6px;--radius-md:12px;--radius-lg:20px;--radius-xl:32px;--nav-height:64px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg-void);color:var(--text-primary);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.light{--bg-void:#f0f7f4;--bg-deep:#e4f0eb;--bg-surface:#d8ece3;--bg-raised:#cce4d8;--bg-card:#c0dccb;--border:rgba(0,120,80,0.12);--border-mid:rgba(0,120,80,0.22);--text-primary:#0a1f18;--text-secondary:#2a5a45;--text-muted:#4a8a6a;--text-dim:#7ab89a}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg-deep)}
+::-webkit-scrollbar-thumb{background:var(--green-muted);border-radius:3px}
+::selection{background:rgba(0,255,160,0.2);color:var(--green-core)}
+h1,h2,h3,h4,h5{font-family:var(--font-display);font-weight:700;line-height:1.15}
+h1{font-size:clamp(2.4rem,5vw,4.2rem);font-weight:800}
+h2{font-size:clamp(1.6rem,3vw,2.6rem)}
+h3{font-size:clamp(1.1rem,2vw,1.5rem);font-weight:600}
+p{color:var(--text-secondary);line-height:1.75}
+a{color:var(--green-core);text-decoration:none}
+a:hover{color:var(--teal-accent)}
+code,pre{font-family:var(--font-mono)}
+.mono{font-family:var(--font-mono)}
+.green{color:var(--green-core)}
+.teal{color:var(--teal-accent)}
+.muted{color:var(--text-muted)}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:var(--radius-xl);font-family:var(--font-body);font-weight:500;font-size:0.95rem;cursor:pointer;border:none;transition:all 0.2s ease;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--green-core);color:#080d0e;box-shadow:0 0 20px rgba(0,255,160,0.3)}
+.btn-primary:hover{background:#1fffb0;color:#080d0e;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--text-primary);border:1px solid var(--border-mid)}
+.btn-ghost:hover{border-color:var(--green-core);color:var(--green-core);background:var(--green-dim)}
+.btn-sm{padding:8px 18px;font-size:0.85rem}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:border-color 0.2s,box-shadow 0.2s}
+.card:hover{border-color:var(--border-mid)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:var(--radius-xl);font-size:0.75rem;font-weight:500;font-family:var(--font-mono);letter-spacing:0.05em}
+.badge-green{background:rgba(0,255,160,0.1);color:var(--green-core);border:1px solid rgba(0,255,160,0.2)}
+.badge-teal{background:rgba(0,229,204,0.1);color:var(--teal-accent);border:1px solid rgba(0,229,204,0.2)}
+.badge-amber{background:rgba(245,166,35,0.1);color:var(--amber-warn);border:1px solid rgba(245,166,35,0.2)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-mid),transparent);margin:48px 0}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--green-core);animation:pulse-dot 1.6s ease-in-out infinite;display:inline-block}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.72rem;color:var(--green-core);letter-spacing:0.08em}
+.live-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-core);box-shadow:0 0 8px var(--green-core);animation:pulse-dot 1.4s ease-in-out infinite}
+.tag{display:inline-block;padding:3px 10px;border-radius:var(--radius-sm);background:var(--bg-raised);color:var(--text-secondary);font-size:0.78rem;font-family:var(--font-mono);border:1px solid var(--border)}
+.gradient-text{background:linear-gradient(135deg,var(--green-core) 0%,var(--teal-accent) 60%,#a8ffec 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-height);background:rgba(8,13,14,0.85);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);display:flex;align-items:center;transition:background 0.3s}
+body.light .nav{background:rgba(240,247,244,0.9)}
+.nav-inner{width:100%;max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.nav-logo-icon{width:36px;height:36px;flex-shrink:0}
+.nav-logo-text{font-family:var(--font-display);font-weight:800;font-size:1.25rem;color:var(--text-primary);letter-spacing:-0.02em}
+.nav-logo-text span{color:var(--green-core)}
+.nav-links{display:flex;align-items:center;gap:4px;list-style:none}
+.nav-links a{padding:6px 14px;border-radius:var(--radius-md);color:var(--text-secondary);font-size:0.9rem;font-weight:400;transition:all 0.15s}
+.nav-links a:hover,.nav-links a.active{background:var(--green-dim);color:var(--green-core)}
+.nav-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.theme-toggle{background:none;border:1px solid var(--border-mid);color:var(--text-secondary);cursor:pointer;padding:6px 10px;border-radius:var(--radius-md);font-size:0.85rem;transition:all 0.15s;display:flex;align-items:center;gap:6px}
+.theme-toggle:hover{border-color:var(--green-core);color:var(--green-core)}
+.nav-mobile-toggle{display:none;background:none;border:none;color:var(--text-primary);cursor:pointer;padding:8px}
+.footer{border-top:1px solid var(--border);padding:48px 0 32px;margin-top:80px}
+.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px}
+.footer-brand p{font-size:0.9rem;margin-top:12px;max-width:260px}
+.footer-col h4{font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;font-family:var(--font-mono)}
+.footer-col a{display:block;color:var(--text-secondary);font-size:0.9rem;margin-bottom:8px;transition:color 0.15s}
+.footer-col a:hover{color:var(--green-core)}
+.footer-bottom{margin-top:40px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:var(--text-muted)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.animate-fadeUp{animation:fadeUp 0.6s ease forwards}
+.delay-1{animation-delay:0.1s;opacity:0}
+.delay-2{animation-delay:0.2s;opacity:0}
+.delay-3{animation-delay:0.3s;opacity:0}
+.section{padding:96px 0}
+.section-sm{padding:64px 0}
+.section-label{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green-core);margin-bottom:16px}
+.section-label::before{content:'';width:20px;height:1px;background:var(--green-core)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 
-/* ── Variables ── */
-:root {
-  --bg-void:       #080d0e;
-  --bg-deep:       #0b1214;
-  --bg-surface:    #111c1e;
-  --bg-raised:     #172226;
-  --bg-card:       #1a272b;
-  --border:        rgba(0, 255, 160, 0.08);
-  --border-mid:    rgba(0, 255, 160, 0.18);
-  --border-bright: rgba(0, 255, 160, 0.4);
-
-  --green-core:    #00ffa0;
-  --green-soft:    #00d484;
-  --green-muted:   #009b62;
-  --green-dim:     rgba(0, 255, 160, 0.12);
-  --green-glow:    rgba(0, 255, 160, 0.06);
-
-  --teal-accent:   #00e5cc;
-  --amber-warn:    #f5a623;
-  --red-alert:     #ff4d6d;
-
-  --text-primary:  #e8f5f0;
-  --text-secondary:#8ab5a8;
-  --text-muted:    #4a7068;
-  --text-dim:      #2a4540;
-
-  --font-display:  'Syne', sans-serif;
-  --font-body:     'DM Sans', sans-serif;
-  --font-mono:     'JetBrains Mono', monospace;
-
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 32px;
-
-  --shadow-card:   0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
-  --shadow-glow:   0 0 40px rgba(0,255,160,0.12);
-  --shadow-deep:   0 8px 48px rgba(0,0,0,0.6);
-
-  --nav-height: 64px;
-  --sidebar-width: 260px;
-}
-
-/* ── Reset ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-body);
-  background: var(--bg-void);
-  color: var(--text-primary);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-deep); }
-::-webkit-scrollbar-thumb { background: var(--green-muted); border-radius: 3px; }
-
-/* ── Selection ── */
-::selection { background: rgba(0,255,160,0.2); color: var(--green-core); }
-
-/* ── Typography ── */
-h1,h2,h3,h4,h5 { font-family: var(--font-display); font-weight: 700; line-height: 1.15; }
-h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 800; }
-h2 { font-size: clamp(1.6rem, 3vw, 2.6rem); }
-h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; }
-p  { color: var(--text-secondary); line-height: 1.75; }
-a  { color: var(--green-core); text-decoration: none; }
-a:hover { color: var(--teal-accent); }
-code, pre { font-family: var(--font-mono); }
-
-/* ── Utility ── */
-.mono { font-family: var(--font-mono); }
-.green { color: var(--green-core); }
-.teal  { color: var(--teal-accent); }
-.muted { color: var(--text-muted); }
-.dim   { color: var(--text-dim); }
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
-  border-radius: var(--radius-xl);
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 0.95rem;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.btn-primary {
-  background: var(--green-core);
-  color: #080d0e;
-  box-shadow: 0 0 20px rgba(0,255,160,0.3);
-}
-.btn-primary:hover {
-  background: #1fffb0;
-  color: #080d0e;
-  box-shadow: 0 0 32px rgba(0,255,160,0.5);
-  transform: translateY(-1px);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-mid);
-}
-.btn-ghost:hover {
-  border-color: var(--green-core);
-  color: var(--green-core);
-  background: var(--green-dim);
-}
-
-.btn-sm {
-  padding: 8px 18px;
-  font-size: 0.85rem;
-}
-
-/* ── Card ── */
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  box-shadow: var(--shadow-card);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.card:hover {
-  border-color: var(--border-mid);
-  box-shadow: var(--shadow-card), var(--shadow-glow);
-}
-
-/* ── Badge ── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: var(--radius-xl);
-  font-size: 0.75rem;
-  font-weight: 500;
-  font-family: var(--font-mono);
-  letter-spacing: 0.05em;
-}
-.badge-green {
-  background: rgba(0,255,160,0.1);
-  color: var(--green-core);
-  border: 1px solid rgba(0,255,160,0.2);
-}
-.badge-teal {
-  background: rgba(0,229,204,0.1);
-  color: var(--teal-accent);
-  border: 1px solid rgba(0,229,204,0.2);
-}
-.badge-amber {
-  background: rgba(245,166,35,0.1);
-  color: var(--amber-warn);
-  border: 1px solid rgba(245,166,35,0.2);
-}
-
-/* ── Divider ── */
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-mid), transparent);
-  margin: 48px 0;
-}
-
-/* ── Dot pulse animation ── */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.7); }
-}
-.pulse-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--green-core);
-  animation: pulse-dot 1.6s ease-in-out infinite;
-  display: inline-block;
-}
-
-/* ── Glow ring ── */
-.glow-ring {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(60px);
-  opacity: 0.15;
-}
-
-/* ── NAV ── */
-.nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-  height: var(--nav-height);
-  background: rgba(8,13,14,0.85);
-  backdrop-filter: blur(20px) saturate(1.4);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-}
-
-.nav-inner {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  flex-shrink: 0;
-}
-
-.nav-logo-icon {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-}
-
-.nav-logo-text {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.25rem;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-}
-.nav-logo-text span { color: var(--green-core); }
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  list-style: none;
-}
-.nav-links a {
-  padding: 6px 14px;
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 400;
-  transition: all 0.15s;
-}
-.nav-links a:hover, .nav-links a.active {
-  background: var(--green-dim);
-  color: var(--green-core);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.nav-mobile-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: var(--text-primary);
-  cursor: pointer;
-  padding: 8px;
-}
-
-/* ── Footer ── */
-.footer {
-  border-top: 1px solid var(--border);
-  padding: 48px 0 32px;
-  margin-top: 80px;
-}
-.footer-inner {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 48px;
-}
-.footer-brand p {
-  font-size: 0.9rem;
-  margin-top: 12px;
-  max-width: 260px;
-}
-.footer-col h4 {
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-  font-family: var(--font-mono);
-}
-.footer-col a {
-  display: block;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: 8px;
-  transition: color 0.15s;
-}
-.footer-col a:hover { color: var(--green-core); }
-.footer-bottom {
-  margin-top: 40px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-/* ── Animations ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes slideRight {
-  from { opacity: 0; transform: translateX(-16px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes floatY {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-8px); }
-}
-@keyframes rotate-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-@keyframes scanline {
-  0%   { top: -4px; }
-  100% { top: 100%; }
-}
-
-.animate-fadeUp { animation: fadeUp 0.6s ease forwards; }
-.animate-fadeIn { animation: fadeIn 0.4s ease forwards; }
-.delay-1 { animation-delay: 0.1s; opacity: 0; }
-.delay-2 { animation-delay: 0.2s; opacity: 0; }
-.delay-3 { animation-delay: 0.3s; opacity: 0; }
-.delay-4 { animation-delay: 0.4s; opacity: 0; }
-.delay-5 { animation-delay: 0.5s; opacity: 0; }
-.delay-6 { animation-delay: 0.6s; opacity: 0; }
-
-/* ── Section spacing ── */
-.section { padding: 96px 0; }
-.section-sm { padding: 64px 0; }
-
-.section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--green-core);
-  margin-bottom: 16px;
-}
-.section-label::before {
-  content: '';
-  width: 20px; height: 1px;
-  background: var(--green-core);
-}
-
-/* ── Grid layouts ── */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-
-/* ── Stat card ── */
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px 24px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--green-core), transparent);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.stat-card:hover::before { opacity: 1; }
-.stat-card:hover {
-  border-color: var(--border-mid);
-  transform: translateY(-2px);
-}
-.stat-value {
-  font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--green-core);
-  line-height: 1;
-  margin-bottom: 8px;
-}
-.stat-label {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-/* ── Live indicator ── */
-.live-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--green-core);
-  letter-spacing: 0.08em;
-}
-.live-badge::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--green-core);
-  box-shadow: 0 0 8px var(--green-core);
-  animation: pulse-dot 1.4s ease-in-out infinite;
-}
-
-/* ── Tags ── */
-.tag {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-raised);
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-  font-family: var(--font-mono);
-  border: 1px solid var(--border);
-}
-
-/* ── Gradient text ── */
-.gradient-text {
-  background: linear-gradient(135deg, var(--green-core) 0%, var(--teal-accent) 60%, #a8ffec 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ── Noise texture overlay ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.4;
-}
-
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-  .grid-4 { grid-template-columns: repeat(2, 1fr); }
-  .footer-inner { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 768px) {
-  .nav-links { display: none; }
-  .nav-mobile-toggle { display: flex; }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
-  .grid-4 { grid-template-columns: 1fr 1fr; }
-  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
-  .section { padding: 64px 0; }
-}
-@media (max-width: 480px) {
-  .grid-4 { grid-template-columns: 1fr; }
-  .container { padding: 0 16px; }
-}
-
-</style>
-  <style>
-    .about-hero {
-      padding: calc(var(--nav-height) + 72px) 0 64px;
-      position: relative;
-    }
-    .about-hero-bg {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 50% 60% at 20% 40%, rgba(0,255,160,0.04), transparent);
-      pointer-events: none;
-    }
-
-    /* ── Timeline ── */
-    .timeline {
-      position: relative;
-      padding-left: 32px;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 7px; top: 8px; bottom: 0;
-      width: 2px;
-      background: linear-gradient(180deg, var(--green-core), var(--border) 80%, transparent);
-    }
-    .timeline-item {
-      position: relative;
-      margin-bottom: 40px;
-    }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -28px; top: 6px;
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      background: var(--bg-void);
-      border: 2px solid var(--green-core);
-      box-shadow: 0 0 12px rgba(0,255,160,0.3);
-    }
-    .timeline-item.done::before { background: var(--green-core); }
-    .timeline-date {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--green-core);
-      letter-spacing: 0.06em;
-      margin-bottom: 6px;
-    }
-    .timeline-title {
-      font-family: var(--font-display);
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-    }
-    .timeline-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-    }
-
-    /* ── Person card ── */
-    .person-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 36px;
-      display: flex;
-      gap: 28px;
-      align-items: flex-start;
-    }
-    .person-avatar {
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      background: var(--green-dim);
-      border: 2px solid var(--border-mid);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      flex-shrink: 0;
-    }
-    .person-name {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.2rem;
-      margin-bottom: 4px;
-    }
-    .person-role {
-      font-size: 0.85rem;
-      color: var(--green-core);
-      font-family: var(--font-mono);
-      margin-bottom: 12px;
-    }
-    .person-bio { font-size: 0.88rem; line-height: 1.7; }
-
-    /* ── ISM badge grid ── */
-    .ism-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-    .ism-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      text-align: center;
-      transition: all 0.2s;
-    }
-    .ism-card:hover {
-      border-color: var(--border-mid);
-      transform: translateY(-2px);
-    }
-    .ism-icon { font-size: 1.8rem; margin-bottom: 10px; }
-    .ism-title { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; }
-    .ism-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
-
-    /* ── References ── */
-    .ref-item {
-      padding: 16px 20px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      margin-bottom: 10px;
-      transition: border-color 0.15s;
-    }
-    .ref-item:hover { border-color: var(--border-mid); }
-    .ref-title { font-size: 0.88rem; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
-    .ref-meta { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
-
-    /* ── What's built section ── */
-    .built-table { width:100%; border-collapse:collapse; }
-    .built-table th {
-      padding:10px 14px;
-      text-align:left;
-      font-family:var(--font-mono);
-      font-size:0.7rem;
-      letter-spacing:0.08em;
-      text-transform:uppercase;
-      color:var(--text-muted);
-      border-bottom:1px solid var(--border);
-    }
-    .built-table td {
-      padding:12px 14px;
-      font-size:0.85rem;
-      color:var(--text-secondary);
-      border-bottom:1px solid var(--border);
-      vertical-align:top;
-    }
-    .built-table tr:last-child td { border-bottom:none; }
-    .built-table .status-done  { color:var(--green-core); font-family:var(--font-mono); font-size:0.78rem; }
-    .built-table .status-wip   { color:var(--amber-warn); font-family:var(--font-mono); font-size:0.78rem; }
-    .built-table .status-next  { color:var(--text-dim);   font-family:var(--font-mono); font-size:0.78rem; }
-
-    @media (max-width: 768px) {
-      .person-card { flex-direction:column; }
-      .ism-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 480px) {
-      .ism-grid { grid-template-columns: 1fr; }
-    }
+/* Page-specific */
+.about-hero{padding:calc(var(--nav-height) + 72px) 0 64px;position:relative}
+.about-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 40%,rgba(0,255,160,0.04),transparent);pointer-events:none}
+.person-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:36px;display:flex;gap:28px;align-items:flex-start;transition:border-color 0.2s}
+.person-card:hover{border-color:var(--border-mid)}
+.person-avatar{width:72px;height:72px;border-radius:50%;background:var(--green-dim);border:2px solid var(--border-mid);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
+.person-name{font-family:var(--font-display);font-weight:700;font-size:1.2rem;margin-bottom:4px}
+.person-role{font-size:0.85rem;color:var(--green-core);font-family:var(--font-mono);margin-bottom:12px}
+.person-bio{font-size:0.88rem;line-height:1.7;color:var(--text-secondary)}
+.ism-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.ism-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;text-align:center;transition:all 0.2s}
+.ism-card:hover{border-color:var(--border-mid);transform:translateY(-2px)}
+.ism-icon{font-size:1.8rem;margin-bottom:10px}
+.ism-title{font-family:var(--font-display);font-weight:600;font-size:0.9rem;margin-bottom:6px}
+.ism-desc{font-size:0.78rem;color:var(--text-muted);line-height:1.5}
+.ref-item{padding:16px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:10px;transition:all 0.15s}
+.ref-item:hover{border-color:var(--border-mid);transform:translateX(4px)}
+.ref-title{font-size:0.88rem;font-weight:500;color:var(--text-primary);margin-bottom:4px}
+.ref-meta{font-size:0.75rem;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px}
+.ref-link{font-size:0.75rem;color:var(--green-core);font-family:var(--font-mono);word-break:break-all}
+.ref-link:hover{color:var(--teal-accent)}
+.built-table{width:100%;border-collapse:collapse}
+.built-table th{padding:10px 14px;text-align:left;font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border)}
+.built-table td{padding:12px 14px;font-size:0.85rem;color:var(--text-secondary);border-bottom:1px solid var(--border);vertical-align:top}
+.built-table tr:last-child td{border-bottom:none}
+.built-table tr:hover td{background:rgba(0,255,160,0.02)}
+.status-done{color:var(--green-core);font-family:var(--font-mono);font-size:0.78rem}
+.status-wip{color:var(--amber-warn);font-family:var(--font-mono);font-size:0.78rem}
+.status-next{color:var(--text-dim);font-family:var(--font-mono);font-size:0.78rem}
+.scroll-reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+.scroll-reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:768px){.footer-inner{grid-template-columns:1fr;gap:32px}.footer-bottom{flex-direction:column;gap:8px;text-align:center}.grid-2,.grid-3{grid-template-columns:1fr}.ism-grid{grid-template-columns:1fr 1fr}.person-card{flex-direction:column}.nav-links{display:none}.nav-mobile-toggle{display:flex}}
+@media(max-width:480px){.ism-grid{grid-template-columns:1fr}.container{padding:0 16px}}
   </style>
 </head>
 <body>
 
-<!-- ── NAV ── -->
 <nav class="nav">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
@@ -693,30 +134,22 @@ body::before {
       <li><a href="about.html" class="active">About</a></li>
     </ul>
     <div class="nav-actions">
+      <button class="theme-toggle" id="theme-btn" aria-label="Toggle light mode">☀️ Light</button>
       <a href="chat.html" class="btn btn-primary btn-sm">Launch Chat</a>
     </div>
     <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle menu">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor">
-        <rect y="3" width="22" height="2" rx="1"/>
-        <rect y="10" width="22" height="2" rx="1"/>
-        <rect y="17" width="22" height="2" rx="1"/>
-      </svg>
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor"><rect y="3" width="22" height="2" rx="1"/><rect y="10" width="22" height="2" rx="1"/><rect y="17" width="22" height="2" rx="1"/></svg>
     </button>
   </div>
 </nav>
 
-<!-- ── HERO ── -->
 <section class="about-hero">
   <div class="about-hero-bg"></div>
   <div class="container">
-    <div class="section-label">Independent Study & Mentorship</div>
-    <h1 style="max-width:640px; margin-bottom:20px;">
-      About<br/><span class="gradient-text">GreenInfer</span>
-    </h1>
-    <p style="max-width:580px; font-size:1.05rem; margin-bottom:28px;">
-      A research-backed, open-source Green Orchestration Framework for sustainable AI inference - built as an ISM Final Product, proving that AI doesn't have to cost the planet.
-    </p>
-    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+    <div class="section-label">Independent Study &amp; Mentorship</div>
+    <h1 class="animate-fadeUp" style="max-width:640px;margin-bottom:20px;">About<br/><span class="gradient-text">GreenInfer</span></h1>
+    <p class="animate-fadeUp delay-1" style="max-width:580px;font-size:1.05rem;margin-bottom:28px;">A research-backed, open-source Green Orchestration Framework for sustainable AI inference. Built as an ISM Final Product to show that AI efficiency and environmental responsibility can go hand in hand.</p>
+    <div class="animate-fadeUp delay-2" style="display:flex;gap:12px;flex-wrap:wrap;">
       <span class="badge badge-green">ISM Final Product</span>
       <span class="badge badge-teal">Frisco ISD</span>
       <span class="badge badge-amber">Green AI Research</span>
@@ -726,23 +159,22 @@ body::before {
 
 <div class="container"><div class="divider"></div></div>
 
-<!-- ── THE PROBLEM ── -->
 <section class="section-sm" id="background">
   <div class="container">
-    <div class="grid-2" style="gap:48px; align-items:start;">
+    <div class="grid-2" style="gap:48px;align-items:start;">
       <div>
         <div class="section-label">The Problem</div>
         <h2 style="margin-bottom:16px;">AI's hidden energy cost</h2>
-        <p style="margin-bottom:16px;">Training and running large language models consumes enormous amounts of electricity. A single ChatGPT query uses roughly 10× the energy of a Google search - and the gap is growing as models get larger and usage explodes.</p>
-        <p style="margin-bottom:16px;">The core inefficiency: every query - from "hi" to "write me a PhD thesis" - gets routed to the same massive model. There's no intelligence in the routing. No awareness of energy cost. No optimization.</p>
-        <p>GreenInfer addresses this at the infrastructure level, before a single GPU cycle is burned.</p>
+        <p style="margin-bottom:16px;">Training and running large language models consumes enormous amounts of electricity. A single ChatGPT query uses roughly 10x the energy of a Google search, and the gap keeps growing as models get larger and usage scales globally.</p>
+        <p style="margin-bottom:16px;">The core inefficiency is that every query, whether "hi" or "design a distributed system," gets routed to the same massive model. There is no intelligence in the routing, no awareness of energy cost, and no attempt at optimization.</p>
+        <p>GreenInfer tackles this at the infrastructure level, before a single GPU cycle is burned on inference.</p>
       </div>
       <div>
         <div class="section-label">The Opportunity</div>
         <h2 style="margin-bottom:16px;">70%+ savings available today</h2>
-        <p style="margin-bottom:16px;">Research shows that 60–70% of real-world AI queries are simple enough to be handled by small, efficient models - if the routing decision is made correctly.</p>
-        <p style="margin-bottom:16px;">Combining smart routing with prompt optimization (reducing wasted tokens before inference) and carbon-aware scheduling creates a compounding effect: savings from every component stack.</p>
-        <p>This isn't a future solution. The models, tools, and APIs exist today. GreenInfer integrates them into a unified framework anyone can use.</p>
+        <p style="margin-bottom:16px;">Research shows that 60 to 70 percent of real-world AI queries are simple enough to be handled by small, efficient models, if the routing decision is made correctly. Papers like FrugalGPT and the cascading LLM literature back this up with empirical results.</p>
+        <p style="margin-bottom:16px;">Combining smart routing with prompt optimization and carbon-aware scheduling creates a compounding effect where savings from each layer stack together.</p>
+        <p>The models, tools, and APIs exist today. GreenInfer integrates them into a unified, developer-friendly framework.</p>
       </div>
     </div>
   </div>
@@ -750,62 +182,26 @@ body::before {
 
 <div class="container"><div class="divider"></div></div>
 
-<!-- ── WHAT'S BUILT ── -->
 <section class="section-sm">
   <div class="container">
     <div class="section-label">Project Status</div>
     <h2 style="margin-bottom:32px;">Build roadmap</h2>
-    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;" class="scroll-reveal">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;" class="scroll-reveal">
       <table class="built-table">
-        <thead>
-          <tr><th>Component</th><th>Description</th><th>Status</th></tr>
-        </thead>
+        <thead><tr><th>Component</th><th>Description</th><th>Status</th></tr></thead>
         <tbody>
-          <tr>
-            <td><strong>GreenPromptsOptimizer</strong></td>
-            <td>T5-based prompt compression model, fine-tuned, hosted on Hugging Face</td>
-            <td class="status-done">✓ COMPLETE</td>
-          </tr>
-          <tr>
-            <td><strong>Website (this site)</strong></td>
-            <td>Full multi-page site: landing, chat UI, framework docs, impact dashboard, about</td>
-            <td class="status-done">✓ COMPLETE</td>
-          </tr>
-          <tr>
-            <td><strong>Complexity Scorer</strong></td>
-            <td>Classifier model for prompt complexity 0–100 using linguistic features</td>
-            <td class="status-wip">⟳ IN PROGRESS</td>
-          </tr>
-          <tr>
-            <td><strong>Orchestration Engine</strong></td>
-            <td>Core routing logic: complexity + energy + mode → model tier selection</td>
-            <td class="status-wip">⟳ IN PROGRESS</td>
-          </tr>
-          <tr>
-            <td><strong>Energy Estimation Module</strong></td>
-            <td>Token-based proxy + CodeCarbon GPU benchmarking</td>
-            <td class="status-wip">⟳ IN PROGRESS</td>
-          </tr>
-          <tr>
-            <td><strong>Carbon-Aware Routing</strong></td>
-            <td>ERCOT real-time grid carbon intensity API integration</td>
-            <td class="status-next">→ NEXT</td>
-          </tr>
-          <tr>
-            <td><strong>Reinforcement Learning Router</strong></td>
-            <td>Policy gradient agent trained on historical accuracy/energy data</td>
-            <td class="status-next">→ PLANNED</td>
-          </tr>
-          <tr>
-            <td><strong>Live Backend Integration</strong></td>
-            <td>Connect chat UI to real model API calls via orchestration layer</td>
-            <td class="status-next">→ PLANNED</td>
-          </tr>
-          <tr>
-            <td><strong>Open Source Release</strong></td>
-            <td>Framework published to GitHub with documentation for developer use</td>
-            <td class="status-next">→ FINAL</td>
-          </tr>
+          <tr><td><strong>GreenPromptsOptimizer</strong></td><td>T5-based prompt compression model, fine-tuned on 127+ prompt pairs, hosted on Hugging Face</td><td class="status-done">&#10003; COMPLETE</td></tr>
+          <tr><td><strong>Complexity Scorer</strong></td><td>Rule-based linguistic scorer using Shannon entropy, token length, and task classification signals</td><td class="status-done">&#10003; COMPLETE</td></tr>
+          <tr><td><strong>Complexity Classifier</strong></td><td>DistilBERT fine-tuned on 600 labeled prompts achieving 98.9% accuracy on the validation set</td><td class="status-done">&#10003; COMPLETE</td></tr>
+          <tr><td><strong>Orchestration Engine</strong></td><td>Core routing logic combining complexity, energy estimates, mode, and carbon budget into model selection</td><td class="status-done">&#10003; COMPLETE</td></tr>
+          <tr><td><strong>Cascade Inference</strong></td><td>Small to medium to large escalation with confidence-based gating between tiers</td><td class="status-done">&#10003; COMPLETE</td></tr>
+          <tr><td><strong>Energy Estimator</strong></td><td>Token-based proxy estimation with CodeCarbon integration for local GPU measurement</td><td class="status-done">&#10003; COMPLETE</td></tr>
+          <tr><td><strong>Website</strong></td><td>Full multi-page site: landing, chat UI, framework docs, impact dashboard, about</td><td class="status-done">&#10003; COMPLETE</td></tr>
+          <tr><td><strong>HF Space Backend</strong></td><td>FastAPI server with CORS, optimizer loading, Groq cascade, and carbon metrics endpoint</td><td class="status-done">&#10003; LIVE</td></tr>
+          <tr><td><strong>Carbon-Aware Routing</strong></td><td>ERCOT real-time grid carbon intensity integration for dynamic mode adjustment</td><td class="status-wip">&#8987; IN PROGRESS</td></tr>
+          <tr><td><strong>User Accounts</strong></td><td>Sign up, login, and persistent chat history per user</td><td class="status-wip">&#8987; IN PROGRESS</td></tr>
+          <tr><td><strong>RL Router</strong></td><td>Policy gradient agent learning optimal routing from historical accuracy and energy logs</td><td class="status-next">&#8594; PLANNED</td></tr>
+          <tr><td><strong>Open Source Release</strong></td><td>Framework published to PyPI with full documentation for developer adoption</td><td class="status-next">&#8594; FINAL</td></tr>
         </tbody>
       </table>
     </div>
@@ -814,39 +210,30 @@ body::before {
 
 <div class="container"><div class="divider"></div></div>
 
-<!-- ── PEOPLE ── -->
 <section class="section-sm">
   <div class="container">
     <div class="section-label">The Team</div>
-    <h2 style="margin-bottom:32px;">Researcher & Mentor</h2>
-    <div style="display:flex; flex-direction:column; gap:20px;">
+    <h2 style="margin-bottom:32px;">Researcher &amp; Mentor</h2>
+    <div style="display:flex;flex-direction:column;gap:20px;">
 
       <div class="person-card scroll-reveal">
-        <div class="person-avatar">🧑‍💻</div>
+        <div class="person-avatar">&#129489;&#8205;&#128187;</div>
         <div>
           <div class="person-name">Srinesh Toranala</div>
-          <div class="person-role">Student Researcher · ISM Program</div>
-          <p class="person-bio">
-            Frisco ISD student building GreenInfer as an Independent Study & Mentorship final project. The project synthesizes a year of research in AI efficiency, energy systems, and sustainable computing. Srinesh previously built GreenPromptsOptimizer - a T5-based prompt compression model that now forms the first layer of the GreenInfer pipeline. This project represents a full-stack effort: research, model training, framework design, and deployment - built with the goal of making green AI accessible to every developer.
-          </p>
-          <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
-            <span class="tag">Python</span>
-            <span class="tag">PyTorch</span>
-            <span class="tag">Transformers</span>
-            <span class="tag">Hugging Face</span>
-            <span class="tag">Green AI</span>
+          <div class="person-role">Student Researcher &nbsp;&#183;&nbsp; ISM Program, Frisco ISD</div>
+          <p class="person-bio">Frisco ISD student building GreenInfer as an Independent Study and Mentorship final project. The project brings together a year of research in AI efficiency, energy systems, and sustainable computing. Srinesh previously built GreenPromptsOptimizer, a T5-based prompt compression model that now forms the first layer of the GreenInfer pipeline. GreenInfer represents a full-stack research effort spanning model training, framework engineering, backend deployment, and public product launch, built with the goal of making green AI genuinely accessible to developers everywhere.</p>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+            <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">Transformers</span><span class="tag">FastAPI</span><span class="tag">Hugging Face</span><span class="tag">Green AI</span>
           </div>
         </div>
       </div>
 
       <div class="person-card scroll-reveal" id="mentor">
-        <div class="person-avatar">🎓</div>
+        <div class="person-avatar">&#127891;</div>
         <div>
           <div class="person-name">Marta Adamska</div>
-          <div class="person-role">PhD Candidate · University of Lancaster · Mentor</div>
-          <p class="person-bio">
-            Marta Adamska is a PhD Candidate at the University of Lancaster whose research intersects AI systems, sustainability, and computational efficiency. Ms. Adamska's expertise in sustainable computing has been instrumental to this project, providing inspiration and guidance that shaped the direction of GreenInfer from the ground up. I am grateful for her continued support and mentorship throughout this research.
-          </p>
+          <div class="person-role">PhD Candidate &nbsp;&#183;&nbsp; University of Lancaster &nbsp;&#183;&nbsp; Mentor</div>
+          <p class="person-bio">Marta Adamska is a PhD Candidate at the University of Lancaster whose research sits at the intersection of AI systems, sustainability, and computational efficiency. Ms. Adamska's expertise in sustainable computing has been deeply instrumental to this project, providing the research direction, key papers, and guidance that shaped GreenInfer from an early idea into a working framework. I am grateful for her continued mentorship and for pushing the technical depth of this work throughout the research process.</p>
         </div>
       </div>
     </div>
@@ -855,285 +242,167 @@ body::before {
 
 <div class="container"><div class="divider"></div></div>
 
-<!-- ── ISM SKILLS ── -->
 <section class="section-sm">
   <div class="container">
     <div class="section-label">ISM Program</div>
     <h2 style="margin-bottom:32px;">Skills demonstrated</h2>
     <div class="ism-grid scroll-reveal">
-      <div class="ism-card">
-        <div class="ism-icon">🧠</div>
-        <div class="ism-title">AI Research</div>
-        <div class="ism-desc">Academic literature review on energy-efficient inference, model quantization, and sustainable AI deployment</div>
-      </div>
-      <div class="ism-card">
-        <div class="ism-icon">💻</div>
-        <div class="ism-title">ML Engineering</div>
-        <div class="ism-desc">Fine-tuning T5 models, building complexity classifiers, and implementing RL routing policies in PyTorch</div>
-      </div>
-      <div class="ism-card">
-        <div class="ism-icon">⚡</div>
-        <div class="ism-title">Systems Design</div>
-        <div class="ism-desc">Multi-layer pipeline architecture balancing accuracy, latency, and real-time carbon intensity constraints</div>
-      </div>
-      <div class="ism-card">
-        <div class="ism-icon">🌐</div>
-        <div class="ism-title">Full-Stack Dev</div>
-        <div class="ism-desc">End-to-end web application: HTML/CSS/JS frontend, Python backend, Hugging Face API integration</div>
-      </div>
-      <div class="ism-card">
-        <div class="ism-icon">📊</div>
-        <div class="ism-title">Data Analysis</div>
-        <div class="ism-desc">Empirical benchmarking with CodeCarbon, Pareto frontier analysis, and statistical energy modeling</div>
-      </div>
-      <div class="ism-card">
-        <div class="ism-icon">🌿</div>
-        <div class="ism-title">Sustainability</div>
-        <div class="ism-desc">Applying carbon-aware computing principles and grid intensity awareness to real-world AI infrastructure</div>
-      </div>
+      <div class="ism-card"><div class="ism-icon">&#129504;</div><div class="ism-title">AI Research</div><div class="ism-desc">Literature review spanning energy-efficient inference, model cascading, LLM serving, and sustainable agent design</div></div>
+      <div class="ism-card"><div class="ism-icon">&#128187;</div><div class="ism-title">ML Engineering</div><div class="ism-desc">Fine-tuning T5 and DistilBERT, building complexity classifiers, and writing production-grade inference pipelines in PyTorch</div></div>
+      <div class="ism-card"><div class="ism-icon">&#9889;</div><div class="ism-title">Systems Design</div><div class="ism-desc">Multi-layer pipeline balancing accuracy, latency, and real-time carbon intensity with cascade and budget enforcement</div></div>
+      <div class="ism-card"><div class="ism-icon">&#127760;</div><div class="ism-title">Full-Stack Dev</div><div class="ism-desc">HTML/CSS/JS frontend, FastAPI backend on Hugging Face Spaces, and Groq API integration for real AI responses</div></div>
+      <div class="ism-card"><div class="ism-icon">&#128202;</div><div class="ism-title">Data Analysis</div><div class="ism-desc">Empirical benchmarking, Pareto frontier analysis, energy comparison experiments, and statistical model evaluation</div></div>
+      <div class="ism-card"><div class="ism-icon">&#127807;</div><div class="ism-title">Sustainability</div><div class="ism-desc">Carbon-aware computing, grid intensity modeling, ERCOT data integration, and per-session CO2 budget enforcement</div></div>
     </div>
   </div>
 </section>
 
 <div class="container"><div class="divider"></div></div>
 
-<!-- ── REFERENCES ── -->
 <section class="section-sm" id="papers">
   <div class="container">
     <div class="section-label">Research Foundation</div>
-    <h2 style="margin-bottom:32px;">Key references</h2>
+    <h2 style="margin-bottom:8px;">Key references</h2>
+    <p style="margin-bottom:32px;max-width:600px;">Papers recommended by Ms. Adamska and reviewed during research. These directly shaped the design decisions in GreenInfer.</p>
     <div class="scroll-reveal">
+
+      <div class="ref-item">
+        <div class="ref-title">Towards Greener LLMs</div>
+        <div class="ref-meta">2024 &nbsp;&#183;&nbsp; arXiv:2403.20306 &nbsp;&#183;&nbsp; Core motivation for energy-aware LLM deployment</div>
+        <a href="https://arxiv.org/pdf/2403.20306" target="_blank" rel="noopener" class="ref-link">arxiv.org/pdf/2403.20306</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">CATP-LLM: Cost-Aware Task Planning for LLMs</div>
+        <div class="ref-meta">System design reference &nbsp;&#183;&nbsp; Models execution time and memory; adapted here for energy using NVML</div>
+        <div class="ref-meta" style="margin-top:4px;color:var(--text-dim)">Informed the orchestrator architecture and energy budget enforcement design</div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">Budget ML Agent</div>
+        <div class="ref-meta">ACM &nbsp;&#183;&nbsp; dl.acm.org/doi/full/10.1145/3703412.3703416 &nbsp;&#183;&nbsp; Cost-aware agent design adapted for energy budgeting</div>
+        <a href="https://dl.acm.org/doi/full/10.1145/3703412.3703416" target="_blank" rel="noopener" class="ref-link">dl.acm.org/doi/full/10.1145/3703412.3703416</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">EnergAgent: Energy-Aware Agent Framework</div>
+        <div class="ref-meta">GI &nbsp;&#183;&nbsp; dl.gi.de/items/4ee3b7d1-80a3-46c8-9eb6-26985eb607ab &nbsp;&#183;&nbsp; Direct inspiration for energy-aware routing decisions</div>
+        <a href="https://dl.gi.de/items/4ee3b7d1-80a3-46c8-9eb6-26985eb607ab" target="_blank" rel="noopener" class="ref-link">dl.gi.de/items/4ee3b7d1-80a3-46c8-9eb6-26985eb607ab</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">Sustainable Web Agents</div>
+        <div class="ref-meta">2025 &nbsp;&#183;&nbsp; arXiv:2511.04481 &nbsp;&#183;&nbsp; Energy sustainability in deployed AI agents</div>
+        <a href="https://arxiv.org/pdf/2511.04481" target="_blank" rel="noopener" class="ref-link">arxiv.org/pdf/2511.04481</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">Cost of Dynamic Reasoning</div>
+        <div class="ref-meta">2025 &nbsp;&#183;&nbsp; arXiv:2506.04301 &nbsp;&#183;&nbsp; Referenced in problem motivation; analyzes compute cost of chain-of-thought reasoning</div>
+        <a href="https://arxiv.org/pdf/2506.04301" target="_blank" rel="noopener" class="ref-link">arxiv.org/pdf/2506.04301</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">How Hungry is AI?</div>
+        <div class="ref-meta">2025 &nbsp;&#183;&nbsp; arXiv:2505.09598 &nbsp;&#183;&nbsp; Empirical energy consumption numbers for LLMs and coding agents</div>
+        <a href="https://arxiv.org/pdf/2505.09598" target="_blank" rel="noopener" class="ref-link">arxiv.org/pdf/2505.09598</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">GreenMyLLM</div>
+        <div class="ref-meta">2024 &nbsp;&#183;&nbsp; arXiv:2411.11892 &nbsp;&#183;&nbsp; Rough energy consumption benchmarks referenced in motivation</div>
+        <a href="https://arxiv.org/pdf/2411.11892" target="_blank" rel="noopener" class="ref-link">arxiv.org/pdf/2411.11892</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">Green-Code: Energy-Aware Coding Agent</div>
+        <div class="ref-meta">IEEE &nbsp;&#183;&nbsp; ieeexplore.ieee.org/document/11044793 &nbsp;&#183;&nbsp; Shows energy-aware design in coding-focused agents</div>
+        <a href="https://ieeexplore.ieee.org/document/11044793" target="_blank" rel="noopener" class="ref-link">ieeexplore.ieee.org/document/11044793</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">DynamoLLM: Dynamic LLM Serving</div>
+        <div class="ref-meta">arXiv:2408.00742 &nbsp;&#183;&nbsp; Energy-aware LLM serving; cascading model ideas</div>
+        <a href="https://arxiv.org/abs/2408.00742" target="_blank" rel="noopener" class="ref-link">arxiv.org/abs/2408.00742</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">Efficiency-Oriented Work in Agents</div>
+        <div class="ref-meta">2025 &nbsp;&#183;&nbsp; arXiv:2601.14192 &nbsp;&#183;&nbsp; Survey of efficiency-focused approaches in agent systems</div>
+        <a href="https://arxiv.org/pdf/2601.14192" target="_blank" rel="noopener" class="ref-link">arxiv.org/pdf/2601.14192</a>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-title">FrugalGPT: Reducing LLM Cost and Improving Performance</div>
+        <div class="ref-meta">Chen et al. (2023) &nbsp;&#183;&nbsp; Stanford &nbsp;&#183;&nbsp; Core inspiration for the cascade routing architecture</div>
+        <div class="ref-meta" style="margin-top:4px;color:var(--text-dim)">Demonstrated that cascading smaller models before escalating saves 40-90% of compute cost</div>
+      </div>
+
       <div class="ref-item">
         <div class="ref-title">Energy and Policy Considerations for Deep Learning in NLP</div>
-        <div class="ref-meta">Strubell et al. (2019) · ACL · Foundation for AI carbon cost quantification</div>
+        <div class="ref-meta">Strubell et al. (2019) &nbsp;&#183;&nbsp; ACL &nbsp;&#183;&nbsp; Foundational paper quantifying the carbon cost of large model training</div>
       </div>
-      <div class="ref-item">
-        <div class="ref-title">Efficiently Scaling Transformer Inference</div>
-        <div class="ref-meta">Pope et al. (2022) · Google Research · Model efficiency and routing strategies</div>
-      </div>
-      <div class="ref-item">
-        <div class="ref-title">FrugalGPT: How to Use Large Language Models While Reducing Cost and Improving Performance</div>
-        <div class="ref-meta">Chen et al. (2023) · Stanford · LLM cascade and routing inspiration</div>
-      </div>
+
       <div class="ref-item">
         <div class="ref-title">CodeCarbon: Estimating the Carbon Footprint of Computation</div>
-        <div class="ref-meta">Lacoste et al. (2019) · NeurIPS Workshop · Energy benchmarking library used in framework</div>
+        <div class="ref-meta">Lacoste et al. (2019) &nbsp;&#183;&nbsp; NeurIPS Workshop &nbsp;&#183;&nbsp; Energy benchmarking library integrated in the framework</div>
       </div>
-      <div class="ref-item">
-        <div class="ref-title">Mixture of Experts: A Survey</div>
-        <div class="ref-meta">Cai et al. (2024) · arXiv · Sparse routing and model specialization</div>
-      </div>
-      <div class="ref-item">
-        <div class="ref-title">Carbon-Aware Computing for Datacenters</div>
-        <div class="ref-meta">Wiesner et al. (2021) · IEEE · Grid-aware workload scheduling foundation</div>
-      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ── CTA ── -->
 <section class="section">
   <div class="container">
-    <div style="background:var(--bg-surface); border:1px solid var(--border-mid); border-radius:var(--radius-xl); padding:56px; text-align:center;" class="scroll-reveal">
+    <div style="background:var(--bg-surface);border:1px solid var(--border-mid);border-radius:var(--radius-xl);padding:56px;text-align:center;" class="scroll-reveal">
       <div class="section-label" style="justify-content:center;">Get Involved</div>
       <h2 style="margin-bottom:16px;">Open source. Open science.</h2>
-      <p style="max-width:480px; margin:0 auto 32px;">GreenInfer is built to be shared. The framework code will be published on GitHub for any developer to integrate into their own AI applications.</p>
-      <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-        <a href="chat.html" class="btn btn-primary">Try the Chat Demo</a>
+      <p style="max-width:480px;margin:0 auto 32px;">GreenInfer is built to be shared. The framework is on GitHub for any developer to use, extend, or build on top of.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="chat.html" class="btn btn-primary">Try the Chatbot</a>
         <a href="framework.html" class="btn btn-ghost">Read the Docs</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── FOOTER ── -->
 <footer class="footer">
   <div class="container">
     <div class="footer-inner">
       <div class="footer-brand">
-        <a href="index.html" class="nav-logo" style="margin-bottom:12px; display:inline-flex;">
+        <a href="index.html" class="nav-logo" style="margin-bottom:12px;display:inline-flex;">
           <img src="logo.svg" alt="GreenInfer" class="nav-logo-icon"/>
           <span class="nav-logo-text">Green<span>Infer</span></span>
         </a>
-        <p>A Green Orchestration Framework for energy-efficient LLM inference.</p>
+        <p>A Green Orchestration Framework for energy-efficient LLM inference. ISM Final Product.</p>
         <div style="margin-top:16px;"><span class="badge badge-green">Open Source</span></div>
       </div>
       <div class="footer-col">
         <h4>Product</h4>
-        <a href="chat.html">Chat Interface</a>
-        <a href="framework.html">Framework</a>
-        <a href="impact.html">Impact Stats</a>
-        <a href="about.html">About</a>
+        <a href="chat.html">Chat</a><a href="framework.html">Framework</a><a href="impact.html">Impact</a><a href="about.html">About</a>
       </div>
       <div class="footer-col">
         <h4>Framework</h4>
-        <a href="framework.html#optimizer">Prompt Optimizer</a>
-        <a href="framework.html#orchestrator">Orchestrator</a>
-        <a href="framework.html#routing">Carbon Routing</a>
-        <a href="framework.html#rl">RL Policy</a>
+        <a href="framework.html#optimizer">Prompt Optimizer</a><a href="framework.html#orchestrator">Orchestrator</a><a href="framework.html#routing">Carbon Routing</a><a href="framework.html#rl">RL Policy</a>
       </div>
       <div class="footer-col">
-        <h4>About</h4>
-        <a href="#mentor">Mentor</a>
-        <a href="#background">Background</a>
-        <a href="#papers">References</a>
-        <a href="#ism">ISM Program</a>
+        <h4>Research</h4>
+        <a href="#mentor">Mentor</a><a href="#background">Background</a><a href="#papers">References</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2025 GreenInfer - Srinesh Toranala · ISM Final Product</span>
-      <span class="live-badge">Framework v0.1 · Beta</span>
+      <span>&#169; 2025 GreenInfer &nbsp;&#183;&nbsp; Srinesh Toranala &nbsp;&#183;&nbsp; ISM Final Product</span>
+      <span class="live-badge">Framework v0.1</span>
     </div>
   </div>
 </footer>
 
 <script>
-/* ============================================================
-   GreenInfer - Shared JS
-   ============================================================ */
-
-// ── Nav active state ──
-function setActiveNav() {
-  const path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-links a').forEach(a => {
-    const href = a.getAttribute('href');
-    if (href === path || (path === '' && href === 'index.html')) {
-      a.classList.add('active');
-    }
-  });
-}
-
-// ── Mobile nav toggle ──
-function initMobileNav() {
-  const toggle = document.getElementById('nav-toggle');
-  const navLinks = document.querySelector('.nav-links');
-  if (!toggle) return;
-  toggle.addEventListener('click', () => {
-    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-    navLinks.style.flexDirection = 'column';
-    navLinks.style.position = 'absolute';
-    navLinks.style.top = '64px';
-    navLinks.style.left = '0';
-    navLinks.style.right = '0';
-    navLinks.style.background = 'rgba(8,13,14,0.98)';
-    navLinks.style.padding = '16px';
-    navLinks.style.borderBottom = '1px solid rgba(0,255,160,0.1)';
-  });
-}
-
-// ── Animate on scroll ──
-function initScrollAnimations() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.scroll-reveal').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-  });
-}
-
-// ── Counter animation ──
-function animateCounter(el, target, duration = 1800, suffix = '') {
-  const start = performance.now();
-  const isFloat = target % 1 !== 0;
-  const update = (now) => {
-    const progress = Math.min((now - start) / duration, 1);
-    const ease = 1 - Math.pow(1 - progress, 3);
-    const val = ease * target;
-    el.textContent = (isFloat ? val.toFixed(1) : Math.floor(val).toLocaleString()) + suffix;
-    if (progress < 1) requestAnimationFrame(update);
-  };
-  requestAnimationFrame(update);
-}
-
-function initCounters() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const el = e.target;
-        const target = parseFloat(el.dataset.target);
-        const suffix = el.dataset.suffix || '';
-        animateCounter(el, target, 1800, suffix);
-        observer.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-  document.querySelectorAll('.counter').forEach(el => observer.observe(el));
-}
-
-// ── Carbon mode indicator ──
-const GRID_INTENSITY = {
-  eco: { label: 'Grid: Clean', color: '#00ffa0', bar: 18 },
-  moderate: { label: 'Grid: Moderate', color: '#f5a623', bar: 52 },
-  high: { label: 'Grid: Heavy', color: '#ff4d6d', bar: 88 }
-};
-
-function setGridMode(mode) {
-  const data = GRID_INTENSITY[mode];
-  const indicator = document.getElementById('grid-indicator');
-  const bar = document.getElementById('grid-bar');
-  if (indicator) {
-    indicator.textContent = data.label;
-    indicator.style.color = data.color;
-  }
-  if (bar) {
-    bar.style.width = data.bar + '%';
-    bar.style.background = data.color;
-  }
-}
-
-// ── Tooltip ──
-function initTooltips() {
-  document.querySelectorAll('[data-tooltip]').forEach(el => {
-    const tip = document.createElement('div');
-    tip.className = 'tooltip';
-    tip.textContent = el.dataset.tooltip;
-    tip.style.cssText = `
-      position:absolute; background:#1a272b; color:#e8f5f0;
-      font-size:0.78rem; font-family:var(--font-mono);
-      padding:6px 10px; border-radius:6px; white-space:nowrap;
-      border:1px solid rgba(0,255,160,0.2); z-index:100;
-      pointer-events:none; opacity:0; transition:opacity 0.15s;
-    `;
-    document.body.appendChild(tip);
-    el.addEventListener('mouseenter', (ev) => {
-      const r = el.getBoundingClientRect();
-      tip.style.left = r.left + 'px';
-      tip.style.top = (r.top - 36 + window.scrollY) + 'px';
-      tip.style.opacity = '1';
-    });
-    el.addEventListener('mouseleave', () => { tip.style.opacity = '0'; });
-  });
-}
-
-// ── Energy formatter ──
-function formatEnergy(wh) {
-  if (wh < 1) return (wh * 1000).toFixed(2) + ' mWh';
-  return wh.toFixed(3) + ' Wh';
-}
-function formatCO2(g) {
-  if (g < 1) return (g * 1000).toFixed(2) + ' mg';
-  return g.toFixed(3) + ' g CO₂';
-}
-
-// ── Init all ──
-document.addEventListener('DOMContentLoaded', () => {
-  setActiveNav();
-  initMobileNav();
-  initScrollAnimations();
-  initCounters();
-  initTooltips();
-});
-
+function setActiveNav(){const p=window.location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.nav-links a').forEach(a=>{if(a.getAttribute('href')===p)a.classList.add('active')})}
+function initScrollReveal(){const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');o.unobserve(en.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});document.querySelectorAll('.scroll-reveal').forEach(el=>o.observe(el))}
+function initMobileNav(){const t=document.getElementById('nav-toggle');const n=document.querySelector('.nav-links');if(!t)return;t.addEventListener('click',()=>{n.style.display=n.style.display==='flex'?'none':'flex';n.style.flexDirection='column';n.style.position='absolute';n.style.top='64px';n.style.left='0';n.style.right='0';n.style.background='rgba(8,13,14,0.98)';n.style.padding='16px';n.style.borderBottom='1px solid rgba(0,255,160,0.1)'})}
+function initTheme(){const btn=document.getElementById('theme-btn');const saved=localStorage.getItem('gi-theme');if(saved==='light'){document.body.classList.add('light');btn.textContent='🌙 Dark'}btn.addEventListener('click',()=>{document.body.classList.toggle('light');const isLight=document.body.classList.contains('light');localStorage.setItem('gi-theme',isLight?'light':'dark');btn.textContent=isLight?'🌙 Dark':'☀️ Light'})}
+document.addEventListener('DOMContentLoaded',()=>{setActiveNav();initScrollReveal();initMobileNav();initTheme()});
 </script>
 </body>
 </html>
