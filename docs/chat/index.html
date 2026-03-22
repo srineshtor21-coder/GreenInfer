@@ -369,16 +369,16 @@ a { color:var(--g); text-decoration:none; }
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-in">
-    <a href="index.html" class="nav-logo">
-      <img src="logo.svg" alt="GreenInfer"/>
+    <a href="/" class="nav-logo">
+      <img src="/logo.svg" alt="GreenInfer"/>
       <span class="nav-logo-txt">Green<span>Infer</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="chat.html" class="active">Chat</a></li>
-      <li><a href="framework.html">Framework</a></li>
-      <li><a href="impact.html">Impact</a></li>
-      <li><a href="about.html">About</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="/chat" class="active">Chat</a></li>
+      <li><a href="/framework">Framework</a></li>
+      <li><a href="/impact">Impact</a></li>
+      <li><a href="/about">About</a></li>
     </ul>
     <div class="nav-right">
       <button class="nbtn" id="theme-btn">&#9728;&#65039; Light</button>
@@ -442,7 +442,7 @@ a { color:var(--g); text-decoration:none; }
     <!-- Header -->
     <div class="chat-header">
       <div class="ch-left">
-        <img src="logo.svg" width="20" height="20" alt=""/>
+        <img src="/logo.svg" width="20" height="20" alt=""/>
         <span class="ch-title">GreenInfer Chat</span>
         <span class="badge badge-g" id="mode-badge">&#9878; Balanced</span>
       </div>
@@ -463,7 +463,7 @@ a { color:var(--g); text-decoration:none; }
     <!-- Messages -->
     <div class="chat-msgs" id="chat-msgs">
       <div class="chat-empty" id="chat-empty">
-        <img src="logo.svg" alt="GreenInfer" class="empty-logo"/>
+        <img src="/logo.svg" alt="GreenInfer" class="empty-logo"/>
         <div class="empty-title">How can I help you?</div>
         <div class="empty-sub">GreenInfer routes your prompt to the most energy-efficient model capable of answering it accurately.</div>
         <div class="sug-grid">
@@ -718,7 +718,7 @@ function initTheme() {
 /* ── Nav ── */
 function setNav() {
   document.querySelectorAll('.nav-links a').forEach(a => {
-    if (a.getAttribute('href') === 'chat.html') a.classList.add('active');
+    const p=location.pathname.replace(/\/$/,'');if(a.getAttribute('href')===p||a.getAttribute('href')===(p||'/'))a.classList.add('active');
   });
 }
 function initNav() {
@@ -1162,7 +1162,7 @@ function mkAiMsg(data, gs) {
   w.innerHTML=`
     <div class="msg-bubble">
       <div class="msg-hd">
-        <div class="msg-av av-ai"><img src="logo.svg" width="13" height="13" alt=""/></div>
+        <div class="msg-av av-ai"><img src="/logo.svg" width="13" height="13" alt=""/></div>
         <span class="msg-name green">GreenInfer</span>
         <span class="msg-time">${t}</span>
         ${!S.backendOk?'<span class="badge badge-a" style="font-size:.65rem;">Demo</span>':''}
