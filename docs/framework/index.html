@@ -155,20 +155,20 @@ footer{background:var(--bg-deep);border-top:1px solid var(--border);padding:36px
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
-      <img src="logo.svg" alt="GreenInfer" class="nav-logo-icon"/>
+    <a href="/" class="nav-logo">
+      <img src="/logo.svg" alt="GreenInfer" class="nav-logo-icon"/>
       <span class="nav-logo-text">Green<span>Infer</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="chat.html">Chat</a></li>
-      <li><a href="framework.html" class="active">Framework</a></li>
-      <li><a href="impact.html">Impact</a></li>
-      <li><a href="about.html">About</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="/chat">Chat</a></li>
+      <li><a href="/framework" class="active">Framework</a></li>
+      <li><a href="/impact">Impact</a></li>
+      <li><a href="/about">About</a></li>
     </ul>
     <div class="nav-actions">
       <button class="btn-icon" id="theme-btn">☀️ Light</button>
-      <a href="chat.html" class="btn-primary-sm">Try Chat ↗</a>
+      <a href="/chat" class="btn-primary-sm">Try Chat ↗</a>
     </div>
     <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle menu">
       <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor"><rect y="3" width="22" height="2" rx="1"/><rect y="10" width="22" height="2" rx="1"/><rect y="17" width="22" height="2" rx="1"/></svg>
@@ -478,9 +478,12 @@ document.addEventListener('DOMContentLoaded', () => {
     obs.observe(el);
   });
   // Active nav
-  const p = location.pathname.split('/').pop() || 'index.html';
+  const p = location.pathname.replace(/\/$/, '') || '/';
   document.querySelectorAll('.nav-links a').forEach(a => {
-    if (a.getAttribute('href') === p) a.classList.add('active');
+    const h = a.getAttribute('href');
+    if (h === p || (p === '/' && h === '/') || (p !== '/' && h !== '/' && p.endsWith(h))) {
+      a.classList.add('active');
+    }
   });
 });
 </script>
