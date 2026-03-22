@@ -27,12 +27,14 @@
 
 /* LIGHT MODE */
 body.light {
-  --bg-void:#f5f5f5;--bg-deep:#ebebeb;--bg-surface:#e0e0e0;
-  --bg-raised:#d5d5d5;--bg-card:#cacaca;
+  --bg-void:#f2f2f2;--bg-deep:#e8e8e8;--bg-surface:#dedede;
+  --bg-raised:#d2d2d2;--bg-card:#c8c8c8;
   --border:rgba(0,0,0,0.10);--border-mid:rgba(0,0,0,0.18);
-  --border-bright:rgba(0,150,80,0.5);--green-dim:rgba(0,180,100,0.12);
-  --text-primary:#111111;--text-secondary:#333333;
-  --text-muted:#666666;--text-dim:#999999;
+  --border-bright:rgba(0,150,80,0.5);--green-dim:rgba(0,160,90,0.12);
+  --text-primary:#0d0d0d;--text-secondary:#1a1a1a;
+  --text-muted:#444444;--text-dim:#666666;
+  --green-core:#008050;--green-soft:#006840;--green-muted:#005030;
+  --teal-accent:#006a60;--amber-warn:#b06010;
 }
 body.light .nav { background:rgba(245,245,245,0.92); }
 body.light .layer-card { background:#e0e0e0; border-color:rgba(0,0,0,0.12); }
@@ -56,7 +58,7 @@ code{font-family:var(--font-mono)}
 
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-height);background:rgba(8,13,14,0.88);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);display:flex;align-items:center;transition:background 0.3s}
-.nav-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.nav-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none}
 .nav-logo-icon{width:32px;height:32px}
 .nav-logo-text{font-family:var(--font-display);font-weight:800;font-size:1.15rem;color:var(--text-primary);letter-spacing:-.02em}
@@ -440,6 +442,47 @@ ROUTE = {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Theme
+  const btn = document.getElementById('theme-btn');
+  if (localStorage.getItem('gi-theme') === 'light') {
+    document.body.classList.add('light');
+    if(btn) btn.textContent = '🌙 Dark';
+  }
+  if (btn) btn.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const isL = document.body.classList.contains('light');
+    localStorage.setItem('gi-theme', isL ? 'light' : 'dark');
+    btn.textContent = isL ? '🌙 Dark' : '☀️ Light';
+  });
+  // Mobile nav
+  const tog = document.getElementById('nav-toggle');
+  const lnk = document.querySelector('.nav-links');
+  if (tog && lnk) tog.addEventListener('click', () => {
+    const open = lnk.style.display === 'flex';
+    lnk.style.display = open ? 'none' : 'flex';
+    if (!open) Object.assign(lnk.style, {
+      flexDirection:'column', position:'fixed', top:'64px', left:0, right:0,
+      background:'rgba(8,13,14,.96)', padding:'14px',
+      borderBottom:'1px solid rgba(0,255,160,.1)', zIndex:899
+    });
+  });
+  // Scroll reveal
+  const obs = new IntersectionObserver(e => {
+    e.forEach(en => { if(en.isIntersecting){ en.target.classList.add('vis'); obs.unobserve(en.target); } });
+  }, {threshold:0.08});
+  document.querySelectorAll('.scroll-reveal').forEach(el => {
+    el.style.opacity='0'; el.style.transform='translateY(20px)';
+    el.style.transition='opacity .6s ease,transform .6s ease';
+    obs.observe(el);
+  });
+  // Active nav
+  const p = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.getAttribute('href') === p) a.classList.add('active');
+  });
+});
+</script>
 </body>
 </html>
