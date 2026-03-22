@@ -220,20 +220,20 @@ footer { background:var(--deep); border-top:1px solid var(--b0); padding:44px 22
 
 <nav class="site-nav">
   <div class="nav-in">
-    <a href="index.html" class="nav-logo">
-      <img src="logo.svg" alt="GreenInfer"/>
+    <a href="/" class="nav-logo">
+      <img src="/logo.svg" alt="GreenInfer"/>
       <span class="nav-logo-txt">Green<span>Infer</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="chat.html">Chat</a></li>
-      <li><a href="framework.html">Framework</a></li>
-      <li><a href="impact.html">Impact</a></li>
-      <li><a href="about.html">About</a></li>
+      <li><a href="/" class="active">Home</a></li>
+      <li><a href="/chat">Chat</a></li>
+      <li><a href="/framework">Framework</a></li>
+      <li><a href="/impact">Impact</a></li>
+      <li><a href="/about">About</a></li>
     </ul>
     <div class="nav-right">
       <button class="nbtn" id="theme-btn">&#9728;&#65039; Light</button>
-      <a href="chat.html" class="nbtn nbtn-g">Launch Chat</a>
+      <a href="/chat" class="nbtn nbtn-g">Launch Chat</a>
     </div>
     <button class="nav-mobile" id="nav-toggle">
       <svg width="19" height="19" viewBox="0 0 22 22" fill="currentColor"><rect y="3" width="22" height="2" rx="1"/><rect y="10" width="22" height="2" rx="1"/><rect y="17" width="22" height="2" rx="1"/></svg>
@@ -253,11 +253,11 @@ footer { background:var(--deep); border-top:1px solid var(--b0); padding:44px 22
     GreenInfer routes every prompt to the most energy-efficient model capable of answering it accurately, cutting AI compute energy by up to <strong style="color:var(--g)">97%</strong> vs always using the largest model.
   </p>
   <div class="hero-acts">
-    <a href="chat.html" class="btn btn-g">
+    <a href="/chat" class="btn btn-g">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5A5.5 5.5 0 118 2.5a5.5 5.5 0 010 11z"/></svg>
       Try GreenInfer
     </a>
-    <a href="framework.html" class="btn btn-gh">How it works</a>
+    <a href="/framework" class="btn btn-gh">How it works</a>
   </div>
   <div class="hero-stats">
     <div class="hstat"><div class="hstat-v"><span class="counter" data-target="97" data-suffix="%">97%</span></div><div class="hstat-l">Max Energy Saved</div></div>
@@ -393,7 +393,7 @@ result = gi.<span class="fn">chat</span>(<span class="str">"Write a sorting algo
 result = gi.<span class="fn">chat</span>(<span class="str">"Analyze this legal contract..."</span>, mode=<span class="str">"performance"</span>)</div>
     </div>
     <div style="text-align:center;margin-top:22px">
-      <a href="framework.html" class="btn btn-gh">Full Framework Docs</a>
+      <a href="/framework" class="btn btn-gh">Full Framework Docs</a>
     </div>
   </div>
 </section>
@@ -404,8 +404,8 @@ result = gi.<span class="fn">chat</span>(<span class="str">"Analyze this legal c
     <h2>Ready to chat green?</h2>
     <p>Every message shows exactly how much energy it used and how much was saved by not using the largest model.</p>
     <div class="cta-acts">
-      <a href="chat.html" class="btn btn-g">Open Chat</a>
-      <a href="impact.html" class="btn btn-gh">View Impact Data</a>
+      <a href="/chat" class="btn btn-g">Open Chat</a>
+      <a href="/impact" class="btn btn-gh">View Impact Data</a>
     </div>
   </div>
 </section>
@@ -414,12 +414,12 @@ result = gi.<span class="fn">chat</span>(<span class="str">"Analyze this legal c
   <div class="foot-in">
     <div class="foot-top">
       <div>
-        <a href="index.html" class="nav-logo" style="display:inline-flex;margin-bottom:9px;"><img src="logo.svg" width="26" height="26" alt=""/><span class="nav-logo-txt" style="font-size:.98rem">Green<span>Infer</span></span></a>
+        <a href="/" class="nav-logo" style="display:inline-flex;margin-bottom:9px;"><img src="/logo.svg" width="26" height="26" alt=""/><span class="nav-logo-txt" style="font-size:.98rem">Green<span>Infer</span></span></a>
         <p>Sustainable AI inference. Routes prompts to the optimal model tier to minimize energy and carbon footprint. Open source.</p>
       </div>
       <div>
         <div class="foot-col-h">Pages</div>
-        <div class="foot-links"><a href="index.html">Home</a><a href="chat.html">Chat</a><a href="framework.html">Framework</a><a href="impact.html">Impact</a><a href="about.html">About</a></div>
+        <div class="foot-links"><a href="/">Home</a><a href="/chat">Chat</a><a href="/framework">Framework</a><a href="/impact">Impact</a><a href="/about">About</a></div>
       </div>
       <div>
         <div class="foot-col-h">Links</div>
@@ -444,9 +444,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setActiveNav() {
-  const p = location.pathname.split('/').pop() || 'index.html';
+  const p = location.pathname.replace(/\/$/, '') || '/';
   document.querySelectorAll('.nav-links a').forEach(a => {
-    if (a.getAttribute('href') === p) a.classList.add('active');
+    const h = a.getAttribute('href');
+    if (h === p || (p === '/' && h === '/') || (p !== '/' && h !== '/' && p.endsWith(h))) {
+      a.classList.add('active');
+    }
   });
 }
 
