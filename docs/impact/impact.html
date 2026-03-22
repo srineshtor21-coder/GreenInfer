@@ -10,7 +10,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--font-body);background:var(--bg-void);color:var(--text-primary);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-body.light{--bg-void:#f0f7f4;--bg-deep:#e4f0eb;--bg-surface:#d8ece3;--bg-raised:#cce4d8;--bg-card:#c0dccb;--border:rgba(0,120,80,0.12);--border-mid:rgba(0,120,80,0.22);--text-primary:#0a1f18;--text-secondary:#2a5a45;--text-muted:#4a8a6a;--text-dim:#7ab89a}
+body.light{--bg-void:#f2f2f2;--bg-deep:#e8e8e8;--bg-surface:#dedede;--bg-raised:#d2d2d2;--bg-card:#c8c8c8;--border:rgba(0,0,0,0.10);--border-mid:rgba(0,0,0,0.18);--text-primary:#0d0d0d;--text-secondary:#1a1a1a;--text-muted:#444444;--text-dim:#666666;--green-core:#008050;--green-soft:#006840;--teal-accent:#006a60;--amber-warn:#b06010}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-deep)}::-webkit-scrollbar-thumb{background:var(--green-muted);border-radius:3px}
 ::selection{background:rgba(0,255,160,0.2);color:var(--green-core)}
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:1.15}
@@ -40,7 +40,7 @@ a:hover{color:var(--teal-accent)}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4}
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-height);background:rgba(8,13,14,0.85);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);display:flex;align-items:center;transition:background 0.3s}
 body.light .nav{background:rgba(240,247,244,0.9)}
-.nav-inner{width:100%;max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.nav-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
 .nav-logo-icon{width:36px;height:36px;flex-shrink:0}
 .nav-logo-text{font-family:var(--font-display);font-weight:800;font-size:1.25rem;color:var(--text-primary);letter-spacing:-0.02em}
