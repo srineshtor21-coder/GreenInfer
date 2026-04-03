@@ -172,18 +172,30 @@ class CascadeEngine:
             raise ValueError(f"Unsupported provider: {config.provider}")
 
     def _call_groq(self, prompt: str, config) -> str:
-        if self._groq is None:
-            raise RuntimeError("Groq client not initialized")
-        completion = self._groq.chat.completions.create(
-            model=config.model_id,
-            messages=[
+    import httpx, os
+    api_key = os.environ.get("GROQ_API_KEY", "")
+    if not api_key:
+        raise RuntimeError("GROQ_API_KEY not set")
+    
+    r = httpx.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": config.model_id,
+            "messages": [
                 {"role": "system", "content": self._system_prompt},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=config.max_tokens,
-            temperature=0.7,
-        )
-        return completion.choices[0].message.content
+            "max_tokens": config.max_tokens,
+            "temperature": 0.7,
+        },
+        timeout=30,
+    )
+    r.raise_for_status()
+    return r.json()["choices"][0]["message"]["content"]
 
     def _call_openai(self, prompt: str, config) -> str:
         import openai
