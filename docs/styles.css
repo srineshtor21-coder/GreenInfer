@@ -3,7 +3,7 @@
    Aesthetic: Dark biomorphic tech — deep forest meets silicon
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 /* ── Variables ── */
 :root {
@@ -12,27 +12,28 @@
   --bg-surface:    #111c1e;
   --bg-raised:     #172226;
   --bg-card:       #1a272b;
-  --border:        rgba(0, 255, 160, 0.08);
-  --border-mid:    rgba(0, 255, 160, 0.18);
-  --border-bright: rgba(0, 255, 160, 0.4);
+  --border:        rgba(0, 212, 132, 0.08);
+  --border-mid:    rgba(0, 212, 132, 0.18);
+  --border-bright: rgba(0, 212, 132, 0.4);
 
-  --green-core:    #00ffa0;
-  --green-soft:    #00d484;
-  --green-muted:   #009b62;
-  --green-dim:     rgba(0, 255, 160, 0.12);
-  --green-glow:    rgba(0, 255, 160, 0.06);
+  /* Softer green — not neon in dark mode */
+  --green-core:    #00d484;
+  --green-soft:    #00b870;
+  --green-muted:   #008050;
+  --green-dim:     rgba(0, 212, 132, 0.10);
+  --green-glow:    rgba(0, 212, 132, 0.06);
 
-  --teal-accent:   #00e5cc;
+  --teal-accent:   #00c4b0;
   --amber-warn:    #f5a623;
   --red-alert:     #ff4d6d;
 
-  --text-primary:  #e8f5f0;
-  --text-secondary:#8ab5a8;
+  --text-primary:  #cde8df;
+  --text-secondary:#7aaa9a;
   --text-muted:    #4a7068;
   --text-dim:      #2a4540;
 
-  --font-display:  'Syne', sans-serif;
-  --font-body:     'DM Sans', sans-serif;
+  --font-display:  'Plus Jakarta Sans', sans-serif;
+  --font-body:     'Inter', sans-serif;
   --font-mono:     'JetBrains Mono', monospace;
 
   --radius-sm: 6px;
@@ -505,3 +506,130 @@ body::before {
   .grid-4 { grid-template-columns: 1fr; }
   .container { padding: 0 16px; }
 }
+
+/* ══════════════════════════════════════
+   LIGHT MODE — complete overhaul
+══════════════════════════════════════ */
+body.light {
+  --bg-void: #f7faf8;
+  --bg-deep: #edf3ef;
+  --bg-surface: #e2eae5;
+  --bg-raised: #d4dfd8;
+  --bg-card: #c6d4cc;
+  --border: rgba(0, 90, 50, 0.10);
+  --border-mid: rgba(0, 90, 50, 0.20);
+  --border-bright: rgba(0, 130, 70, 0.50);
+  --green-core: #006e3e;
+  --green-soft: #005a32;
+  --green-muted: #004828;
+  --green-dim: rgba(0, 110, 62, 0.12);
+  --teal-accent: #006058;
+  --amber-warn: #a05800;
+  --red-alert: #b82040;
+  --text-primary: #0c1f16;
+  --text-secondary: #1a4030;
+  --text-muted: #2e6048;
+  --text-dim: #5a8870;
+}
+body.light .nav { background: rgba(247,250,248,.97); }
+body.light .section-alt { background: var(--bg-deep); }
+body.light .card { background: var(--bg-card); border-color: var(--border); }
+body.light .stat-card { background: var(--bg-card); border-color: var(--border); }
+body.light footer { background: var(--bg-deep); border-color: var(--border); }
+body.light .gradient-text {
+  background: linear-gradient(135deg, #006e3e 0%, #004a2c 60%, #003020 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
+body.light .toc-sidebar { background: var(--bg-deep); border-color: var(--border); }
+body.light pre[class*="language-"] { background: #d0d0d0 !important; }
+body.light .comparison-table th { background: var(--bg-raised); }
+body.light .comparison-table td { background: var(--bg-card); }
+
+/* Login/Signup button fixes in light mode */
+body.light .nbtn, body.light .btn-ghost {
+  color: var(--text-secondary);
+  border-color: var(--border-mid);
+}
+body.light .nbtn:hover, body.light .btn-ghost:hover {
+  color: var(--green-core);
+  border-color: var(--green-core);
+}
+body.light .nbtn-g, body.light .btn-primary {
+  background: var(--green-core);
+  color: #fff;
+}
+body.light .nbtn-g:hover, body.light .btn-primary:hover {
+  background: var(--green-soft);
+  color: #fff;
+}
+
+/* ══════════════════════════════════════
+   MOBILE / RESPONSIVE GLOBAL
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: flex !important; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .section { padding: 56px 0; }
+  .container { padding: 0 16px; }
+  h1 { font-size: clamp(1.9rem, 8vw, 3rem); }
+  h2 { font-size: clamp(1.4rem, 5vw, 2rem); }
+  .hero { padding: calc(var(--nav-height,64px) + 32px) 16px 48px; }
+  .hero-stats { gap: 20px; }
+  .hstat-v { font-size: 1.5rem; }
+  .pipe-arr { display: none; }
+  .pipeline { gap: 6px; }
+  .pipe-step { width: 130px; padding: 12px 14px; }
+  .tier-grid { grid-template-columns: 1fr !important; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .feat-grid { grid-template-columns: 1fr; }
+  .code-wrap { margin: 0 -8px; border-radius: 0; }
+}
+
+@media (max-width: 480px) {
+  .grid-4 { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .hero-acts { flex-direction: column; align-items: center; }
+  .hero-acts .btn { width: 100%; max-width: 260px; justify-content: center; }
+  .nav-logo-text { font-size: 1rem; }
+  .section { padding: 40px 0; }
+}
+
+/* Framework page - fix content not loading */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.scroll-reveal.vis, .scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mobile nav dropdown */
+.nav-mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px;
+  left: 0; right: 0;
+  background: rgba(8,13,14,0.98);
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(0,212,132,0.12);
+  z-index: 899;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-menu a {
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--text-secondary, #7aaa9a);
+  font-size: .92rem;
+  transition: all .15s;
+  text-decoration: none;
+}
+.nav-mobile-menu a:hover { background: rgba(0,212,132,.08); color: var(--green-core, #00d484); }
+body.light .nav-mobile-menu { background: rgba(247,250,248,0.98); border-color: rgba(0,90,50,.12); }
