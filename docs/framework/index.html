@@ -444,6 +444,34 @@ ROUTE = {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  function initScrollReveal() {
+  const obs = new IntersectionObserver(e => {
+    e.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.style.opacity = '1';
+        en.target.style.transform = 'translateY(0)';
+        obs.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px 0px 0px 0px' }); 
+ 
+  document.querySelectorAll('.scroll-reveal, .fw-section').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    obs.observe(el);
+  });
+  
+  setTimeout(() => {
+    document.querySelectorAll('.scroll-reveal, .fw-section').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight) {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }
+    });
+  }, 100);
+}
   // Theme
   const btn = document.getElementById('theme-btn');
   if (localStorage.getItem('gi-theme') === 'light') {
