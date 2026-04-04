@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GreenInfer — Dashboard</title>
+  <meta name="description" content="Your personal GreenInfer dashboard — track energy savings, chat history, and carbon impact."/>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+:root {
+  --bg-void:#080d0e; --bg-deep:#0b1214; --bg-surface:#111c1e;
+  --bg-raised:#172226; --bg-card:#1a272b;
+  --border:rgba(0,255,160,0.08); --border-mid:rgba(0,255,160,0.18);
+  --green-core:#00ffa0; --green-soft:#00d484; --green-muted:#009b62; --green-dim:rgba(0,255,160,0.10);
+  --teal-accent:#00e5cc; --amber-warn:#f5a623; --red-alert:#ff4d6d;
+  --text-primary:#e8f5f0; --text-secondary:#8ab5a8; --text-muted:#4a7068; --text-dim:#2a4540;
+  --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif; --font-mono:'JetBrains Mono',monospace;
+  --radius-sm:6px; --radius-md:12px; --radius-lg:20px; --radius-xl:32px; --nav-h:64px;
+}
+body.light {
+  --bg-void:#f2f2f2; --bg-deep:#e8e8e8; --bg-surface:#dedede;
+  --bg-raised:#d2d2d2; --bg-card:#c8c8c8;
+  --border:rgba(0,0,0,.09); --border-mid:rgba(0,0,0,.16);
+  --text-primary:#0d0d0d; --text-secondary:#222; --text-muted:#444; --text-dim:#666;
+  --green-core:#00a060; --teal-accent:#007a70; --amber-warn:#c07010;
+}
+body.light .nav { background:rgba(242,242,242,.95); }
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { font-family:var(--font-body); background:var(--bg-void); color:var(--text-primary); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+::-webkit-scrollbar { width:5px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:var(--green-muted); border-radius:3px; }
+::selection { background:rgba(0,255,160,.18); color:var(--green-core); }
+a { color:var(--green-core); text-decoration:none; }
+
+@keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes barGrow { from{width:0} to{width:var(--bar-w,100%)} }
+
+/* NAV */
+.nav {
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  height:var(--nav-h); background:rgba(8,13,14,.88);
+  backdrop-filter:blur(20px) saturate(1.4); border-bottom:1px solid var(--border);
+  display:flex; align-items:center;
+}
+.nav-inner { width:100%; max-width:1300px; margin:0 auto; padding:0 22px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+.nav-logo img { width:30px; height:30px; }
+.nav-logo-txt { font-family:var(--font-display); font-weight:800; font-size:1.1rem; color:var(--text-primary); letter-spacing:-.02em; }
+.nav-logo-txt span { color:var(--green-core); }
+.nav-links { display:flex; align-items:center; gap:1px; list-style:none; }
+.nav-links a { padding:5px 12px; border-radius:var(--radius-md); color:var(--text-secondary); font-size:.86rem; transition:all .15s; }
+.nav-links a:hover,.nav-links a.active { background:var(--green-dim); color:var(--green-core); }
+.nav-right { display:flex; align-items:center; gap:8px; }
+.nbtn { background:none; border:1px solid var(--border-mid); color:var(--text-secondary); cursor:pointer; padding:5px 12px; border-radius:var(--radius-md); font-size:.82rem; font-family:var(--font-body); transition:all .15s; text-decoration:none; display:inline-flex; align-items:center; gap:5px; }
+.nbtn:hover { border-color:var(--green-core); color:var(--green-core); background:var(--green-dim); }
+.nbtn-g { background:var(--green-core); color:#080d0e; border:none; font-weight:600; padding:6px 16px; border-radius:var(--radius-xl); }
+.nbtn-g:hover { background:#1fffb0; transform:translateY(-1px); }
+.nav-mobile { display:none; background:none; border:none; color:var(--text-primary); cursor:pointer; padding:7px; }
+@media(max-width:700px) { .nav-links { display:none; } .nav-mobile { display:flex; } }
+
+/* AUTH OVERLAY — shown when not logged in */
+.auth-overlay {
+  position:fixed; inset:0; background:rgba(8,13,14,.92); z-index:2000;
+  display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.auth-overlay.hidden { display:none; }
+.auth-box {
+  background:var(--bg-card); border:1px solid var(--border-mid);
+  border-radius:var(--radius-lg); padding:36px; max-width:400px; width:90%;
+  animation:fadeUp .3s ease;
+}
+.auth-box h2 { font-family:var(--font-display); font-size:1.4rem; font-weight:800; margin-bottom:6px; }
+.auth-box p { font-size:.85rem; color:var(--text-muted); margin-bottom:22px; line-height:1.6; }
+.auth-tabs { display:flex; border:1px solid var(--border); border-radius:var(--radius-md); padding:3px; gap:2px; margin-bottom:20px; }
+.auth-tab { flex:1; padding:6px 0; font-size:.8rem; text-align:center; border-radius:var(--radius-sm); cursor:pointer; color:var(--text-muted); transition:all .15s; border:none; background:none; font-family:var(--font-body); }
+.auth-tab.on { background:var(--bg-raised); color:var(--green-core); border:1px solid var(--border); }
+.auth-field { margin-bottom:13px; }
+.auth-field label { display:block; font-size:.75rem; font-family:var(--font-mono); color:var(--text-muted); margin-bottom:4px; letter-spacing:.04em; text-transform:uppercase; }
+.auth-field input { width:100%; background:var(--bg-raised); border:1px solid var(--border-mid); border-radius:var(--radius-md); padding:9px 12px; color:var(--text-primary); font-family:var(--font-body); font-size:.88rem; outline:none; transition:border-color .2s; }
+.auth-field input:focus { border-color:var(--green-core); box-shadow:0 0 0 3px rgba(0,255,160,.06); }
+.auth-submit { width:100%; padding:10px; background:var(--green-core); color:#080d0e; border:none; border-radius:var(--radius-xl); font-size:.9rem; font-weight:600; font-family:var(--font-body); cursor:pointer; transition:all .15s; margin-top:4px; }
+.auth-submit:hover { background:#1fffb0; }
+.auth-submit:disabled { background:var(--bg-raised); color:var(--text-muted); cursor:not-allowed; }
+.auth-error { font-size:.78rem; color:var(--red-alert); margin-top:8px; display:none; text-align:center; }
+.auth-error.show { display:block; }
+.auth-notice { background:rgba(0,255,160,.06); border:1px solid rgba(0,255,160,.14); border-radius:var(--radius-md); padding:10px 13px; font-size:.77rem; color:var(--text-secondary); line-height:1.6; margin-bottom:18px; }
+.auth-divider { text-align:center; font-size:.75rem; color:var(--text-dim); margin:14px 0; position:relative; }
+.auth-divider::before,.auth-divider::after { content:''; position:absolute; top:50%; width:42%; height:1px; background:var(--border); }
+.auth-divider::before { left:0; } .auth-divider::after { right:0; }
+.demo-btn { width:100%; padding:9px; background:transparent; border:1px solid var(--border-mid); color:var(--text-secondary); border-radius:var(--radius-xl); font-size:.85rem; font-family:var(--font-body); cursor:pointer; transition:all .15s; }
+.demo-btn:hover { border-color:var(--teal-accent); color:var(--teal-accent); }
+
+/* DASHBOARD LAYOUT */
+.dash-layout {
+  display:grid; grid-template-columns:220px 1fr;
+  max-width:1300px; margin:0 auto;
+  padding:calc(var(--nav-h) + 24px) 22px 48px;
+  gap:24px; min-height:100vh;
+}
+@media(max-width:900px) { .dash-layout { grid-template-columns:1fr; } .dash-sidebar { display:none; } }
+
+/* SIDEBAR */
+.dash-sidebar {
+  position:sticky; top:calc(var(--nav-h) + 16px);
+  height:fit-content; display:flex; flex-direction:column; gap:8px;
+}
+.dash-user-card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-lg); padding:18px; margin-bottom:8px;
+}
+.user-avatar {
+  width:44px; height:44px; border-radius:50%; background:var(--green-dim);
+  border:2px solid var(--border-mid); display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-size:1.1rem; font-weight:800; color:var(--green-core);
+  margin-bottom:10px;
+}
+.user-name { font-family:var(--font-display); font-weight:700; font-size:.95rem; margin-bottom:2px; }
+.user-email { font-size:.74rem; color:var(--text-muted); font-family:var(--font-mono); }
+.user-badge { display:inline-flex; align-items:center; gap:4px; margin-top:8px; padding:2px 8px; background:rgba(0,255,160,.08); border:1px solid rgba(0,255,160,.15); border-radius:99px; font-size:.66rem; font-family:var(--font-mono); color:var(--green-core); }
+.sb-nav-item {
+  display:flex; align-items:center; gap:9px; padding:8px 12px;
+  border-radius:var(--radius-md); color:var(--text-secondary); font-size:.84rem;
+  cursor:pointer; transition:all .15s; border:none; background:none; font-family:var(--font-body);
+  text-decoration:none; width:100%; text-align:left;
+}
+.sb-nav-item:hover,.sb-nav-item.on { background:var(--green-dim); color:var(--green-core); }
+.sb-nav-item span { font-size:.88rem; }
+.sb-divider { height:1px; background:var(--border); margin:4px 0; }
+
+/* MAIN CONTENT */
+.dash-main {}
+.dash-section { display:none; }
+.dash-section.on { display:block; animation:fadeUp .3s ease; }
+
+/* SECTION HEADER */
+.ds-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+.ds-title { font-family:var(--font-display); font-size:1.3rem; font-weight:800; }
+.ds-sub { font-size:.82rem; color:var(--text-muted); margin-top:2px; }
+
+/* STAT GRID */
+.kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:24px; }
+.kpi-card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-lg); padding:18px; text-align:center;
+  transition:border-color .2s, transform .2s; position:relative; overflow:hidden;
+}
+.kpi-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--kpi-color, var(--green-core)); opacity:.7; }
+.kpi-card:hover { border-color:var(--border-mid); transform:translateY(-2px); }
+.kpi-val { font-family:var(--font-display); font-size:1.8rem; font-weight:800; color:var(--kpi-color, var(--green-core)); line-height:1; margin-bottom:5px; }
+.kpi-label { font-size:.72rem; color:var(--text-muted); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.05em; }
+
+/* CARDS */
+.card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; }
+.card-title { font-family:var(--font-display); font-weight:700; font-size:.92rem; margin-bottom:4px; }
+.card-sub { font-size:.76rem; color:var(--text-muted); margin-bottom:16px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:640px) { .grid-2 { grid-template-columns:1fr; } }
+
+/* CHAT HISTORY TABLE */
+.hist-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+.hist-table th { padding:8px 12px; text-align:left; font-family:var(--font-mono); font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; color:var(--text-muted); border-bottom:1px solid var(--border); }
+.hist-table td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--text-secondary); vertical-align:top; }
+.hist-table tr:last-child td { border-bottom:none; }
+.hist-table tr:hover td { background:rgba(0,255,160,.02); }
+.hist-empty { text-align:center; padding:32px; color:var(--text-muted); font-size:.84rem; }
+.tier-badge { display:inline-flex; align-items:center; padding:1px 7px; border-radius:99px; font-family:var(--font-mono); font-size:.66rem; font-weight:600; }
+.tier-s { background:rgba(0,255,160,.1); color:var(--green-core); border:1px solid rgba(0,255,160,.2); }
+.tier-m { background:rgba(0,229,204,.1); color:var(--teal-accent); border:1px solid rgba(0,229,204,.2); }
+.tier-l { background:rgba(245,166,35,.1); color:var(--amber-warn); border:1px solid rgba(245,166,35,.2); }
+
+/* MODEL BARS */
+.model-bar-row { display:flex; align-items:center; gap:12px; padding:6px 0; font-size:.8rem; }
+.model-bar-name { width:90px; color:var(--text-secondary); font-family:var(--font-mono); font-size:.75rem; }
+.model-bar-track { flex:1; height:10px; background:var(--bg-raised); border-radius:5px; overflow:hidden; }
+.model-bar-fill { height:100%; border-radius:5px; transition:width 1s ease; }
+.model-bar-pct { width:36px; text-align:right; font-family:var(--font-mono); font-size:.72rem; color:var(--text-muted); }
+
+/* ENERGY GRAPH */
+canvas#dash-energy-chart { display:block; width:100%!important; }
+
+/* SETTINGS */
+.settings-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); }
+.settings-row:last-child { border-bottom:none; }
+.settings-lbl { font-size:.86rem; color:var(--text-primary); }
+.settings-desc { font-size:.74rem; color:var(--text-muted); margin-top:2px; }
+.toggle-wrap { position:relative; width:36px; height:19px; cursor:pointer; flex-shrink:0; }
+.toggle-wrap input { display:none; }
+.toggle-track { position:absolute; inset:0; background:var(--bg-raised); border:1px solid var(--border); border-radius:10px; transition:all .2s; }
+.toggle-track::before { content:''; position:absolute; width:13px; height:13px; border-radius:50%; background:var(--text-dim); left:2px; top:2px; transition:all .2s; }
+.toggle-wrap input:checked + .toggle-track { background:var(--green-dim); border-color:var(--green-core); }
+.toggle-wrap input:checked + .toggle-track::before { background:var(--green-core); transform:translateX(17px); }
+.settings-input { width:100%; background:var(--bg-raised); border:1px solid var(--border-mid); border-radius:var(--radius-md); padding:8px 12px; color:var(--text-primary); font-family:var(--font-mono); font-size:.82rem; outline:none; transition:border-color .2s; }
+.settings-input:focus { border-color:var(--green-core); }
+.save-btn { padding:8px 18px; background:var(--green-core); color:#080d0e; border:none; border-radius:var(--radius-xl); font-size:.82rem; font-weight:600; cursor:pointer; transition:all .15s; font-family:var(--font-body); }
+.save-btn:hover { background:#1fffb0; }
+
+/* LOADING */
+.loading-spinner { width:18px; height:18px; border:2px solid var(--border); border-top-color:var(--green-core); border-radius:50%; animation:spin 1s linear infinite; display:inline-block; }
+
+/* TOASTS */
+.toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--bg-card); border:1px solid var(--green-core); color:var(--green-core); padding:9px 18px; border-radius:var(--radius-xl); font-family:var(--font-mono); font-size:.77rem; z-index:5000; animation:fadeUp .2s ease; white-space:nowrap; }
+.toast.warn { border-color:var(--amber-warn); color:var(--amber-warn); }
+.toast.err { border-color:var(--red-alert); color:var(--red-alert); }
+
+/* Supabase status indicator */
+.db-status { display:flex; align-items:center; gap:5px; font-size:.68rem; font-family:var(--font-mono); padding:3px 8px; border-radius:99px; border:1px solid var(--border); }
+.db-dot { width:5px; height:5px; border-radius:50%; }
+.db-dot.connected { background:var(--green-core); box-shadow:0 0 4px var(--green-core); animation:pulse-dot 1.4s infinite; }
+.db-dot.disconnected { background:var(--amber-warn); }
+
+/* Achievements */
+.achievement-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+.ach-card { background:var(--bg-raised); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; text-align:center; transition:all .2s; }
+.ach-card.earned { border-color:rgba(0,255,160,.25); background:rgba(0,255,160,.04); }
+.ach-card:hover { transform:translateY(-2px); }
+.ach-icon { font-size:1.5rem; margin-bottom:6px; filter:grayscale(1); opacity:.4; }
+.ach-card.earned .ach-icon { filter:none; opacity:1; }
+.ach-name { font-size:.72rem; font-weight:600; color:var(--text-muted); font-family:var(--font-display); }
+.ach-card.earned .ach-name { color:var(--text-primary); }
+.ach-desc { font-size:.65rem; color:var(--text-dim); margin-top:2px; line-height:1.3; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="/logo.svg" alt="GreenInfer"/>
+      <span class="nav-logo-txt">Green<span>Infer</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/chat">Chat</a></li>
+      <li><a href="/framework">Framework</a></li>
+      <li><a href="/impact">Impact</a></li>
+      <li><a href="/about">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nbtn" id="theme-btn">&#9728;&#65039; Light</button>
+      <div class="db-status" id="db-status-ind">
+        <div class="db-dot disconnected" id="db-dot"></div>
+        <span id="db-status-txt">Connecting</span>
+      </div>
+      <button class="nbtn" id="logout-btn" style="display:none" onclick="handleLogout()">Log Out</button>
+    </div>
+    <button class="nav-mobile" id="nav-toggle">
+      <svg width="19" height="19" viewBox="0 0 22 22" fill="currentColor"><rect y="3" width="22" height="2" rx="1"/><rect y="10" width="22" height="2" rx="1"/><rect y="17" width="22" height="2" rx="1"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- AUTH OVERLAY -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-box">
+    <h2>Welcome back</h2>
+    <p>Sign in to your GreenInfer account to view your personal impact dashboard.</p>
+    <div class="auth-notice">&#127807; Free account. Track your carbon savings across every session.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="tab-login" onclick="switchAuthTab('login')">Log In</button>
+      <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="auth-field"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com"/></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="login-pw" placeholder="Your password"/></div>
+      <button class="auth-submit" id="login-btn" onclick="handleLogin()">Log In</button>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signup-form" style="display:none">
+      <div class="auth-field"><label>Name</label><input type="text" id="signup-name" placeholder="Your name"/></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="signup-email" placeholder="you@example.com"/></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="signup-pw" placeholder="Choose a password (min 6 chars)"/></div>
+      <button class="auth-submit" id="signup-btn" onclick="handleSignup()">Create Account</button>
+    </div>
+
+    <div class="auth-error" id="auth-error"></div>
+    <div class="auth-divider">or</div>
+    <button class="demo-btn" onclick="useDemoMode()">&#128065; View Demo Dashboard</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar">
+    <div class="dash-user-card">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div class="user-name" id="user-name-display">Loading...</div>
+      <div class="user-email" id="user-email-display">—</div>
+      <div class="user-badge" id="user-plan-badge">&#127807; Free</div>
+    </div>
+
+    <button class="sb-nav-item on" data-section="overview" onclick="showSection('overview',this)"><span>&#128202;</span> Overview</button>
+    <button class="sb-nav-item" data-section="history" onclick="showSection('history',this)"><span>&#128196;</span> Chat History</button>
+    <button class="sb-nav-item" data-section="impact" onclick="showSection('impact',this)"><span>&#127807;</span> My Impact</button>
+    <button class="sb-nav-item" data-section="achievements" onclick="showSection('achievements',this)"><span>&#127942;</span> Achievements</button>
+    <div class="sb-divider"></div>
+    <button class="sb-nav-item" data-section="settings" onclick="showSection('settings',this)"><span>&#9881;</span> Settings</button>
+    <a href="/chat" class="sb-nav-item"><span>&#128172;</span> Open Chat</a>
+  </aside>
+
+  <!-- MAIN SECTIONS -->
+  <main class="dash-main">
+
+    <!-- OVERVIEW -->
+    <div class="dash-section on" id="sec-overview">
+      <div class="ds-head">
+        <div>
+          <div class="ds-title">Overview</div>
+          <div class="ds-sub" id="overview-greeting">Good to see you!</div>
+        </div>
+        <a href="/chat" class="nbtn nbtn-g" style="font-size:.82rem;padding:7px 16px;">+ New Chat</a>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card" style="--kpi-color:var(--green-core)"><div class="kpi-val" id="kpi-sessions">0</div><div class="kpi-label">Total Sessions</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--teal-accent)"><div class="kpi-val" id="kpi-prompts">0</div><div class="kpi-label">Prompts Sent</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--amber-warn)"><div class="kpi-val" id="kpi-energy">0 mWh</div><div class="kpi-label">Energy Used</div></div>
+        <div class="kpi-card" style="--kpi-color:#a8ffec"><div class="kpi-val" id="kpi-co2">0.000g</div><div class="kpi-label">CO₂ Emitted</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--green-core)"><div class="kpi-val" id="kpi-saved">0%</div><div class="kpi-label">Avg Energy Saved</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--teal-accent)"><div class="kpi-val" id="kpi-tokens">0</div><div class="kpi-label">Tokens Optimized</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:16px">
+        <div class="card">
+          <div class="card-title">Model Routing</div>
+          <div class="card-sub">Distribution across tiers this week</div>
+          <div id="overview-model-bars">
+            <div class="model-bar-row"><span class="model-bar-name" style="color:var(--green-core)">Small 1B</span><div class="model-bar-track"><div class="model-bar-fill" id="ov-bar-s" style="width:0%;background:var(--green-core)"></div></div><span class="model-bar-pct" id="ov-pct-s">0%</span></div>
+            <div class="model-bar-row"><span class="model-bar-name" style="color:var(--teal-accent)">Medium 8B</span><div class="model-bar-track"><div class="model-bar-fill" id="ov-bar-m" style="width:0%;background:var(--teal-accent)"></div></div><span class="model-bar-pct" id="ov-pct-m">0%</span></div>
+            <div class="model-bar-row"><span class="model-bar-name" style="color:var(--amber-warn)">Large 70B</span><div class="model-bar-track"><div class="model-bar-fill" id="ov-bar-l" style="width:0%;background:var(--amber-warn)"></div></div><span class="model-bar-pct" id="ov-pct-l">0%</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Energy per Session</div>
+          <div class="card-sub">Last 10 sessions</div>
+          <canvas id="dash-energy-chart" height="100"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recent Sessions</div>
+        <div class="card-sub">Your latest conversations</div>
+        <table class="hist-table" id="overview-hist-table">
+          <thead><tr><th>Title</th><th>Model</th><th>Energy</th><th>Saved</th><th>Date</th></tr></thead>
+          <tbody id="overview-hist-body">
+            <tr><td colspan="5" class="hist-empty">No sessions yet. <a href="/chat">Start chatting!</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="dash-section" id="sec-history">
+      <div class="ds-head">
+        <div><div class="ds-title">Chat History</div><div class="ds-sub">All your conversations</div></div>
+        <button class="nbtn" onclick="clearHistory()" style="color:var(--red-alert);border-color:var(--red-alert)">&#128465; Clear All</button>
+      </div>
+      <div class="card">
+        <table class="hist-table">
+          <thead><tr><th>Title</th><th>Prompts</th><th>Model</th><th>Energy</th><th>CO₂</th><th>Saved</th><th>Date</th></tr></thead>
+          <tbody id="full-hist-body">
+            <tr><td colspan="7" class="hist-empty">No chat history yet. <a href="/chat">Start a conversation!</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- IMPACT -->
+    <div class="dash-section" id="sec-impact">
+      <div class="ds-head">
+        <div><div class="ds-title">My Impact</div><div class="ds-sub">Your personal sustainability contribution</div></div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card" style="--kpi-color:var(--green-core)"><div class="kpi-val" id="imp-saved-wh">0 mWh</div><div class="kpi-label">Energy Saved vs Baseline</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--teal-accent)"><div class="kpi-val" id="imp-co2-avoided">0.000g</div><div class="kpi-label">CO₂ Avoided</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--amber-warn)"><div class="kpi-val" id="imp-tokens-saved">0</div><div class="kpi-label">Tokens Saved</div></div>
+        <div class="kpi-card" style="--kpi-color:#a8ffec"><div class="kpi-val" id="imp-queries-small">0</div><div class="kpi-label">Queries to Small Model</div></div>
+      </div>
+      <div class="card" style="margin-top:16px;text-align:center;padding:28px">
+        <div style="font-size:2.5rem;margin-bottom:10px">&#127807;</div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:6px">Your Green Footprint</div>
+        <div style="font-size:.84rem;color:var(--text-muted);max-width:400px;margin:0 auto;line-height:1.65" id="impact-desc">Complete some conversations to see your personalized impact story.</div>
+      </div>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div class="dash-section" id="sec-achievements">
+      <div class="ds-head">
+        <div><div class="ds-title">Achievements</div><div class="ds-sub">Milestones in sustainable AI usage</div></div>
+      </div>
+      <div class="achievement-grid" id="ach-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="dash-section" id="sec-settings">
+      <div class="ds-head">
+        <div><div class="ds-title">Settings</div><div class="ds-sub">Preferences and account management</div></div>
+        <button class="save-btn" onclick="saveSettings()">Save Changes</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Account</div>
+        <div style="margin-top:12px">
+          <div class="auth-field"><label>Display Name</label><input class="settings-input" id="set-name" type="text" placeholder="Your name"/></div>
+          <div class="auth-field" style="margin-top:10px"><label>Email</label><input class="settings-input" id="set-email" type="email" placeholder="you@example.com" readonly/></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-title">Preferences</div>
+        <div class="settings-row">
+          <div><div class="settings-lbl">Default Mode</div><div class="settings-desc">Routing mode used when starting a new chat</div></div>
+          <select class="settings-input" id="set-mode" style="width:120px">
+            <option value="balanced">Balanced</option>
+            <option value="eco">Eco</option>
+            <option value="performance">Performance</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-lbl">Smart Preview</div><div class="settings-desc">Show preview outline for complex queries</div></div>
+          <label class="toggle-wrap"><input type="checkbox" id="set-preview" checked/><span class="toggle-track"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-lbl">Dark Theme</div><div class="settings-desc">Use dark background</div></div>
+          <label class="toggle-wrap"><input type="checkbox" id="set-dark" checked/><span class="toggle-track"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-lbl">Carbon Budget Alerts</div><div class="settings-desc">Notify when session CO₂ exceeds limit</div></div>
+          <label class="toggle-wrap"><input type="checkbox" id="set-alerts" checked/><span class="toggle-track"></span></label>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px;border-color:rgba(255,77,109,.15)">
+        <div class="card-title" style="color:var(--red-alert)">Danger Zone</div>
+        <div class="settings-row">
+          <div><div class="settings-lbl">Delete Account</div><div class="settings-desc">Permanently delete all your data</div></div>
+          <button class="nbtn" style="color:var(--red-alert);border-color:var(--red-alert)" onclick="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* ══════════════════════════════════════════════════
+   GreenInfer Dashboard
+   Supabase: greeninfer.supabase.co
+   Replace SUPABASE_URL and SUPABASE_ANON_KEY below
+   with your actual project values.
+══════════════════════════════════════════════════ */
+
+/* ── Supabase Config ──
+   INSTRUCTIONS:
+   1. Go to https://supabase.com → New project → "greeninfer"
+   2. Settings → API → copy "Project URL" and "anon public" key
+   3. Paste them below
+   4. Run the SQL in supabase-schema.sql to create tables
+*/
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+
+let supabase = null;
+let currentUser = null;
+let isDemoMode = false;
+
+// Try to init Supabase; gracefully degrade if keys aren't set
+try {
+  if (!SUPABASE_URL.includes('YOUR_PROJECT_ID')) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+} catch(e) {
+  console.warn('Supabase init failed:', e.message);
+}
+
+/* ── Demo data ── */
+const DEMO_USER = { id:'demo', name:'Demo User', email:'demo@greeninfer.xyz', plan:'free' };
+const DEMO_STATS = {
+  sessions:12, prompts:47, energy_mwh:38.4, co2_grams:0.00762,
+  avg_saved_pct:73, tokens_saved:412,
+  models:{ s:28, m:14, l:5 },
+  energy_hist:[0.8,2.1,0.9,4.2,1.1,0.7,3.8,1.3,0.9,2.4],
+  sessions_list:[
+    {title:'Climate change discussion',prompts:4,model:'small',energy_mwh:2.1,co2_grams:0.000416,saved_pct:97,created_at:'2025-12-14T18:22:00Z'},
+    {title:'Python binary search',prompts:2,model:'medium',energy_mwh:7.6,co2_grams:0.001505,saved_pct:84,created_at:'2025-12-13T12:41:00Z'},
+    {title:'Explain quantum entanglement',prompts:3,model:'small',energy_mwh:2.7,co2_grams:0.000535,saved_pct:96,created_at:'2025-12-12T09:15:00Z'},
+    {title:'REST API with JWT auth',prompts:6,model:'large',energy_mwh:18.4,co2_grams:0.003643,saved_pct:0,created_at:'2025-12-11T20:55:00Z'},
+    {title:'Paris Climate Agreement summary',prompts:1,model:'small',energy_mwh:0.9,co2_grams:0.000178,saved_pct:98,created_at:'2025-12-10T15:30:00Z'},
+  ]
+};
+
+/* ══════════════
+   AUTH
+══════════════ */
+function switchAuthTab(tab) {
+  document.getElementById('tab-login').classList.toggle('on', tab==='login');
+  document.getElementById('tab-signup').classList.toggle('on', tab==='signup');
+  document.getElementById('login-form').style.display = tab==='login'?'':'none';
+  document.getElementById('signup-form').style.display = tab==='signup'?'':'none';
+  document.getElementById('auth-error').classList.remove('show');
+}
+
+async function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw = document.getElementById('login-pw').value;
+  if (!email || !pw) { showAuthError('Please fill in all fields'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>';
+
+  if (!supabase) {
+    // No Supabase — use local storage auth
+    const stored = JSON.parse(localStorage.getItem('gi-user-acct')||'null');
+    if (stored && stored.email===email && stored.pw===pw) {
+      currentUser = stored;
+      localStorage.setItem('gi-session', JSON.stringify(stored));
+      showDashboard(stored);
+    } else {
+      showAuthError('Invalid credentials');
+      btn.disabled = false; btn.textContent = 'Log In';
+    }
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password:pw });
+    if (error) throw error;
+    currentUser = { id:data.user.id, email:data.user.email, name:data.user.user_metadata?.name||email.split('@')[0] };
+    showDashboard(currentUser);
+  } catch(e) {
+    showAuthError(e.message||'Login failed');
+    btn.disabled = false; btn.textContent = 'Log In';
+  }
+}
+
+async function handleSignup() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const pw = document.getElementById('signup-pw').value;
+  if (!name||!email||!pw) { showAuthError('Please fill in all fields'); return; }
+  if (pw.length < 6) { showAuthError('Password must be at least 6 characters'); return; }
+
+  const btn = document.getElementById('signup-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>';
+
+  if (!supabase) {
+    const user = { id:'local-'+Date.now(), email, name, pw, plan:'free' };
+    localStorage.setItem('gi-user-acct', JSON.stringify(user));
+    localStorage.setItem('gi-session', JSON.stringify(user));
+    currentUser = user;
+    showDashboard(user);
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email, password:pw,
+      options: { data:{ name } }
+    });
+    if (error) throw error;
+    // Create profile row
+    if (supabase && data.user) {
+      await supabase.from('profiles').upsert({ id:data.user.id, name, email });
+    }
+    currentUser = { id:data.user.id, email, name };
+    showDashboard(currentUser);
+  } catch(e) {
+    showAuthError(e.message||'Sign up failed');
+    btn.disabled = false; btn.textContent = 'Create Account';
+  }
+}
+
+function useDemoMode() {
+  isDemoMode = true;
+  currentUser = DEMO_USER;
+  showDashboard(DEMO_USER, DEMO_STATS);
+}
+
+async function handleLogout() {
+  if (supabase) await supabase.auth.signOut();
+  localStorage.removeItem('gi-session');
+  currentUser = null; isDemoMode = false;
+  document.getElementById('auth-overlay').classList.remove('hidden');
+  document.getElementById('logout-btn').style.display = 'none';
+  showToast('Logged out', 'success');
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.classList.add('show');
+}
+
+/* ══════════════
+   DASHBOARD
+══════════════ */
+function showDashboard(user, stats=null) {
+  document.getElementById('auth-overlay').classList.add('hidden');
+  document.getElementById('logout-btn').style.display = '';
+
+  // Set user info
+  const initials = (user.name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name-display').textContent = user.name || 'User';
+  document.getElementById('user-email-display').textContent = user.email || '';
+  document.getElementById('set-name').value = user.name || '';
+  document.getElementById('set-email').value = user.email || '';
+
+  const hr = new Date().getHours();
+  const greeting = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('overview-greeting').textContent = `${greeting}, ${user.name||'there'}!`;
+
+  if (isDemoMode) {
+    populateDashboard(DEMO_STATS);
+  } else {
+    loadUserStats();
+  }
+}
+
+async function loadUserStats() {
+  if (!supabase || !currentUser) {
+    // Fall back to localStorage stats
+    const local = JSON.parse(localStorage.getItem('gi-local-stats')||'null');
+    if (local) populateDashboard(local);
+    else populateDashboard({ sessions:0, prompts:0, energy_mwh:0, co2_grams:0, avg_saved_pct:0, tokens_saved:0, models:{s:0,m:0,l:0}, energy_hist:[], sessions_list:[] });
+    return;
+  }
+  try {
+    const { data, error } = await supabase
+      .from('sessions')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending:false });
+    if (error) throw error;
+    const stats = aggregateStats(data||[]);
+    populateDashboard(stats);
+  } catch(e) {
+    console.warn('Stats load failed:', e);
+    populateDashboard({ sessions:0, prompts:0, energy_mwh:0, co2_grams:0, avg_saved_pct:0, tokens_saved:0, models:{s:0,m:0,l:0}, energy_hist:[], sessions_list:[] });
+  }
+}
+
+function aggregateStats(sessions) {
+  const stats = { sessions:sessions.length, prompts:0, energy_mwh:0, co2_grams:0, avg_saved_pct:0, tokens_saved:0, models:{s:0,m:0,l:0}, energy_hist:[], sessions_list:sessions.slice(0,10) };
+  sessions.forEach(s => {
+    stats.prompts += s.prompt_count || 0;
+    stats.energy_mwh += s.energy_mwh || 0;
+    stats.co2_grams += s.co2_grams || 0;
+    stats.tokens_saved += s.tokens_saved || 0;
+    if (s.dominant_model === 'small') stats.models.s++;
+    else if (s.dominant_model === 'medium') stats.models.m++;
+    else stats.models.l++;
+    stats.energy_hist.push(s.energy_mwh || 0);
+  });
+  if (sessions.length > 0) {
+    const avgSaved = sessions.reduce((a,s)=>a+(s.avg_saved_pct||0),0) / sessions.length;
+    stats.avg_saved_pct = Math.round(avgSaved);
+  }
+  stats.energy_hist = stats.energy_hist.slice(-10);
+  return stats;
+}
+
+function populateDashboard(s) {
+  // KPIs
+  document.getElementById('kpi-sessions').textContent = s.sessions;
+  document.getElementById('kpi-prompts').textContent = s.prompts;
+  document.getElementById('kpi-energy').textContent = s.energy_mwh.toFixed(1)+' mWh';
+  document.getElementById('kpi-co2').textContent = s.co2_grams.toFixed(5)+'g';
+  document.getElementById('kpi-saved').textContent = s.avg_saved_pct+'%';
+  document.getElementById('kpi-tokens').textContent = s.tokens_saved.toLocaleString();
+
+  // Model bars
+  const total = s.models.s + s.models.m + s.models.l || 1;
+  const sp = Math.round((s.models.s/total)*100), mp = Math.round((s.models.m/total)*100), lp = Math.round((s.models.l/total)*100);
+  setTimeout(()=>{
+    document.getElementById('ov-bar-s').style.width = sp+'%';
+    document.getElementById('ov-bar-m').style.width = mp+'%';
+    document.getElementById('ov-bar-l').style.width = lp+'%';
+  }, 300);
+  document.getElementById('ov-pct-s').textContent = sp+'%';
+  document.getElementById('ov-pct-m').textContent = mp+'%';
+  document.getElementById('ov-pct-l').textContent = lp+'%';
+
+  // Energy chart
+  drawEnergyChart(s.energy_hist);
+
+  // History tables
+  populateHistory(s.sessions_list);
+
+  // Impact
+  const baseline_mwh = s.prompts * 48; // always-large baseline
+  const saved_mwh = baseline_mwh - s.energy_mwh;
+  document.getElementById('imp-saved-wh').textContent = saved_mwh.toFixed(1)+' mWh';
+  document.getElementById('imp-co2-avoided').textContent = (saved_mwh * 0.000198).toFixed(5)+'g';
+  document.getElementById('imp-tokens-saved').textContent = s.tokens_saved.toLocaleString();
+  document.getElementById('imp-queries-small').textContent = s.models.s;
+
+  const impStory = s.prompts === 0
+    ? 'Complete some conversations to see your personalized impact story.'
+    : `You've sent ${s.prompts} prompts and saved approximately ${saved_mwh.toFixed(1)} mWh by routing ${s.models.s} queries to small models instead of large ones. That's equivalent to ${(saved_mwh/1000).toFixed(4)} kWh — enough to power a phone for ${(saved_mwh/0.014).toFixed(0)} seconds of charging.`;
+  document.getElementById('impact-desc').textContent = impStory;
+
+  // Achievements
+  renderAchievements(s);
+}
+
+function populateHistory(sessions) {
+  if (!sessions || !sessions.length) return;
+  const tbody1 = document.getElementById('overview-hist-body');
+  const tbody2 = document.getElementById('full-hist-body');
+  const rows = sessions.map(s => {
+    const tier = s.dominant_model || s.model || 'small';
+    const tierClass = tier === 'small' ? 'tier-s' : tier === 'medium' ? 'tier-m' : 'tier-l';
+    const tierLabel = tier.charAt(0).toUpperCase()+tier.slice(1);
+    const date = new Date(s.created_at).toLocaleDateString();
+    return `<tr>
+      <td style="color:var(--text-primary);font-weight:500">${s.title||'Chat session'}</td>
+      <td><span class="tier-badge ${tierClass}">${tierLabel}</span></td>
+      <td style="font-family:var(--font-mono)">${(s.energy_mwh||0).toFixed(2)} mWh</td>
+      <td style="color:var(--green-core);font-family:var(--font-mono)">${s.avg_saved_pct||s.saved_pct||0}%</td>
+      <td style="color:var(--text-dim)">${date}</td>
+    </tr>`;
+  }).join('');
+  const fullRows = sessions.map(s => {
+    const tier = s.dominant_model || s.model || 'small';
+    const tierClass = tier === 'small' ? 'tier-s' : tier === 'medium' ? 'tier-m' : 'tier-l';
+    const tierLabel = tier.charAt(0).toUpperCase()+tier.slice(1);
+    const date = new Date(s.created_at).toLocaleDateString();
+    return `<tr>
+      <td style="color:var(--text-primary);font-weight:500">${s.title||'Chat session'}</td>
+      <td style="font-family:var(--font-mono)">${s.prompt_count||s.prompts||0}</td>
+      <td><span class="tier-badge ${tierClass}">${tierLabel}</span></td>
+      <td style="font-family:var(--font-mono)">${(s.energy_mwh||0).toFixed(2)} mWh</td>
+      <td style="font-family:var(--font-mono)">${(s.co2_grams||0).toFixed(5)}g</td>
+      <td style="color:var(--green-core);font-family:var(--font-mono)">${s.avg_saved_pct||s.saved_pct||0}%</td>
+      <td style="color:var(--text-dim)">${date}</td>
+    </tr>`;
+  }).join('');
+  tbody1.innerHTML = rows || '<tr><td colspan="5" class="hist-empty">No sessions yet.</td></tr>';
+  tbody2.innerHTML = fullRows || '<tr><td colspan="7" class="hist-empty">No sessions yet.</td></tr>';
+}
+
+/* ── Energy Chart ── */
+function drawEnergyChart(hist) {
+  const canvas = document.getElementById('dash-energy-chart');
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth || 240, H = 100;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+
+  if (!hist.length) {
+    ctx.fillStyle = 'rgba(0,255,160,0.1)'; ctx.font = '11px JetBrains Mono,monospace';
+    ctx.fillText('No data yet', 10, H/2); return;
+  }
+
+  const maxE = Math.max(...hist, 0.001);
+  const pad = { top:8, bottom:8, left:4, right:4 };
+  const cW = W-pad.left-pad.right, cH = H-pad.top-pad.bottom;
+  const pts = hist.map((e,i) => ({
+    x: pad.left+(hist.length===1?cW/2:(i/(hist.length-1))*cW),
+    y: pad.top+cH-(e/maxE)*cH
+  }));
+
+  // Gradient fill
+  const grd = ctx.createLinearGradient(0,pad.top,0,pad.top+cH);
+  grd.addColorStop(0,'rgba(0,255,160,0.18)'); grd.addColorStop(1,'rgba(0,255,160,0.02)');
+  ctx.beginPath(); ctx.moveTo(pts[0].x, pad.top+cH);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, pad.top+cH); ctx.closePath();
+  ctx.fillStyle = grd; ctx.fill();
+
+  // Line
+  ctx.strokeStyle = 'rgba(0,255,160,0.85)'; ctx.lineWidth = 1.5; ctx.lineJoin = 'round';
+  ctx.beginPath(); pts.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+  ctx.stroke();
+
+  // Dots
+  pts.forEach((p,i) => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, i===pts.length-1?3:1.5, 0, Math.PI*2);
+    ctx.fillStyle = i===pts.length-1 ? 'rgba(0,255,160,1)' : 'rgba(0,255,160,0.5)';
+    ctx.fill();
+  });
+}
+
+/* ── Achievements ── */
+const ACHIEVEMENTS = [
+  { id:'first_chat', icon:'&#128172;', name:'First Chat', desc:'Send your first message', check: s => s.prompts >= 1 },
+  { id:'eco_10', icon:'&#127807;', name:'Eco Pioneer', desc:'10 prompts to small model', check: s => s.models.s >= 10 },
+  { id:'50_prompts', icon:'&#128172;', name:'Chatterbox', desc:'Send 50 prompts', check: s => s.prompts >= 50 },
+  { id:'97_saved', icon:'&#9889;', name:'Max Efficiency', desc:'Achieve 97% energy savings', check: s => s.avg_saved_pct >= 90 },
+  { id:'no_large', icon:'&#127807;', name:'Small is Beautiful', desc:'5 sessions without large model', check: s => s.models.l === 0 && s.sessions >= 5 },
+  { id:'hundred', icon:'&#127942;', name:'Century', desc:'100 total prompts', check: s => s.prompts >= 100 },
+  { id:'co2_hero', icon:'&#127758;', name:'Carbon Hero', desc:'Avoid 0.01g CO₂', check: s => s.co2_grams > 0.01 },
+  { id:'optimizer', icon:'&#128300;', name:'Optimizer', desc:'500 tokens saved', check: s => s.tokens_saved >= 500 },
+];
+
+function renderAchievements(stats) {
+  const grid = document.getElementById('ach-grid');
+  grid.innerHTML = ACHIEVEMENTS.map(a => {
+    const earned = a.check(stats);
+    return `<div class="ach-card ${earned?'earned':''}">
+      <div class="ach-icon">${a.icon}</div>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Settings ── */
+function saveSettings() {
+  const name = document.getElementById('set-name').value.trim();
+  const mode = document.getElementById('set-mode').value;
+  const preview = document.getElementById('set-preview').checked;
+  const dark = document.getElementById('set-dark').checked;
+  const alerts = document.getElementById('set-alerts').checked;
+
+  localStorage.setItem('gi-theme', dark ? 'dark' : 'light');
+  document.body.classList.toggle('light', !dark);
+  localStorage.setItem('gi-default-mode', mode);
+  localStorage.setItem('gi-preview', preview ? '1' : '0');
+  localStorage.setItem('gi-alerts', alerts ? '1' : '0');
+
+  if (currentUser && supabase) {
+    supabase.from('profiles').update({ name }).eq('id', currentUser.id);
+  }
+  if (currentUser) { currentUser.name = name; document.getElementById('user-name-display').textContent = name; }
+
+  showToast('Settings saved!', 'success');
+}
+
+function clearHistory() {
+  if (!confirm('Clear all local chat history? This cannot be undone.')) return;
+  localStorage.removeItem('gi-chat-sessions');
+  document.getElementById('overview-hist-body').innerHTML = '<tr><td colspan="5" class="hist-empty">No sessions yet. <a href="/chat">Start chatting!</a></td></tr>';
+  document.getElementById('full-hist-body').innerHTML = '<tr><td colspan="7" class="hist-empty">No sessions yet.</td></tr>';
+  showToast('History cleared', 'success');
+}
+
+function confirmDelete() {
+  if (!confirm('Delete your account permanently? This cannot be undone.')) return;
+  if (supabase && currentUser) {
+    // Would call supabase.auth.admin.deleteUser — requires service key, not doable client-side
+    // Instead: sign out and clear local
+  }
+  localStorage.clear();
+  showToast('Account data cleared. Refresh to sign out.', 'success');
+}
+
+/* ── Sections ── */
+function showSection(id, btn) {
+  document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.sb-nav-item').forEach(b => b.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  if (btn) btn.classList.add('on');
+  // Redraw chart when switching to overview
+  if (id === 'overview') setTimeout(()=>{
+    const local = JSON.parse(localStorage.getItem('gi-local-stats')||'null');
+    if (local) drawEnergyChart(local.energy_hist||[]);
+    else if (isDemoMode) drawEnergyChart(DEMO_STATS.energy_hist);
+  }, 100);
+}
+
+/* ── Supabase DB status ── */
+async function checkDbStatus() {
+  if (!supabase) {
+    document.getElementById('db-status-txt').textContent = 'Local mode';
+    return;
+  }
+  try {
+    const { error } = await supabase.from('profiles').select('id').limit(1);
+    if (!error) {
+      document.getElementById('db-dot').className = 'db-dot connected';
+      document.getElementById('db-status-txt').textContent = 'Supabase';
+    }
+  } catch(e) {
+    document.getElementById('db-status-txt').textContent = 'Offline';
+  }
+}
+
+/* ── Toast ── */
+function showToast(msg, type='success') {
+  document.getElementById('gi-toast')?.remove();
+  const t = document.createElement('div'); t.id = 'gi-toast'; t.className = 'toast'+(type!=='success'?' '+type:'');
+  t.textContent = msg; document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
+/* ── Theme ── */
+function initTheme() {
+  const btn = document.getElementById('theme-btn');
+  const dark = document.getElementById('set-dark');
+  if (localStorage.getItem('gi-theme') === 'light') {
+    document.body.classList.add('light');
+    if (btn) btn.textContent = '🌙 Dark';
+    if (dark) dark.checked = false;
+  }
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const isL = document.body.classList.contains('light');
+    localStorage.setItem('gi-theme', isL ? 'light' : 'dark');
+    btn.textContent = isL ? '🌙 Dark' : '☀️ Light';
+    if (dark) dark.checked = !isL;
+  });
+}
+
+/* ── Auto-login if session stored ── */
+async function checkAutoLogin() {
+  // Check Supabase session
+  if (supabase) {
+    const { data } = await supabase.auth.getSession();
+    if (data?.session?.user) {
+      const u = data.session.user;
+      currentUser = { id:u.id, email:u.email, name:u.user_metadata?.name||u.email.split('@')[0] };
+      showDashboard(currentUser);
+      return;
+    }
+  }
+  // Check local session
+  const stored = JSON.parse(localStorage.getItem('gi-session')||'null');
+  if (stored) { currentUser = stored; showDashboard(stored); return; }
+}
+
+/* ── Nav mobile ── */
+function initNav() {
+  const tog = document.getElementById('nav-toggle');
+  const lnk = document.querySelector('.nav-links');
+  if (!tog || !lnk) return;
+  tog.addEventListener('click', () => {
+    const open = lnk.style.display === 'flex';
+    lnk.style.display = open ? 'none' : 'flex';
+    if (!open) Object.assign(lnk.style, { flexDirection:'column', position:'fixed', top:'64px', left:0, right:0, background:'rgba(8,13,14,.96)', padding:'14px', borderBottom:'1px solid rgba(0,255,160,.1)', zIndex:899 });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  initNav();
+  checkDbStatus();
+  checkAutoLogin();
+
+  // Load settings
+  const savedMode = localStorage.getItem('gi-default-mode') || 'balanced';
+  document.getElementById('set-mode').value = savedMode;
+  const preview = localStorage.getItem('gi-preview') !== '0';
+  document.getElementById('set-preview').checked = preview;
+  const dark = localStorage.getItem('gi-theme') !== 'light';
+  document.getElementById('set-dark').checked = dark;
+  const alerts = localStorage.getItem('gi-alerts') !== '0';
+  document.getElementById('set-alerts').checked = alerts;
+
+  // Active nav
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.getAttribute('href') === '/dashboard') a.classList.add('active');
+  });
+
+  // Redraw chart on resize
+  window.addEventListener('resize', () => {
+    if (isDemoMode) drawEnergyChart(DEMO_STATS.energy_hist);
+  });
+});
+
+/* ══════════════════════════════════════════════
+   CHAT → DASHBOARD BRIDGE
+   Call this from chat.html when a session ends:
+   
+   // In chat.js, after final message:
+   GIDashboard.saveSession({
+     title: S.chatTitle,
+     prompt_count: S.prompts,
+     energy_mwh: S.energy,
+     co2_grams: S.co2,
+     tokens_saved: S.tokSaved,
+     avg_saved_pct: avgSaved,
+     dominant_model: topTier,
+     user_id: currentUser?.id
+   });
+══════════════════════════════════════════════ */
+window.GIDashboard = {
+  async saveSession(sessionData) {
+    // Always save to localStorage
+    const sessions = JSON.parse(localStorage.getItem('gi-chat-sessions')||'[]');
+    sessions.unshift({ ...sessionData, created_at: new Date().toISOString() });
+    localStorage.setItem('gi-chat-sessions', JSON.stringify(sessions.slice(0,50)));
+
+    // Update aggregate stats
+    const stats = JSON.parse(localStorage.getItem('gi-local-stats')||'{"sessions":0,"prompts":0,"energy_mwh":0,"co2_grams":0,"avg_saved_pct":0,"tokens_saved":0,"models":{"s":0,"m":0,"l":0},"energy_hist":[],"sessions_list":[]}');
+    stats.sessions++;
+    stats.prompts += sessionData.prompt_count || 0;
+    stats.energy_mwh += sessionData.energy_mwh || 0;
+    stats.co2_grams += sessionData.co2_grams || 0;
+    stats.tokens_saved += sessionData.tokens_saved || 0;
+    if (sessionData.dominant_model === 'small') stats.models.s++;
+    else if (sessionData.dominant_model === 'medium') stats.models.m++;
+    else stats.models.l++;
+    stats.energy_hist.push(sessionData.energy_mwh || 0);
+    stats.energy_hist = stats.energy_hist.slice(-20);
+    stats.sessions_list = sessions.slice(0,10);
+    const n = stats.sessions;
+    stats.avg_saved_pct = Math.round((stats.avg_saved_pct*(n-1) + (sessionData.avg_saved_pct||0)) / n);
+    localStorage.setItem('gi-local-stats', JSON.stringify(stats));
+
+    // Save to Supabase if available
+    if (supabase && sessionData.user_id) {
+      try {
+        await supabase.from('sessions').insert(sessionData);
+      } catch(e) { console.warn('Supabase save failed:', e); }
+    }
+  }
+};
+</script>
+</body>
+</html>
