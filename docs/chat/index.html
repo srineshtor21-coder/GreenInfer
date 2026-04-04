@@ -6,47 +6,79 @@
   <title>GreenInfer — Chat</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 :root {
   --void:#080d0e; --deep:#0b1214; --surface:#111c1e; --raised:#172226; --card:#1a272b;
-  --b0:rgba(0,255,160,.08); --b1:rgba(0,255,160,.18); --b2:rgba(0,255,160,.4);
-  --g:#00ffa0; --gs:#00d484; --gm:#009b62; --gd:rgba(0,255,160,.10);
-  --teal:#00e5cc; --amber:#f5a623; --red:#ff4d6d;
-  --t1:#e8f5f0; --t2:#8ab5a8; --t3:#4a7068; --t4:#2a4540;
-  --fd:'Syne',sans-serif; --fb:'DM Sans',sans-serif; --fm:'JetBrains Mono',monospace;
+  --b0:rgba(0,210,130,.08); --b1:rgba(0,210,130,.18); --b2:rgba(0,210,130,.4);
+  /* Softer green in dark mode - not eye-searing neon */
+  --g:#00d484; --gs:#00b86e; --gm:#008050; --gd:rgba(0,212,132,.10);
+  --teal:#00c4b0; --amber:#f5a623; --red:#ff4d6d;
+  --t1:#d8eee6; --t2:#8aaa9e; --t3:#4a6860; --t4:#2a4038;
+  --fd:'Plus Jakarta Sans',sans-serif; --fb:'Inter',sans-serif; --fm:'JetBrains Mono',monospace;
   --r1:6px; --r2:12px; --r3:20px; --r4:32px;
   --nav:64px; --sb:268px;
 }
 
-/* LIGHT MODE */
+/* LIGHT MODE - proper contrast */
 body.light {
-  --void:#f5f7f6; --deep:#edf1ef; --surface:#e4eae7; --raised:#d8e0dc; --card:#ccd7d2;
-  --b0:rgba(0,100,60,.09); --b1:rgba(0,100,60,.18); --b2:rgba(0,130,70,.45);
-  --gd:rgba(0,150,80,.10);
-  --t1:#0a1a12; --t2:#1e4032; --t3:#3a6050; --t4:#6a9080;
-  --g:#007a4a; --gs:#005e38; --gm:#004a2c; --teal:#006a60; --amber:#b06010; --red:#cc3355;
+  --void:#f7faf8; --deep:#edf3ef; --surface:#e2eae5; --raised:#d4dfd8; --card:#c6d4cc;
+  --b0:rgba(0,100,60,.1); --b1:rgba(0,100,60,.2); --b2:rgba(0,130,70,.5);
+  --gd:rgba(0,150,80,.12);
+  --t1:#0c1f16; --t2:#1a4030; --t3:#2e6048; --t4:#5a8870;
+  --g:#006e3e; --gs:#005a32; --gm:#004828; --teal:#006058; --amber:#a05800; --red:#b82040;
 }
-body.light .nav { background:rgba(245,247,246,.96); border-color:rgba(0,100,60,.12); }
-body.light .chat-sidebar { background:#edf1ef; border-color:rgba(0,100,60,.12); }
-body.light .chat-main { background:#f5f7f6; }
-body.light .msg-body { background:#e4eae7; border-color:rgba(0,100,60,.14); color:#0a1a12; }
-body.light .msg-wrap.user .msg-body { background:#d8e0dc; border-color:rgba(0,100,60,.2); }
-body.light .input-box { background:#e4eae7; border-color:rgba(0,100,60,.22); }
-body.light #chat-input { color:#0a1a12; }
-body.light .chat-header { background:rgba(245,247,246,.8); }
-body.light .sug-card { background:#e4eae7; border-color:rgba(0,100,60,.12); }
-body.light .sug-card:hover { background:#d8e0dc; border-color:var(--g); }
-body.light .hist-item:hover { background:#d8e0dc; }
-body.light .hist-item.on { background:#ccd7d2; }
-body.light .sidebar-carbon { background:#edf1ef; }
-body.light .mode-tabs { background:#d8e0dc; }
-body.light .m-chip { background:#d8e0dc; border-color:rgba(0,100,60,.14); }
-body.light .prev-box { background:#e4eae7; border-color:var(--g); }
-body.light .chat-panel { background:#edf1ef; border-color:rgba(0,100,60,.12); }
-body.light .gscore { background:rgba(0,150,80,.07); border-color:rgba(0,150,80,.2); }
-body.light .why-panel { background:#d8e0dc; border-color:rgba(0,100,60,.12); }
-
+body.light .nav { background:rgba(247,250,248,.97); border-color:rgba(0,100,60,.14); }
+body.light .chat-sidebar { background:#edf3ef; border-color:rgba(0,100,60,.14); }
+body.light .chat-main { background:#f7faf8; }
+body.light .msg-body { background:#e2eae5; border-color:rgba(0,100,60,.16); color:#0c1f16; }
+body.light .msg-wrap.user .msg-body { background:#006e3e; color:#fff; border-color:#005a32; }
+body.light .msg-wrap.user .msg-name { color:rgba(255,255,255,.7); }
+body.light .msg-wrap.user .msg-time { color:rgba(255,255,255,.5); }
+body.light .input-box { background:#e2eae5; border-color:rgba(0,100,60,.24); }
+body.light #chat-input { color:#0c1f16; }
+body.light .chat-header { background:rgba(247,250,248,.85); border-color:rgba(0,100,60,.14); }
+body.light .sug-card { background:#e2eae5; border-color:rgba(0,100,60,.14); }
+body.light .sug-card:hover { background:#d4dfd8; border-color:var(--g); }
+body.light .sug-txt { color:#1a4030; }
+body.light .sug-txt strong { color:#0c1f16; }
+body.light .hist-item:hover { background:#d4dfd8; }
+body.light .hist-item.on { background:#c6d4cc; border-color:rgba(0,100,60,.2); }
+body.light .sidebar-carbon { background:#edf3ef; border-color:rgba(0,100,60,.14); }
+body.light .mode-tabs { background:#d4dfd8; border-color:rgba(0,100,60,.14); }
+body.light .mode-tab { color:#2e6048; }
+body.light .mode-tab.on { background:#e2eae5; color:var(--g); }
+body.light .m-chip { background:#d4dfd8; border-color:rgba(0,100,60,.16); }
+body.light .m-chip .lbl { color:#5a8870; }
+body.light .m-chip .val { color:var(--g); }
+body.light .prev-box { background:#e2eae5; border-color:var(--g); }
+body.light .chat-panel { background:#edf3ef; border-color:rgba(0,100,60,.14); }
+body.light .gscore { background:rgba(0,110,62,.08); border-color:rgba(0,110,62,.22); }
+body.light .why-panel { background:#d4dfd8; border-color:rgba(0,100,60,.14); }
+body.light .why-row::before { color:var(--g); }
+body.light .meta-tag { background:#d4dfd8; border-color:rgba(0,100,60,.14); color:#2e6048; }
+body.light .inf-meta .meta-dot { opacity:.8; }
+body.light .e-chart { background:#d4dfd8; border-color:rgba(0,100,60,.14); }
+body.light .model-viz { background:#d4dfd8; border-color:rgba(0,100,60,.14); }
+body.light .model-r-name { color:#1a4030; }
+body.light .new-btn { color:var(--g); border-color:rgba(0,100,60,.3); }
+body.light .sb-head-lbl { color:#5a8870; }
+body.light .panel-ttl { color:#5a8870; }
+body.light .m-row .k { color:#5a8870; }
+body.light .m-row .v { color:var(--g); }
+body.light .nav-logo-txt { color:#0c1f16; }
+body.light .nbtn { color:#2e6048; border-color:rgba(0,100,60,.2); }
+body.light .nbtn:hover { color:var(--g); border-color:var(--g); }
+body.light .hbtn { color:#5a8870; border-color:rgba(0,100,60,.16); }
+body.light .hbtn:hover { color:var(--g); border-color:var(--g); }
+body.light .ch-title { color:#0c1f16; }
+body.light .typing-ind .ty-txt { color:#2e6048; }
+body.light .in-footer { color:#5a8870; }
+body.light .empty-title { color:#0c1f16; }
+body.light .empty-sub { color:#2e6048; }
+body.light .sb-toggle { background:#e2eae5; color:#2e6048; border-color:rgba(0,100,60,.18); }
+body.light .sb-open-btn { background:#e2eae5; color:#2e6048; border-color:rgba(0,100,60,.18); }
+/* Theme color variables in light mode get set by JS *
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html { scroll-behavior:smooth; }
 body { font-family:var(--fb); background:var(--void); color:var(--t1); -webkit-font-smoothing:antialiased; overflow:hidden; height:100vh; transition:background .25s,color .25s; }
@@ -201,8 +233,8 @@ a { color:var(--g); text-decoration:none; }
 .av-u { background:rgba(0,229,204,.1);border:1px solid rgba(0,229,204,.2);color:var(--teal); }
 .msg-name { font-size:.75rem;font-weight:600;color:var(--t2); }
 .msg-time { font-size:.65rem;color:var(--t4);font-family:var(--fm); }
-.msg-body { background:var(--surface);border:1px solid var(--b0);border-radius:var(--r2);padding:12px 14px;font-size:.9rem;line-height:1.78;color:var(--t1);transition:background .25s,border-color .25s; }
-.msg-wrap.user .msg-body { background:var(--raised);border-color:var(--b1); }
+.msg-body { background:var(--surface);border:1px solid var(--b0);border-radius:var(--r2);padding:12px 14px;font-size:.9rem;line-height:1.82;color:#cde8df;transition:background .25s,border-color .25s; }
+.msg-wrap.user .msg-body { background:rgba(0,212,132,.14);border-color:rgba(0,212,132,.28);color:#d8eee6; }
 .msg-img { max-width:280px;border-radius:var(--r2);margin-bottom:6px;display:block;border:1px solid var(--b0); }
 
 /* Markdown */
@@ -318,7 +350,28 @@ a { color:var(--g); text-decoration:none; }
 
 /* RIGHT PANEL */
 .chat-panel { width:214px;flex-shrink:0;border-left:1px solid var(--b0);background:var(--deep);display:flex;flex-direction:column;overflow-y:auto;padding:11px;transition:background .25s; }
-.panel-ttl { font-size:.65rem;font-family:var(--fm);color:var(--t4);letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--b0); }
+.panel-ttl { font-size:.65rem;font-family:var(--fm);color:var(--t4);letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--b0);display:flex;align-items:center;justify-content:space-between; }
+
+/* Info circle tooltip */
+.info-circle {
+  width:14px;height:14px;border-radius:50%;background:var(--raised);border:1px solid var(--b0);
+  color:var(--t3);font-size:.6rem;cursor:pointer;display:inline-flex;align-items:center;
+  justify-content:center;position:relative;flex-shrink:0;font-style:normal;
+  transition:all .15s;font-family:var(--fm);
+}
+.info-circle:hover { border-color:var(--g);color:var(--g); }
+.info-circle::after {
+  content:attr(data-tip);
+  position:absolute;right:0;top:100%;margin-top:5px;
+  background:var(--card);border:1px solid var(--b1);
+  color:var(--t1);font-size:.72rem;font-family:var(--fb);
+  padding:7px 10px;border-radius:var(--r2);width:200px;
+  white-space:normal;line-height:1.5;z-index:500;
+  opacity:0;pointer-events:none;transition:opacity .15s;
+  text-transform:none;letter-spacing:0;font-weight:400;
+}
+.info-circle:hover::after { opacity:1; }
+
 .m-row { display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--b0);font-size:.75rem; }
 .m-row .k { color:var(--t3); } .m-row .v { font-family:var(--fm);color:var(--g);font-size:.72rem; }
 .e-chart { height:46px;margin:6px 0;background:var(--raised);border-radius:var(--r1);border:1px solid var(--b0);overflow:hidden;display:flex;align-items:flex-end;padding:3px 3px 0;gap:2px; }
@@ -375,10 +428,79 @@ a { color:var(--g); text-decoration:none; }
 .ct-swatch { width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s; }
 .ct-swatch.on,.ct-swatch:hover { border-color:var(--t1); }
 
-/* RESPONSIVE */
+/* RESPONSIVE — full mobile support */
 @media(max-width:1200px) { .chat-panel { display:none; } }
-@media(max-width:900px) { .chat-sidebar { position:absolute;top:0;left:0;bottom:0;z-index:50;box-shadow:4px 0 20px rgba(0,0,0,.4); } .chat-sidebar.collapsed { width:0; } }
-@media(max-width:600px) { .sug-grid { grid-template-columns:1fr; } .ch-chips { display:none; } .nav-links { display:none; } .nav-mob { display:flex; } }
+
+@media(max-width:900px) {
+  .chat-sidebar {
+    position:fixed;top:var(--nav);left:0;bottom:0;z-index:200;
+    box-shadow:4px 0 24px rgba(0,0,0,.5);
+    transition:transform .24s ease, opacity .24s ease;
+    transform:translateX(0);
+  }
+  .chat-sidebar.collapsed {
+    transform:translateX(-100%);
+    opacity:0;
+    pointer-events:none;
+    width:var(--sb); /* keep width, use transform */
+  }
+  .sb-overlay {
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:199;
+  }
+  .sb-overlay.show { display:block; }
+}
+
+@media(max-width:640px) {
+  :root { --nav:56px; }
+  .nav-in { padding:0 12px; }
+  .nav-logo-txt { font-size:.95rem; }
+  .nav-right .nbtn:not(.nbtn-g) { display:none; } /* hide Log In on small, keep Sign Up */
+  .nbtn-g { padding:5px 11px; font-size:.78rem; }
+  .nav-links { display:none; }
+  .nav-mob { display:flex; }
+
+  .chat-layout { flex-direction:column; }
+
+  .chat-header { padding:7px 12px; gap:6px; flex-wrap:wrap; }
+  .ch-left { min-width:0; flex:1; }
+  .ch-title { font-size:.8rem; max-width:120px; }
+  .ch-chips { display:none; } /* hide chips on mobile — shown in panel */
+  .ch-acts .hbtn { padding:3px 7px; font-size:.69rem; }
+  .ch-acts .hbtn:nth-child(2) { display:none; } /* hide Export on mobile */
+
+  .chat-msgs { padding:12px 0; }
+  .msg-wrap { padding:2px 10px; }
+  .msg-bubble { max-width:100% !important; }
+  .msg-body { font-size:.87rem; padding:10px 12px; }
+
+  .chat-input-area { padding:8px 10px 10px; }
+  .input-wrap { max-width:100%; }
+  .input-box { padding:7px 9px 7px 12px; }
+  #chat-input { font-size:.87rem; }
+
+  .sug-grid { grid-template-columns:1fr; gap:6px; }
+  .sug-card { padding:10px 12px; }
+  .empty-title { font-size:1.15rem; }
+  .empty-sub { font-size:.81rem; }
+
+  .signup-nudge { font-size:.72rem; padding:6px 12px; }
+  .status-banner { font-size:.72rem; padding:5px 12px; }
+
+  /* Mode tabs and sidebar controls scale down */
+  .mode-tab { font-size:.65rem; padding:4px 0; }
+  .sb-section-lbl { font-size:.63rem; }
+  .hist-title { font-size:.76rem; }
+
+  /* Tour card fits mobile */
+  .tour-card { width:calc(100vw - 24px) !important; left:12px !important; right:12px !important; }
+}
+
+@media(max-width:400px) {
+  .ch-acts { gap:3px; }
+  .ch-acts .hbtn { display:none; } /* hide all header buttons on tiny screens */
+  .ch-acts #tour-btn-header { display:flex; } /* keep Tour */
+}
+
   </style>
 </head>
 <body>
@@ -443,6 +565,9 @@ a { color:var(--g); text-decoration:none; }
       <div class="grid-row"><div class="grid-dot" id="grid-dot"></div><span id="grid-lbl" class="mono" style="font-size:.69rem;">ERCOT: Clean</span></div>
     </div>
   </aside>
+
+  <!-- Mobile sidebar backdrop -->
+  <div class="sb-overlay" id="sb-overlay" onclick="closeSidebarMobile()"></div>
 
   <!-- MAIN -->
   <main class="chat-main" id="chat-main">
@@ -525,30 +650,61 @@ a { color:var(--g); text-decoration:none; }
 
   <!-- RIGHT PANEL -->
   <aside class="chat-panel">
-    <div class="panel-ttl">Session</div>
+    <div class="panel-ttl">Session
+      <span class="info-circle" data-tip="Stats for your current chat session. Resets on New Chat.">ⓘ</span>
+    </div>
     <div class="m-row"><span class="k">Prompts</span><span class="v" id="p-cnt">0</span></div>
     <div class="m-row"><span class="k">Tokens in</span><span class="v" id="p-tok">0</span></div>
     <div class="m-row"><span class="k">Tokens saved</span><span class="v" id="p-tsaved">0</span></div>
     <div class="m-row"><span class="k">Energy</span><span class="v" id="p-energy">0 mWh</span></div>
-    <div class="m-row"><span class="k">CO&#8322;</span><span class="v" id="p-co2">0.000g</span></div>
+    <div class="m-row"><span class="k">CO₂</span><span class="v" id="p-co2">0.000g</span></div>
     <div class="m-row"><span class="k">Avg saved</span><span class="v" id="p-avg">-</span></div>
-    <div class="panel-ttl" style="margin-top:12px;">Energy / Prompt</div>
-    <div class="e-chart" id="e-chart"><div class="e-bar" style="height:0%"></div></div>
-    <div class="panel-ttl" style="margin-top:4px;">Model Routing</div>
-    <div class="model-viz">
-      <div class="model-r-row"><span class="model-r-name">Small</span><div class="model-r-bar"><div class="model-r-fill" id="bar-s" style="width:0%"></div></div><span class="model-r-cnt" id="cnt-s">0</span></div>
-      <div class="model-r-row"><span class="model-r-name">Medium</span><div class="model-r-bar"><div class="model-r-fill" id="bar-m" style="width:0%;background:var(--teal)"></div></div><span class="model-r-cnt" id="cnt-m">0</span></div>
-      <div class="model-r-row"><span class="model-r-name">Large</span><div class="model-r-bar"><div class="model-r-fill" id="bar-l" style="width:0%;background:var(--amber)"></div></div><span class="model-r-cnt" id="cnt-l">0</span></div>
+
+    <div class="panel-ttl" style="margin-top:12px;">
+      Energy / Msg
+      <span class="info-circle" data-tip="Each point = one message. Higher = more energy used. Expensive prompts spike up; efficient ones stay low.">ⓘ</span>
     </div>
-    <div class="panel-ttl" style="margin-top:12px;">Grid</div>
-    <div class="grid-row" style="margin-top:0;"><div class="grid-dot"></div><span class="mono" style="font-size:.69rem;" id="grid-panel">ERCOT: 198 gCO&#8322;/kWh</span></div>
+    <!-- Line graph canvas -->
+    <canvas id="e-line-chart" height="52" style="width:100%;display:block;margin:4px 0;border-radius:4px;"></canvas>
+    <div style="display:flex;justify-content:space-between;font-size:.59rem;color:var(--t4);font-family:var(--fm);margin-bottom:2px;">
+      <span>oldest</span><span>newest →</span>
+    </div>
+
+    <div class="panel-ttl" style="margin-top:8px;">
+      Model Routing
+      <span class="info-circle" data-tip="How many messages went to each model tier. Small = cheapest/fastest. Large = most capable but uses ~53× more energy.">ⓘ</span>
+    </div>
+    <div class="model-viz">
+      <div class="model-r-row">
+        <span class="model-r-name" style="color:var(--g);">Small</span>
+        <div class="model-r-bar"><div class="model-r-fill" id="bar-s" style="width:0%"></div></div>
+        <span class="model-r-cnt" id="cnt-s">0</span>
+      </div>
+      <div class="model-r-row">
+        <span class="model-r-name" style="color:var(--teal);">Medium</span>
+        <div class="model-r-bar"><div class="model-r-fill" id="bar-m" style="width:0%;background:var(--teal)"></div></div>
+        <span class="model-r-cnt" id="cnt-m">0</span>
+      </div>
+      <div class="model-r-row">
+        <span class="model-r-name" style="color:var(--amber);">Large</span>
+        <div class="model-r-bar"><div class="model-r-fill" id="bar-l" style="width:0%;background:var(--amber)"></div></div>
+        <span class="model-r-cnt" id="cnt-l">0</span>
+      </div>
+    </div>
+
+    <div class="panel-ttl" style="margin-top:12px;">
+      Grid
+      <span class="info-circle" data-tip="ERCOT Texas grid carbon intensity by hour. GreenInfer shifts to Eco mode when the grid is running heavy (fossil fuel heavy).">ⓘ</span>
+    </div>
+    <div class="grid-row" style="margin-top:0;"><div class="grid-dot"></div><span class="mono" style="font-size:.69rem;" id="grid-panel">ERCOT: 198 gCO₂/kWh</span></div>
+
     <div class="panel-ttl" style="margin-top:12px;">Theme</div>
     <div class="color-themes" id="color-themes">
-      <div class="ct-swatch on" data-theme="green" style="background:#00ffa0" title="Green (default)"></div>
-      <div class="ct-swatch" data-theme="teal" style="background:#00e5cc" title="Teal"></div>
+      <div class="ct-swatch on" data-theme="green" style="background:#00d484" title="Green (default)"></div>
+      <div class="ct-swatch" data-theme="teal" style="background:#00c4b0" title="Teal"></div>
       <div class="ct-swatch" data-theme="blue" style="background:#4d9fff" title="Blue"></div>
-      <div class="ct-swatch" data-theme="purple" style="background:#b066ff" title="Purple"></div>
-      <div class="ct-swatch" data-theme="amber" style="background:#f5a623" title="Amber"></div>
+      <div class="ct-swatch" data-theme="purple" style="background:#a060f0" title="Purple"></div>
+      <div class="ct-swatch" data-theme="amber" style="background:#e09030" title="Amber"></div>
     </div>
   </aside>
 </div>
@@ -683,6 +839,8 @@ document.addEventListener('DOMContentLoaded', () => {
   checkBackend();
   loadUser();
   if (!localStorage.getItem('gi-tour-done')) setTimeout(startTour, 1200);
+  // Redraw line graph on resize
+  window.addEventListener('resize', () => { if (S.eHist.length) drawEnergyLineGraph(); });
 });
 
 /* ── Backend ── */
@@ -720,42 +878,88 @@ function initTheme() {
     const isL = document.body.classList.contains('light');
     localStorage.setItem('gi-theme', isL ? 'light' : 'dark');
     btn.textContent = isL ? '🌙 Dark' : '☀️ Light';
+    // Re-apply color theme for correct light/dark variant
+    applyTheme(localStorage.getItem('gi-color-theme') || 'green');
   });
 }
 
 /* ── Color themes ── */
 const THEME_COLORS = {
-  green:  { g:'#00ffa0', teal:'#00e5cc' },
-  teal:   { g:'#00e5cc', teal:'#00ffa0' },
-  blue:   { g:'#4d9fff', teal:'#00e5cc' },
-  purple: { g:'#b066ff', teal:'#ff66cc' },
-  amber:  { g:'#f5a623', teal:'#00e5cc' },
+  green:  { g:'#00d484', teal:'#00c4b0', dark_g:'#00d484', light_g:'#006e3e', userBg:'rgba(0,212,132,.14)', userBorder:'rgba(0,212,132,.28)' },
+  teal:   { g:'#00c4b0', teal:'#00d484', dark_g:'#00c4b0', light_g:'#006058', userBg:'rgba(0,196,176,.14)', userBorder:'rgba(0,196,176,.28)' },
+  blue:   { g:'#4d9fff', teal:'#00c4b0', dark_g:'#4d9fff', light_g:'#2060bb', userBg:'rgba(77,159,255,.14)', userBorder:'rgba(77,159,255,.28)' },
+  purple: { g:'#a060f0', teal:'#c060d0', dark_g:'#a060f0', light_g:'#6030b0', userBg:'rgba(160,96,240,.14)', userBorder:'rgba(160,96,240,.28)' },
+  amber:  { g:'#e09030', teal:'#00c4b0', dark_g:'#e09030', light_g:'#945800', userBg:'rgba(224,144,48,.14)', userBorder:'rgba(224,144,48,.28)' },
 };
+
+// Inject dynamic style for user bubble theming
+const themeStyleEl = document.createElement('style');
+themeStyleEl.id = 'gi-theme-style';
+document.head.appendChild(themeStyleEl);
+
+function applyTheme(key) {
+  const t = THEME_COLORS[key];
+  if (!t) return;
+  const isLight = document.body.classList.contains('light');
+  document.documentElement.style.setProperty('--g', isLight ? t.light_g : t.dark_g);
+  document.documentElement.style.setProperty('--teal', t.teal);
+  // Update user message bubbles to match theme
+  themeStyleEl.textContent = `
+    body:not(.light) .msg-wrap.user .msg-body {
+      background: ${t.userBg} !important;
+      border-color: ${t.userBorder} !important;
+    }
+    body.light .msg-wrap.user .msg-body {
+      background: ${t.light_g} !important;
+      border-color: ${t.light_g} !important;
+      color: #fff !important;
+    }
+    body:not(.light) .mode-tab.on { color: ${t.dark_g} !important; }
+    body:not(.light) .m-chip .val { color: ${t.dark_g} !important; }
+    body:not(.light) .e-bar { background: ${t.dark_g} !important; }
+  `;
+  // Store current theme
+  localStorage.setItem('gi-color-theme', key);
+  document.querySelectorAll('.ct-swatch').forEach(x => x.classList.remove('on'));
+  document.querySelector(`.ct-swatch[data-theme="${key}"]`)?.classList.add('on');
+}
+
 function initColorThemes() {
+  // Load saved theme
+  const saved = localStorage.getItem('gi-color-theme') || 'green';
+  applyTheme(saved);
   document.querySelectorAll('.ct-swatch').forEach(sw => {
-    sw.addEventListener('click', () => {
-      const t = THEME_COLORS[sw.dataset.theme];
-      if (!t) return;
-      document.documentElement.style.setProperty('--g', t.g);
-      document.documentElement.style.setProperty('--teal', t.teal);
-      document.querySelectorAll('.ct-swatch').forEach(x => x.classList.remove('on'));
-      sw.classList.add('on');
-    });
+    sw.addEventListener('click', () => applyTheme(sw.dataset.theme));
   });
 }
 
 /* ── Sidebar toggle ── */
 function initSidebar() {
-  document.getElementById('sb-toggle').addEventListener('click', () => {
+  const sbToggle = document.getElementById('sb-toggle');
+  const sbOpenBtn = document.getElementById('sb-open-btn');
+  const overlay = document.getElementById('sb-overlay');
+
+  if (sbToggle) sbToggle.addEventListener('click', () => {
     S.sidebarOpen = false;
     $sidebar.classList.add('collapsed');
-    $sbOpenBtn.classList.add('show');
+    if (sbOpenBtn) sbOpenBtn.classList.add('show');
+    if (overlay) overlay.classList.remove('show');
   });
-  $sbOpenBtn.addEventListener('click', () => {
+  if (sbOpenBtn) sbOpenBtn.addEventListener('click', () => {
     S.sidebarOpen = true;
     $sidebar.classList.remove('collapsed');
-    $sbOpenBtn.classList.remove('show');
+    sbOpenBtn.classList.remove('show');
+    // On mobile, show overlay
+    if (window.innerWidth <= 900 && overlay) overlay.classList.add('show');
   });
+}
+function closeSidebarMobile() {
+  S.sidebarOpen = false;
+  $sidebar.classList.add('collapsed');
+  const sbOpenBtn = document.getElementById('sb-open-btn');
+  if (sbOpenBtn) sbOpenBtn.classList.add('show');
+  const overlay = document.getElementById('sb-overlay');
+  if (overlay) overlay.classList.remove('show');
 }
 
 /* ── Nav ── */
@@ -892,31 +1096,71 @@ function greenScore(e,ts,c) {
   return Math.min(Math.round(ef+tf+cb),100);
 }
 
-/* ── Smart Preview ── */
+/* ── Smart Preview — uses real AI for actual summaries ── */
 async function getPreview(prompt) {
   if (!S.backendOk) return buildLocalPreview(prompt);
   try {
-    const r = await Promise.race([
-      fetch(`${BACKEND}/analyze`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({prompt, mode:S.mode})}),
-      new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')),8000))
+    // Use AI to generate a real preview summary
+    const metaPrompt = `You are a preview generator. Given a user question, write a 2-sentence preview of what a thorough answer would cover, then list 3-4 specific topics the answer will address. Be specific to the actual question content—no generic phrases.
+
+User question: "${prompt.substring(0,300)}"
+
+Reply in this exact format:
+SUMMARY: [2 specific sentences about what the answer covers]
+OUTLINE:
+- [specific topic 1]
+- [specific topic 2]
+- [specific topic 3]`;
+
+    const res = await Promise.race([
+      fetch(`${BACKEND}/chat`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({prompt: metaPrompt, mode:'eco', context:[]})
+      }),
+      new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')),10000))
     ]);
-    if (!r.ok) throw new Error('failed');
-    const d = await r.json();
-    return buildPreviewFromData(d, prompt);
-  } catch(e) { return buildLocalPreview(prompt); }
+    if (!res.ok) throw new Error('failed');
+    const d = await res.json();
+    const text = d.response || '';
+    const summaryMatch = text.match(/SUMMARY:\s*(.+?)(?:\n|OUTLINE:|$)/s);
+    const outlineMatch = text.match(/OUTLINE:\s*([\s\S]+)/);
+    if (summaryMatch && outlineMatch) {
+      const summary = summaryMatch[1].replace(/\n/g,' ').trim();
+      const outline = outlineMatch[1].split('\n')
+        .map(l => l.replace(/^[-•*\d.]\s*/, '').trim())
+        .filter(l => l.length > 3).slice(0,4);
+      const c = complexity(prompt);
+      const label = c<35?'Low':c<65?'Medium':'High';
+      return {summary, outline, label, saved: Math.floor(prompt.split(/\s+/).length*.35)};
+    }
+  } catch(e) { /* fall through to local */ }
+  return buildLocalPreview(prompt);
 }
-function buildPreviewFromData(d, prompt) {
-  const l=prompt.toLowerCase(); let summary,outline;
-  if (d.complexity_label==='Low') { summary='Straightforward query. A concise answer follows.'; outline=['Direct answer','Key facts']; }
-  else if (d.complexity_label==='Medium') { summary='Structured explanation needed. Core concepts covered clearly.'; outline=['Overview','Key mechanisms','Examples']; }
-  else { summary='Complex query requiring detailed coverage.'; outline=/code|function|python/i.test(l)?['Approach','Implementation','Usage']:['Background','Analysis','Conclusions']; }
-  return {summary,outline,label:d.complexity_label||'Medium',saved:d.tokens_saved||0};
-}
+
 function buildLocalPreview(prompt) {
-  const c=complexity(prompt); const l=prompt.toLowerCase(); let label,summary,outline;
-  if (c<35) { label='Low'; summary='Straightforward — concise answer coming.'; outline=['Answer','Key facts']; }
-  else if (c<65) { label='Medium'; summary='Structured explanation. Main concepts covered.'; outline=['Overview','Key points','Examples']; }
-  else { label='High'; summary='Complex query — detailed coverage ahead.'; outline=/code|python/i.test(l)?['Approach','Code','Examples']:['Background','Analysis','Conclusions']; }
+  const c=complexity(prompt); const l=prompt.toLowerCase();
+  const words = prompt.split(/\s+/).filter(Boolean);
+  const topic = words.filter(w => w.length>4 && !/what|when|where|why|how|give|tell|make|write|explain|describe|create|list|please|could|would/i.test(w)).slice(0,3).join(' ') || 'this topic';
+  let label,summary,outline;
+  if (c<35) {
+    label='Low';
+    summary=`A direct answer about ${topic}, with key facts and context.`;
+    outline=['Core answer','Key facts','Brief explanation','Summary'];
+  } else if (c<65) {
+    label='Medium';
+    summary=`A structured breakdown of ${topic}, covering the main concepts clearly with examples.`;
+    outline = /compare|versus|vs/i.test(l)
+      ? ['Overview of both options','Key differences','Pros and cons','When to use each']
+      : ['Background and overview','Core mechanisms','Real-world examples','Key takeaways'];
+  } else {
+    label='High';
+    summary=`An in-depth analysis of ${topic}, covering background, mechanisms, and implications.`;
+    outline = /code|python|javascript|implement|function/i.test(l)
+      ? ['Problem analysis and approach','Full implementation','Edge cases','Usage and testing']
+      : /essay|speech|write.*about/i.test(l)
+      ? ['Introduction and thesis','Main arguments','Supporting evidence','Conclusion']
+      : ['Background context','Detailed mechanisms','Analysis','Conclusions and implications'];
+  }
   return {summary,outline,label,saved:Math.floor(prompt.split(/\s+/).length*.35)};
 }
 
@@ -952,6 +1196,7 @@ async function send(text, skipPrev=false, imgList=null) {
   const imgs = imgList || [...S.imgs];
   if ($empty) $empty.style.display='none';
   S.generating=true;
+  userScrolled = false; // reset scroll lock on new send
 
   /* Auto-title first message */
   if (S.prompts===0) {
@@ -987,7 +1232,9 @@ async function send(text, skipPrev=false, imgList=null) {
   try {
     if (!S.backendOk) throw new Error('offline');
     const ctxMsgs = S.ctx.slice(-6).map(m => ({role:m.role, content:m.content}));
-    const body = {prompt:text, mode:S.mode, context:ctxMsgs};
+    // Detect if user asked for long response and boost max tokens accordingly
+    const wantsLong = /\b(5000|5k|10k|essay|long|detailed|comprehensive|in.depth|thorough|extensive|full|complete|everything)\b/i.test(text);
+    const body = {prompt:text, mode:S.mode, context:ctxMsgs, max_tokens: wantsLong ? 4096 : 2048};
     if (imgs.length) { body.images=imgs.map(i=>({type:'image_url',image_url:{url:i.dataUrl}})); if(S.mode==='eco') body.force_tier='m'; }
 
     const res = await Promise.race([
@@ -1189,7 +1436,7 @@ function renderMd(text) {
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-/* ── Metrics ── */
+/* ── Metrics + Line Graph ── */
 function updateMetrics(spct) {
   const m=S.models; const top=Object.entries(m).sort((a,b)=>b[1]-a[1])[0];
   if (top[1]>0) document.getElementById('cur-model').textContent=MODELS[top[0]]?.name||top[0];
@@ -1201,9 +1448,10 @@ function updateMetrics(spct) {
   document.getElementById('p-co2').textContent=S.co2.toFixed(5)+'g';
   const avg=S.savedPctN>0?Math.round(S.savedPctSum/S.savedPctN):0;
   document.getElementById('p-avg').textContent=avg+'% avg';
-  const chart=document.getElementById('e-chart'); chart.innerHTML='';
-  const maxE=Math.max(...S.eHist,.001);
-  S.eHist.slice(-14).forEach(e=>{const b=document.createElement('div');b.className='e-bar';b.style.height=Math.max(5,(e/maxE)*100)+'%';chart.appendChild(b);});
+
+  // Draw line graph on canvas
+  drawEnergyLineGraph();
+
   const tot=S.prompts||1;
   ['s','m','l'].forEach(k=>{const pct=(m[k]/tot)*100;document.getElementById('bar-'+k).style.width=pct+'%';document.getElementById('cnt-'+k).textContent=m[k];});
   const bpct=(S.budget/S.budgetLim)*100;
@@ -1213,20 +1461,113 @@ function updateMetrics(spct) {
   if (bpct>80) { document.getElementById('bgt-fill').style.background='var(--red)'; document.getElementById('grid-dot').style.background='var(--red)'; }
 }
 
+function drawEnergyLineGraph() {
+  const canvas = document.getElementById('e-line-chart');
+  if (!canvas) return;
+  const hist = S.eHist.slice(-20); // last 20 messages
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth || 190;
+  const H = 52;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  if (hist.length === 0) {
+    // Empty state
+    ctx.strokeStyle = 'rgba(0,212,132,0.15)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(0, H/2); ctx.lineTo(W, H/2); ctx.stroke();
+    ctx.setLineDash([]);
+    return;
+  }
+
+  const maxE = Math.max(...hist, 0.001);
+  const pad = { top:6, bottom:6, left:4, right:4 };
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+
+  // Get accent color from CSS variable
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--g').trim() || '#00d484';
+
+  // Draw grid lines (subtle)
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 0.5;
+  for (let i=1; i<4; i++) {
+    const y = pad.top + (cH/4)*i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left+cW, y); ctx.stroke();
+  }
+
+  // Build point coordinates
+  const pts = hist.map((e,i) => ({
+    x: pad.left + (hist.length===1 ? cW/2 : (i/(hist.length-1))*cW),
+    y: pad.top + cH - (e/maxE)*cH
+  }));
+
+  // Draw gradient fill under line
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top+cH);
+  grad.addColorStop(0, accent.replace('#', 'rgba(').replace(/^rgba\(([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/, (_,r,g,b)=>`rgba(${parseInt(r,16)},${parseInt(g,16)},${parseInt(b,16)}`)+', 0.22)');
+  // Simpler gradient using hardcoded rgba based on theme
+  const gradFill = ctx.createLinearGradient(0, pad.top, 0, pad.top+cH);
+  gradFill.addColorStop(0, 'rgba(0,212,132,0.2)');
+  gradFill.addColorStop(1, 'rgba(0,212,132,0.02)');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pad.top+cH);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, pad.top+cH);
+  ctx.closePath();
+  ctx.fillStyle = gradFill;
+  ctx.fill();
+
+  // Draw line
+  ctx.strokeStyle = 'rgba(0,212,132,0.85)';
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  pts.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+  ctx.stroke();
+
+  // Draw dots at each point
+  pts.forEach((p,i) => {
+    const isLast = i === pts.length-1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, isLast ? 3 : 2, 0, Math.PI*2);
+    ctx.fillStyle = isLast ? 'rgba(0,212,132,1)' : 'rgba(0,212,132,0.6)';
+    ctx.fill();
+  });
+}
+
 /* ── Sidebar history ── */
 function addHistItem(text, co2) {
   const hist=document.getElementById('sb-history');
-  const item=document.createElement('div'); item.className='hist-item';
-  const title=S.prompts===1?S.chatTitle:text.substring(0,34)+(text.length>34?'...':'');
+  // FIND the currently active item and UPDATE it (don't create new per message)
+  const existingActive = hist.querySelector('.hist-item.on');
+  if (existingActive && S.prompts > 1) {
+    // Update CO2 tally on the existing active item
+    const metaEl = existingActive.querySelector('.hist-meta span:last-child');
+    if (metaEl) metaEl.textContent = S.co2.toFixed(5)+'g';
+    return; // Don't create a new item
+  }
+  // Only create a new item for the FIRST message of a new chat
+  const item=document.createElement('div'); item.className='hist-item on';
+  const title = S.chatTitle || autoTitle(text);
   item.innerHTML=`<div class="hist-title">${title}</div><div class="hist-meta"><span>Now</span><span>${co2.toFixed(5)}g</span></div><button class="hist-del" onclick="event.stopPropagation();this.closest('.hist-item').remove()">✕</button>`;
   item.onclick=()=>{hist.querySelectorAll('.hist-item').forEach(i=>i.classList.remove('on'));item.classList.add('on');};
-  hist.insertBefore(item,hist.firstChild);
   hist.querySelectorAll('.hist-item').forEach(i=>i.classList.remove('on'));
-  item.classList.add('on');
+  // Remove any placeholder "New conversation" items
+  hist.querySelectorAll('.hist-item').forEach(i=>{
+    if(i.querySelector('.hist-title')?.textContent==='New conversation') i.remove();
+  });
+  hist.insertBefore(item,hist.firstChild);
 }
 function updateHistTitle(title) {
-  const first=document.querySelector('#sb-history .hist-item');
-  if (first) first.querySelector('.hist-title').textContent=title;
+  const active=document.querySelector('#sb-history .hist-item.on');
+  if (active) active.querySelector('.hist-title').textContent=title;
 }
 
 /* ── Grid ── */
@@ -1381,10 +1722,32 @@ function newChat() {
   item.classList.add('on');
 }
 
-/* ── Utils ── */
-window.useSug = function(text) { $input.value=text; $input.dispatchEvent(new Event('input')); $input.focus(); };
-function scrollBot() { $msgs.scrollTop=$msgs.scrollHeight; }
+/* ── Smart scroll - stops if user manually scrolls up ── */
+let userScrolled = false;
+document.addEventListener('DOMContentLoaded', () => {
+  // Detect user scrolling up
+  setTimeout(()=>{
+    const msgs = document.getElementById('chat-msgs');
+    if (msgs) {
+      msgs.addEventListener('scroll', () => {
+        const distFromBottom = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight;
+        userScrolled = distFromBottom > 80; // more than 80px from bottom = user scrolled up
+      });
+    }
+  }, 100);
+});
+function scrollBot() {
+  if (userScrolled) return; // Don't force-scroll if user scrolled up
+  const msgs = document.getElementById('chat-msgs');
+  if (msgs) msgs.scrollTo({top: msgs.scrollHeight, behavior:'smooth'});
+}
+function forceScrollBot() {
+  userScrolled = false;
+  const msgs = document.getElementById('chat-msgs');
+  if (msgs) msgs.scrollTo({top: msgs.scrollHeight, behavior:'smooth'});
+}
 function delay(ms) { return new Promise(r=>setTimeout(r,ms)); }
+window.useSug = function(text) { $input.value=text; $input.dispatchEvent(new Event('input')); $input.focus(); userScrolled=false; };
 </script>
 </body>
 </html>
