@@ -1462,6 +1462,24 @@ function newChat() {
   hist.insertBefore(item,hist.firstChild);
   hist.querySelectorAll('.hist-item').forEach(i=>i.classList.remove('on'));
   item.classList.add('on');
+  if (S.prompts > 0) {
+  const topTier = Object.entries(S.models).sort((a,b)=>b[1]-a[1])[0][0];
+  const tierMap = { s:'small', m:'medium', l:'large' };
+  const avgSaved = S.savedPctN > 0 ? Math.round(S.savedPctSum/S.savedPctN) : 0;
+  if (window.GIDashboard) {
+    window.GIDashboard.saveSession({
+      title: S.chatTitle,
+      prompt_count: S.prompts,
+      energy_mwh: Number(S.energy.toFixed(4)),
+      co2_grams: Number(S.co2.toFixed(6)),
+      tokens_saved: S.tokSaved,
+      avg_saved_pct: avgSaved,
+      dominant_model: tierMap[topTier] || 'small',
+      mode: S.mode,
+      user_id: S.user?.id
+    });
+  }
+}
 }
 
 /* ── Smart scroll ── */
