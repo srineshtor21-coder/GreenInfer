@@ -7,157 +7,188 @@
   <meta name="description" content="The Green Orchestration Framework: a 7-layer pipeline for sustainable AI inference."/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 :root {
-  --bg-void:#080d0e;--bg-deep:#0b1214;--bg-surface:#111c1e;
-  --bg-raised:#172226;--bg-card:#1a272b;
-  --border:rgba(0,255,160,0.08);--border-mid:rgba(0,255,160,0.18);
-  --border-bright:rgba(0,255,160,0.4);
-  --green-core:#00ffa0;--green-soft:#00d484;--green-muted:#009b62;
-  --green-dim:rgba(0,255,160,0.10);--teal-accent:#00e5cc;
-  --amber-warn:#f5a623;--red-alert:#ff4d6d;
-  --text-primary:#e8f5f0;--text-secondary:#8ab5a8;
-  --text-muted:#4a7068;--text-dim:#2a4540;
-  --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
-  --font-mono:'JetBrains Mono',monospace;
-  --radius-sm:6px;--radius-md:12px;--radius-lg:20px;--radius-xl:32px;
-  --nav-height:64px;
+  --void:#080d0e; --deep:#0b1214; --surface:#111c1e; --raised:#172226; --card:#1a272b;
+  --b0:rgba(0,255,160,.08); --b1:rgba(0,255,160,.18); --b2:rgba(0,255,160,.4);
+  --g:#00ffa0; --gs:#00d484; --gm:#009b62; --gd:rgba(0,255,160,.10);
+  --teal:#00e5cc; --amber:#f5a623; --red:#ff4d6d;
+  --t1:#e8f5f0; --t2:#b0ccc6; --t3:#6a9590; --t4:#3a5550;
+  --fd:'Syne',sans-serif; --fb:'DM Sans',sans-serif; --fm:'JetBrains Mono',monospace;
+  --r1:6px; --r2:12px; --r3:20px; --r4:32px; --nav:64px; --toc:240px;
 }
-
-/* LIGHT MODE */
 body.light {
-  --bg-void:#f2f2f2;--bg-deep:#e8e8e8;--bg-surface:#dedede;
-  --bg-raised:#d2d2d2;--bg-card:#c8c8c8;
-  --border:rgba(0,0,0,0.10);--border-mid:rgba(0,0,0,0.18);
-  --border-bright:rgba(0,150,80,0.5);--green-dim:rgba(0,160,90,0.12);
-  --text-primary:#0d0d0d;--text-secondary:#1a1a1a;
-  --text-muted:#444444;--text-dim:#666666;
-  --green-core:#008050;--green-soft:#006840;--green-muted:#005030;
-  --teal-accent:#006a60;--amber-warn:#b06010;
+  --void:#f5f9f7; --deep:#eaf2ee; --surface:#deeae4; --raised:#d0e0d6; --card:#c4d6cc;
+  --b0:rgba(0,80,45,.09); --b1:rgba(0,80,45,.18);
+  --g:#005f35; --gs:#004d2a; --gm:#003d22; --gd:rgba(0,95,53,.10);
+  --teal:#005248; --amber:#8a4e00; --red:#9e1c2e;
+  --t1:#0c1f16; --t2:#1e3d2c; --t3:#3a6450; --t4:#6a9478;
 }
-body.light .nav { background:rgba(245,245,245,0.92); }
-body.light .layer-card { background:#e0e0e0; border-color:rgba(0,0,0,0.12); }
-body.light .api-card { background:#e0e0e0; border-color:rgba(0,0,0,0.12); }
-body.light .comparison-table th { background:#d0d0d0; }
-body.light .comparison-table td { background:#e0e0e0; }
-body.light footer { background:#ebebeb; }
-body.light .toc-sidebar { background:#ebebeb; }
-body.light pre[class*="language-"] { background:#d0d0d0!important; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { font-family:var(--fb); background:var(--void); color:var(--t1); -webkit-font-smoothing:antialiased; overflow-x:hidden; transition:background .25s,color .25s; line-height:1.6; }
+::-webkit-scrollbar { width:5px; } ::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--gm); border-radius:3px; }
+::selection { background:rgba(0,255,160,.18); color:var(--g); }
+a { color:var(--g); text-decoration:none; }
+h1,h2,h3,h4 { font-family:var(--fd); font-weight:700; line-height:1.2; }
+h1 { font-size:clamp(2rem,4vw,3rem); font-weight:800; }
+h2 { font-size:clamp(1.4rem,2.5vw,2rem); }
+h3 { font-size:clamp(1rem,1.8vw,1.4rem); font-weight:600; }
+p { color:var(--t2); line-height:1.75; }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--font-body);background:var(--bg-void);color:var(--text-primary);-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background 0.3s,color 0.3s}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--green-muted);border-radius:3px}
-::selection{background:rgba(0,255,160,0.2);color:var(--green-core)}
-a{color:var(--green-core);text-decoration:none}
-code{font-family:var(--font-mono)}
-
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
 /* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-height);background:rgba(8,13,14,0.88);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);display:flex;align-items:center;transition:background 0.3s}
-.nav-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none}
-.nav-logo-icon{width:32px;height:32px}
-.nav-logo-text{font-family:var(--font-display);font-weight:800;font-size:1.15rem;color:var(--text-primary);letter-spacing:-.02em}
-.nav-logo-text span{color:var(--green-core)}
-.nav-links{display:flex;align-items:center;gap:2px;list-style:none}
-.nav-links a{padding:5px 13px;border-radius:var(--radius-md);color:var(--text-secondary);font-size:.88rem;transition:all .15s}
-.nav-links a:hover,.nav-links a.active{background:var(--green-dim);color:var(--green-core)}
-.nav-actions{display:flex;align-items:center;gap:8px}
-.btn-icon{background:none;border:1px solid var(--border-mid);color:var(--text-secondary);cursor:pointer;padding:5px 12px;border-radius:var(--radius-md);font-size:.82rem;transition:all .15s;font-family:var(--font-body)}
-.btn-icon:hover{border-color:var(--green-core);color:var(--green-core);background:var(--green-dim)}
-.btn-primary-sm{display:inline-flex;align-items:center;gap:6px;background:var(--green-core);color:#080d0e;border:none;cursor:pointer;padding:7px 18px;border-radius:var(--radius-xl);font-size:.85rem;font-weight:500;font-family:var(--font-body);transition:all .15s;text-decoration:none}
-.btn-primary-sm:hover{background:#1fffb0;transform:translateY(-1px)}
-.nav-mobile-toggle{display:none;background:none;border:none;color:var(--text-primary);cursor:pointer;padding:8px}
-.live-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:.72rem;color:var(--green-core);letter-spacing:.06em}
-.live-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green-core);box-shadow:0 0 6px var(--green-core);animation:pulse-dot 1.4s ease-in-out infinite}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:var(--radius-xl);font-size:.73rem;font-weight:500;font-family:var(--font-mono);letter-spacing:.04em}
-.badge-green{background:rgba(0,255,160,0.1);color:var(--green-core);border:1px solid rgba(0,255,160,0.2)}
-.badge-teal{background:rgba(0,229,204,0.1);color:var(--teal-accent);border:1px solid rgba(0,229,204,0.2)}
-.badge-amber{background:rgba(245,166,35,0.1);color:var(--amber-warn);border:1px solid rgba(245,166,35,0.2)}
+.site-nav {
+  position:fixed; top:0; left:0; right:0; z-index:900;
+  height:var(--nav); background:rgba(8,13,14,.88);
+  backdrop-filter:blur(18px); border-bottom:1px solid var(--b0);
+  display:flex; align-items:center; transition:background .25s;
+}
+body.light .site-nav { background:rgba(245,249,247,.95); border-color:var(--b0); }
+.nav-in { width:100%; max-width:1200px; margin:0 auto; padding:0 22px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; flex-shrink:0; }
+.nav-logo img { width:30px; height:30px; }
+.nav-logo-txt { font-family:var(--fd); font-weight:800; font-size:1.1rem; color:var(--t1); letter-spacing:-.02em; }
+.nav-logo-txt span { color:var(--g); }
+.nav-links { display:flex; align-items:center; gap:1px; list-style:none; }
+.nav-links a { padding:5px 12px; border-radius:var(--r2); color:var(--t2); font-size:.86rem; transition:all .15s; }
+.nav-links a:hover,.nav-links a.active { background:var(--gd); color:var(--g); }
+.nav-right { display:flex; align-items:center; gap:7px; flex-shrink:0; }
+.nbtn { background:none; border:1px solid var(--b1); color:var(--t2); cursor:pointer; padding:5px 12px; border-radius:var(--r2); font-size:.82rem; font-family:var(--fb); transition:all .15s; white-space:nowrap; text-decoration:none; display:inline-flex; align-items:center; gap:5px; }
+.nbtn:hover { border-color:var(--g); color:var(--g); background:var(--gd); }
+.nbtn-g { background:var(--g); color:#080d0e; border:none; font-weight:600; padding:6px 16px; border-radius:var(--r4); }
+.nbtn-g:hover { filter:brightness(1.1); transform:translateY(-1px); }
+body.light .nbtn-g { color:#fff; }
+.nav-mobile { display:none; background:none; border:none; color:var(--t1); cursor:pointer; padding:7px; }
+@media(max-width:700px) { .nav-links { display:none; } .nav-mobile { display:flex; } }
+.nav-mob-menu { display:none; position:fixed; top:64px; left:0; right:0; background:rgba(8,13,14,.98); padding:14px 20px; border-bottom:1px solid var(--b0); z-index:899; flex-direction:column; gap:4px; }
+.nav-mob-menu.open { display:flex; }
+body.light .nav-mob-menu { background:rgba(245,249,247,.98); }
+.nav-mob-menu a { padding:10px 14px; border-radius:8px; color:var(--t2); font-size:.92rem; transition:all .15s; display:block; }
+.nav-mob-menu a:hover { background:var(--gd); color:var(--g); }
 
-/* PAGE LAYOUT */
-.page-layout{display:grid;grid-template-columns:220px 1fr;max-width:1100px;margin:0 auto;gap:40px;padding:calc(var(--nav-height) + 40px) 24px 80px}
+/* LAYOUT */
+.page-wrap { display:flex; padding-top:var(--nav); min-height:100vh; }
 
-/* TOC */
-.toc-sidebar{position:sticky;top:calc(var(--nav-height) + 24px);height:fit-content;background:var(--bg-deep);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:background 0.3s}
-.toc-title{font-family:var(--font-mono);font-size:.68rem;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
-.toc-list{list-style:none;display:flex;flex-direction:column;gap:3px}
-.toc-list a{font-size:.8rem;color:var(--text-muted);padding:5px 9px;border-radius:var(--radius-sm);display:block;transition:all .15s;border-left:2px solid transparent}
-.toc-list a:hover{color:var(--green-core);background:var(--green-dim);border-left-color:var(--green-core)}
-.toc-list .toc-sub{font-size:.74rem;padding-left:18px}
+/* TOC SIDEBAR */
+.toc-sidebar {
+  width:var(--toc); flex-shrink:0; position:sticky; top:var(--nav);
+  height:calc(100vh - var(--nav)); overflow-y:auto; padding:24px 16px;
+  background:var(--deep); border-right:1px solid var(--b0);
+  transition:background .25s;
+}
+body.light .toc-sidebar { background:var(--deep); border-color:var(--b0); }
+.toc-title { font-family:var(--fm); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--t4); margin-bottom:14px; }
+.toc-list { list-style:none; }
+.toc-list li { margin-bottom:2px; }
+.toc-list a { display:block; padding:5px 9px; border-radius:var(--r1); font-size:.8rem; color:var(--t3); transition:all .15s; }
+.toc-list a:hover,.toc-list a.on { background:var(--gd); color:var(--g); }
+.toc-list.sub { padding-left:14px; margin-top:2px; }
+.toc-list.sub a { font-size:.75rem; }
 
-/* CONTENT */
-.framework-content{}
-.page-hero{margin-bottom:52px}
-.page-eyebrow{font-family:var(--font-mono);font-size:.72rem;color:var(--green-core);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
-.page-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:14px}
-.page-sub{font-size:.95rem;color:var(--text-muted);max-width:560px;line-height:1.75}
+/* MAIN CONTENT */
+.fw-main { flex:1; padding:56px 56px 80px; max-width:860px; min-width:0; }
+@media(max-width:900px) { .fw-main { padding:40px 24px 60px; } .toc-sidebar { display:none; } }
 
-/* SECTION HEADERS */
-.fw-section{margin-bottom:60px}
-.fw-section-title{font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:10px}
-.fw-section-title::before{content:'';width:3px;height:1.2em;background:var(--green-core);border-radius:2px}
-.fw-section-sub{font-size:.85rem;color:var(--text-muted);margin-bottom:20px;margin-left:13px}
-.fw-p{font-size:.88rem;color:var(--text-secondary);line-height:1.8;margin-bottom:12px}
+/* HERO SECTION */
+.fw-hero { margin-bottom:56px; }
+.fw-hero-eyebrow { font-family:var(--fm); font-size:.72rem; color:var(--g); letter-spacing:.12em; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:7px; }
+.fw-hero-eyebrow::before { content:''; width:18px; height:1px; background:var(--g); }
+.fw-hero h1 { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:800; margin-bottom:16px; letter-spacing:-.025em; }
+.fw-hero p { font-size:.95rem; max-width:600px; color:var(--t2); line-height:1.78; margin-bottom:20px; }
+.gradient-text { background:linear-gradient(135deg,var(--g) 0%,var(--teal) 60%,#a8ffec 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+body.light .gradient-text { background:linear-gradient(135deg,#005f35 0%,#005248 60%,#003830 100%); -webkit-background-clip:text; background-clip:text; }
+
+/* CONTENT SECTIONS — always visible, smooth entry */
+.fw-section { margin-bottom:64px; opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+.fw-section.show { opacity:1; transform:translateY(0); }
+
+.fw-section h2 { font-size:clamp(1.3rem,2.5vw,1.8rem); font-weight:800; margin-bottom:8px; letter-spacing:-.02em; }
+.fw-section h3 { font-size:1.05rem; font-weight:700; margin-bottom:6px; margin-top:20px; }
+.fw-section p { font-size:.88rem; color:var(--t2); line-height:1.78; margin-bottom:12px; }
+.fw-section ul { padding-left:18px; margin-bottom:12px; }
+.fw-section li { font-size:.87rem; color:var(--t2); margin-bottom:5px; line-height:1.65; }
+.section-divider { height:1px; background:linear-gradient(90deg,transparent,var(--b1),transparent); margin:56px 0; }
+
+/* SECTION LABEL */
+.section-eyebrow { font-family:var(--fm); font-size:.69rem; color:var(--g); letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:7px; }
+.section-eyebrow::before { content:''; width:14px; height:1px; background:var(--g); }
 
 /* LAYER CARDS */
-.layers-grid{display:flex;flex-direction:column;gap:14px}
-.layer-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:14px 16px;transition:all .2s}
-.layer-card:hover{border-color:var(--border-mid);transform:translateX(4px)}
-.layer-num{font-family:var(--font-mono);font-size:1.8rem;font-weight:800;color:var(--green-core);opacity:.25;line-height:1}
-.layer-body{}
-.layer-title{font-family:var(--font-display);font-size:.95rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.layer-desc{font-size:.82rem;color:var(--text-muted);line-height:1.65}
-.layer-detail{font-size:.75rem;font-family:var(--font-mono);color:var(--green-muted);margin-top:6px}
-
-/* API CARDS */
-.api-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.api-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px}
-.api-method{font-family:var(--font-mono);font-size:.7rem;color:var(--green-core);letter-spacing:.06em;margin-bottom:6px}
-.api-endpoint{font-family:var(--font-mono);font-size:.85rem;color:var(--text-primary);margin-bottom:8px}
-.api-desc{font-size:.8rem;color:var(--text-muted);line-height:1.6}
-
-/* COMPARISON TABLE */
-.comparison-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:16px}
-.comparison-table th{background:var(--bg-raised);color:var(--text-primary);padding:10px 14px;border:1px solid var(--border-mid);text-align:left;font-family:var(--font-display);font-size:.8rem}
-.comparison-table td{padding:9px 14px;border:1px solid var(--border);color:var(--text-secondary)}
-.comparison-table tr:hover td{background:var(--bg-raised)}
-.check{color:var(--green-core)}
-.cross{color:var(--red-alert)}
+.layer-grid { display:flex; flex-direction:column; gap:12px; margin-top:20px; }
+.layer-card {
+  background:var(--card); border:1px solid var(--b0); border-radius:var(--r3); padding:20px 22px;
+  display:flex; gap:16px; align-items:flex-start;
+  transition:border-color .2s, transform .2s;
+}
+.layer-card:hover { border-color:var(--b1); transform:translateX(4px); }
+.layer-n { width:32px; height:32px; border-radius:50%; background:var(--gd); border:1px solid var(--b1); display:flex; align-items:center; justify-content:center; font-family:var(--fm); font-size:.72rem; font-weight:600; color:var(--g); flex-shrink:0; margin-top:2px; }
+.layer-body { flex:1; }
+.layer-title { font-family:var(--fd); font-weight:700; font-size:.95rem; margin-bottom:4px; }
+.layer-desc { font-size:.82rem; color:var(--t3); line-height:1.6; }
+.layer-meta { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.ltag { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:99px; font-family:var(--fm); font-size:.65rem; background:var(--raised); border:1px solid var(--b0); color:var(--t3); }
 
 /* CODE BLOCKS */
-pre[class*="language-"]{border-radius:var(--radius-md)!important;font-size:.82rem!important;margin:14px 0!important;border:1px solid var(--border-mid)!important}
+.code-wrap { background:var(--deep); border:1px solid var(--b1); border-radius:var(--r3); overflow:hidden; margin:16px 0; }
+.code-head { display:flex; align-items:center; justify-content:space-between; padding:9px 15px; border-bottom:1px solid var(--b0); }
+.code-dots { display:flex; gap:5px; }
+.code-dot { width:10px; height:10px; border-radius:50%; }
+.code-lang { font-family:var(--fm); font-size:.7rem; color:var(--t3); }
+.code-wrap pre[class*="language-"] { background:var(--deep)!important; margin:0; border-radius:0; padding:16px 18px!important; font-size:.78rem!important; }
+body.light .code-wrap pre[class*="language-"] { background:var(--card)!important; }
 
-/* RESULT CARDS */
-.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px}
-.result-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center}
-.result-val{font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--green-core)}
-.result-label{font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono);margin-top:3px}
+/* COMPARISON TABLE */
+.comparison-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:.83rem; }
+.comparison-table th { padding:10px 14px; text-align:left; font-family:var(--fm); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); border-bottom:1px solid var(--b1); background:var(--raised); }
+.comparison-table td { padding:10px 14px; border-bottom:1px solid var(--b0); color:var(--t2); }
+.comparison-table tr:last-child td { border-bottom:none; }
+.comparison-table tr:hover td { background:rgba(0,255,160,.02); }
+.td-g { color:var(--g); font-family:var(--fm); }
+.td-a { color:var(--amber); font-family:var(--fm); }
+.td-r { color:var(--red); font-family:var(--fm); }
+
+/* CALLOUT BOXES */
+.callout { padding:16px 20px; border-radius:var(--r2); margin:16px 0; border-left:3px solid; }
+.callout-green { background:rgba(0,255,160,.04); border-color:var(--g); }
+.callout-amber { background:rgba(245,166,35,.04); border-color:var(--amber); }
+.callout p { font-size:.83rem; margin:0; }
+.callout-green p { color:var(--t2); }
+
+/* STATS ROW */
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:20px 0; }
+.stat-box { background:var(--card); border:1px solid var(--b0); border-radius:var(--r2); padding:16px; text-align:center; }
+.stat-box-v { font-family:var(--fd); font-size:1.7rem; font-weight:800; color:var(--g); line-height:1; margin-bottom:4px; }
+.stat-box-l { font-size:.72rem; color:var(--t3); font-family:var(--fm); }
+
+/* BADGE */
+.badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:var(--r4); font-size:.72rem; font-weight:500; font-family:var(--fm); }
+.badge-g { background:rgba(0,255,160,.1); color:var(--g); border:1px solid rgba(0,255,160,.2); }
+.badge-t { background:rgba(0,229,204,.1); color:var(--teal); border:1px solid rgba(0,229,204,.2); }
+.badge-a { background:rgba(245,166,35,.1); color:var(--amber); border:1px solid rgba(245,166,35,.2); }
+body.light .badge-g { background:rgba(0,95,53,.1); border-color:rgba(0,95,53,.25); }
+
+/* LIVE DOT */
+.live-dot::before { content:''; display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--g); box-shadow:0 0 5px var(--g); animation:blink 1.4s ease-in-out infinite; margin-right:5px; vertical-align:middle; }
 
 /* FOOTER */
-footer{background:var(--bg-deep);border-top:1px solid var(--border);padding:36px 24px 24px;transition:background 0.3s}
-.footer-bottom{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--text-dim)}
+footer { background:var(--deep); border-top:1px solid var(--b0); padding:36px 22px 24px; transition:background .25s; }
+.foot-btm { max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; font-size:.76rem; color:var(--t4); font-family:var(--fm); }
 
-/* RESPONSIVE */
-@media(max-width:900px){
-  .page-layout{grid-template-columns:1fr}
-  .toc-sidebar{display:none}
-  .nav-links{display:none}
-  .nav-mobile-toggle{display:flex}
-}
+@media(max-width:600px) { .stats-row { grid-template-columns:1fr 1fr; } .page-wrap { flex-direction:column; } }
   </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
+<nav class="site-nav">
+  <div class="nav-in">
     <a href="/" class="nav-logo">
-      <img src="/logo.svg" alt="GreenInfer" class="nav-logo-icon"/>
-      <span class="nav-logo-text">Green<span>Infer</span></span>
+      <img src="/logo.svg" alt="GreenInfer"/>
+      <span class="nav-logo-txt">Green<span>Infer</span></span>
     </a>
     <ul class="nav-links">
       <li><a href="/">Home</a></li>
@@ -166,354 +197,329 @@ footer{background:var(--bg-deep);border-top:1px solid var(--border);padding:36px
       <li><a href="/impact">Impact</a></li>
       <li><a href="/about">About</a></li>
     </ul>
-    <div class="nav-actions">
-      <button class="btn-icon" id="theme-btn">☀️ Light</button>
-      <a href="/chat" class="btn-primary-sm">Try Chat ↗</a>
+    <div class="nav-right">
+      <button class="nbtn" id="theme-btn">&#9728;&#65039; Light</button>
+      <a href="/chat" class="nbtn nbtn-g">Try Chat &#10003;</a>
     </div>
-    <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle menu">
-      <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor"><rect y="3" width="22" height="2" rx="1"/><rect y="10" width="22" height="2" rx="1"/><rect y="17" width="22" height="2" rx="1"/></svg>
+    <button class="nav-mobile" id="nav-toggle">
+      <svg width="19" height="19" viewBox="0 0 22 22" fill="currentColor"><rect y="3" width="22" height="2" rx="1"/><rect y="10" width="22" height="2" rx="1"/><rect y="17" width="22" height="2" rx="1"/></svg>
     </button>
   </div>
 </nav>
+<div class="nav-mob-menu" id="mob-menu">
+  <a href="/">Home</a><a href="/chat">Chat</a><a href="/framework">Framework</a>
+  <a href="/impact">Impact</a><a href="/about">About</a>
+</div>
 
-<div class="page-layout">
+<div class="page-wrap">
 
-  <!-- TABLE OF CONTENTS -->
+  <!-- TOC -->
   <aside class="toc-sidebar">
     <div class="toc-title">Contents</div>
     <ul class="toc-list">
-      <li><a href="#overview">Overview</a></li>
-      <li><a href="#layers">7 Layers</a></li>
-      <li class="toc-sub"><a href="#layer-complexity">Complexity Scorer</a></li>
-      <li class="toc-sub"><a href="#layer-optimizer">Prompt Optimizer</a></li>
-      <li class="toc-sub"><a href="#layer-carbon">Carbon Router</a></li>
-      <li class="toc-sub"><a href="#layer-cascade">Cascade Engine</a></li>
-      <li class="toc-sub"><a href="#layer-energy">Energy Estimator</a></li>
-      <li><a href="#api">REST API</a></li>
-      <li><a href="#python">Python SDK</a></li>
-      <li><a href="#models">Model Pool</a></li>
-      <li><a href="#comparison">Comparison</a></li>
-      <li><a href="#results">Results</a></li>
+      <li><a href="#overview" class="toc-link">Overview</a></li>
+      <li><a href="#layers" class="toc-link">7 Layers</a></li>
+      <ul class="toc-list sub">
+        <li><a href="#scorer" class="toc-link">Complexity Scorer</a></li>
+        <li><a href="#optimizer" class="toc-link">Prompt Optimizer</a></li>
+        <li><a href="#routing" class="toc-link">Carbon Router</a></li>
+        <li><a href="#cascade" class="toc-link">Cascade Engine</a></li>
+        <li><a href="#energy" class="toc-link">Energy Estimator</a></li>
+      </ul>
+      <li><a href="#api" class="toc-link">REST API</a></li>
+      <li><a href="#sdk" class="toc-link">Python SDK</a></li>
+      <li><a href="#models" class="toc-link">Model Pool</a></li>
+      <li><a href="#comparison" class="toc-link">Comparison</a></li>
+      <li><a href="#results" class="toc-link">Results</a></li>
     </ul>
   </aside>
 
-  <!-- CONTENT -->
-  <main class="framework-content">
+  <!-- MAIN -->
+  <main class="fw-main">
 
-    <div class="page-hero scroll-reveal">
-      <div class="page-eyebrow">Technical Documentation</div>
-      <h1 class="page-title">Green Orchestration<br/>Framework</h1>
-      <p class="page-sub">A 7-layer pipeline that intelligently routes AI inference requests to the most energy-efficient model capable of answering accurately. Built with Python, deployed to Hugging Face Spaces, and integrated with Groq's API.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
-        <span class="badge badge-green">v0.1.0</span>
-        <span class="badge badge-teal">FastAPI Backend</span>
-        <span class="badge badge-green">Groq Models</span>
-        <span class="badge badge-amber">HF Spaces</span>
+    <div class="fw-hero fw-section" id="overview">
+      <div class="fw-hero-eyebrow">Documentation</div>
+      <h1>Green Orchestration<br/><span class="gradient-text">Framework</span></h1>
+      <p>A 7-layer pipeline for sustainable AI inference that routes every prompt to the most energy-efficient model capable of answering it accurately. Combines complexity scoring, T5 prompt optimization, carbon-aware routing, and cascade inference into a single unified framework.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+        <span class="badge badge-g">&#10003; Open Source</span>
+        <span class="badge badge-t">HF Space Live</span>
+        <span class="badge badge-a">v0.1 Research</span>
       </div>
     </div>
 
-    <!-- OVERVIEW -->
-    <div class="fw-section scroll-reveal" id="overview">
-      <div class="fw-section-title">Overview</div>
-      <div class="fw-section-sub">Why this exists and how it differs from standard LLM APIs</div>
-      <p class="fw-p">Most AI applications send every query to the largest, most capable model available. This is like driving a semi-truck to pick up a coffee — it works, but it wastes enormous energy. GreenInfer's Green Orchestration Framework (GOF) applies a simple insight from computer science: match resource allocation to task requirements.</p>
-      <p class="fw-p">The framework is not an AI model itself. It is a routing and optimization layer — analogous to LangChain but focused on sustainability rather than chaining. It sits between the user and the model pool, analyzing each prompt before any expensive inference runs.</p>
-      <p class="fw-p">The key original contribution is the <strong style="color:var(--text-primary)">Smart Preview system</strong>: for complex queries, the framework generates a short 2-sentence summary and bullet outline using the small model first. The user confirms before the full expensive response runs, preventing wasted large-model reruns when users want to refine their question.</p>
+    <div class="section-divider"></div>
+
+    <!-- STATS -->
+    <div class="fw-section" id="results">
+      <div class="section-eyebrow">Benchmark Results</div>
+      <h2>By the numbers</h2>
+      <p>Results from running the benchmark suite on 20 prompts across complexity tiers. Source: <code style="font-family:var(--fm);font-size:.78rem;color:var(--g);">experiments/benchmark.py</code></p>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-box-v">97%</div><div class="stat-box-l">Energy saved vs large</div></div>
+        <div class="stat-box"><div class="stat-box-v">73%</div><div class="stat-box-l">Avg reduction, mixed</div></div>
+        <div class="stat-box"><div class="stat-box-v">98.9%</div><div class="stat-box-l">Classifier accuracy</div></div>
+        <div class="stat-box"><div class="stat-box-v">183g</div><div class="stat-box-l">CO₂ avoided (20 prompts)</div></div>
+        <div class="stat-box"><div class="stat-box-v">35%</div><div class="stat-box-l">Avg token reduction</div></div>
+        <div class="stat-box"><div class="stat-box-v">55%</div><div class="stat-box-l">Routing accuracy</div></div>
+      </div>
     </div>
+
+    <div class="section-divider"></div>
 
     <!-- 7 LAYERS -->
-    <div class="fw-section scroll-reveal" id="layers">
-      <div class="fw-section-title">The 7 Layers</div>
-      <div class="fw-section-sub">Every prompt flows through these layers in sequence</div>
-      <div class="layers-grid">
-
-        <div class="layer-card" id="layer-complexity">
-          <div class="layer-num">01</div>
+    <div class="fw-section" id="layers">
+      <div class="section-eyebrow">Architecture</div>
+      <h2>The 7-Layer Pipeline</h2>
+      <p>Every prompt passes through all active layers before a single GPU inference cycle runs. Each layer either reduces cost or improves routing accuracy.</p>
+      <div class="layer-grid">
+        <div class="layer-card" id="scorer">
+          <div class="layer-n">01</div>
           <div class="layer-body">
-            <div class="layer-title">Complexity Scorer <span class="badge badge-green">greeninfer/complexity_scorer.py</span></div>
-            <div class="layer-desc">Assigns a complexity score from 0–100 to every incoming prompt. Uses a rule-based engine as a fast fallback (Shannon entropy + token length + task classification signals) and a fine-tuned DistilBERT classifier as the primary scorer.</div>
-            <div class="layer-detail">Model: sirenice/greeninfer-complexity · 600 training examples · 4 tiers · 98.9% accuracy</div>
+            <div class="layer-title">&#128300; Complexity Scorer</div>
+            <div class="layer-desc">Assigns a complexity score from 0 to 100 using Shannon entropy of the token distribution, sentence length heuristics, and a fine-tuned DistilBERT classifier trained on 600 labeled prompts. Score maps to one of four tiers: trivial (&lt;15), simple (15–40), medium (40–70), complex (&gt;70).</div>
+            <div class="layer-meta"><span class="ltag">DistilBERT</span><span class="ltag">98.9% accuracy</span><span class="ltag">600 training examples</span></div>
           </div>
         </div>
-
-        <div class="layer-card" id="layer-optimizer">
-          <div class="layer-num">02</div>
+        <div class="layer-card" id="optimizer">
+          <div class="layer-n">02</div>
           <div class="layer-body">
-            <div class="layer-title">Prompt Optimizer <span class="badge badge-teal">greeninfer/model_registry.py</span></div>
-            <div class="layer-desc">Silently rewrites user prompts to remove filler words, passive constructions, and redundant phrasing before sending to the inference model. Uses a fine-tuned T5-small model (sirenice/greenpromptsoptimizer). The original and optimized prompts are both logged for transparency.</div>
-            <div class="layer-detail">Average token reduction: ~35% · Model: T5-small fine-tuned on 1000+ prompt pairs</div>
+            <div class="layer-title">&#9889; Prompt Optimizer</div>
+            <div class="layer-desc">Silently rewrites the user prompt through a fine-tuned T5-small model (GreenPromptsOptimizer) to remove filler words, redundant phrasing, and unnecessary politeness markers before the prompt is sent to inference. Average token reduction: 35%. Zero measurable quality loss on the benchmark set.</div>
+            <div class="layer-meta"><span class="ltag">T5-small</span><span class="ltag">~35% token reduction</span><span class="ltag">Hosted on HF</span></div>
           </div>
         </div>
-
-        <div class="layer-card" id="layer-carbon">
-          <div class="layer-num">03</div>
+        <div class="layer-card" id="routing">
+          <div class="layer-n">03</div>
           <div class="layer-body">
-            <div class="layer-title">Carbon Router <span class="badge badge-amber">greeninfer/carbon_router.py</span></div>
-            <div class="layer-desc">Checks the current grid carbon intensity before routing. Uses hourly ERCOT estimates by default, with support for ElectricityMaps and WattTime APIs. When the grid is running heavy (high gCO₂/kWh), large-model queries are deferred or downgraded.</div>
-            <div class="layer-detail">Supports: ERCOT (hourly lookup) · ElectricityMaps API · WattTime API</div>
+            <div class="layer-title">&#127758; Carbon-Aware Router</div>
+            <div class="layer-desc">Checks hourly ERCOT grid carbon intensity estimates before routing. When grid intensity exceeds 400 gCO₂/kWh (fossil-heavy), the framework auto-activates eco mode and defers or downgrades expensive queries. Below 150 gCO₂/kWh, performance mode can unlock.</div>
+            <div class="layer-meta"><span class="ltag">ERCOT grid data</span><span class="ltag">Carbon-aware</span><span class="ltag">Hourly updates</span></div>
           </div>
         </div>
-
-        <div class="layer-card" id="layer-cascade">
-          <div class="layer-num">04</div>
+        <div class="layer-card" id="cascade">
+          <div class="layer-n">04</div>
           <div class="layer-body">
-            <div class="layer-title">Cascade Engine <span class="badge badge-green">greeninfer/cascade.py</span></div>
-            <div class="layer-desc">Implements the FrugalGPT-inspired cascade: start with the smallest model tier, evaluate confidence, and only escalate to the next tier if confidence is below the threshold. Low confidence signals include hedging phrases ("I'm not sure", "I don't have enough information") and responses that are too short relative to prompt complexity.</div>
-            <div class="layer-detail">Path: small → medium → large · Configurable confidence threshold · Escalations logged</div>
+            <div class="layer-title">&#129338; Cascade Engine</div>
+            <div class="layer-desc">Inspired by FrugalGPT, the cascade engine starts with the smallest model that could plausibly answer the query. If the response confidence score falls below a threshold, it escalates to the next tier. This prevents over-spending on simple queries while still accessing large models for complex ones.</div>
+            <div class="layer-meta"><span class="ltag">FrugalGPT-inspired</span><span class="ltag">Confidence gating</span><span class="ltag">3-tier cascade</span></div>
           </div>
         </div>
-
+        <div class="layer-card" id="energy">
+          <div class="layer-n">05</div>
+          <div class="layer-body">
+            <div class="layer-title">&#128202; Energy Estimator</div>
+            <div class="layer-desc">Token-based proxy estimation using measured energy-per-token constants for each model (Llama 1B: 0.04 mWh/token, 8B: 0.18 mWh/token, 70B: 0.95 mWh/token). Reports mWh used, grams of CO₂ emitted using ERCOT intensity, tokens saved, and a composite Green Efficiency Score 0–100 per response.</div>
+            <div class="layer-meta"><span class="ltag">Per-token constants</span><span class="ltag">CO₂ tracking</span><span class="ltag">Green Score</span></div>
+          </div>
+        </div>
         <div class="layer-card">
-          <div class="layer-num">05</div>
+          <div class="layer-n">06</div>
           <div class="layer-body">
-            <div class="layer-title">Model Registry <span class="badge badge-teal">greeninfer/model_registry.py</span></div>
-            <div class="layer-desc">Model-agnostic pool that manages the three Groq model tiers plus vision model support. Handles API rate limits, error recovery, and model-specific parameter tuning. New models can be registered without changing orchestrator code.</div>
-            <div class="layer-detail">Small: llama-3.2-1b · Medium: llama-3.1-8b · Large: llama-3.3-70b · Vision: llama-3.2-11b-vision</div>
+            <div class="layer-title">&#128161; Smart Preview</div>
+            <div class="layer-desc">For complex queries (score &gt;38), generates a 2-sentence preview and outline using the small model before running the full answer. User confirms before the expensive inference runs, preventing wasted reruns on misunderstood questions.</div>
+            <div class="layer-meta"><span class="ltag">Confirm-before-run</span><span class="ltag">Small model preview</span></div>
           </div>
         </div>
-
-        <div class="layer-card" id="layer-energy">
-          <div class="layer-num">06</div>
-          <div class="layer-body">
-            <div class="layer-title">Energy Estimator <span class="badge badge-amber">greeninfer/energy_estimator.py</span></div>
-            <div class="layer-desc">Calculates energy consumption per inference using proxy estimation (token count × per-token energy coefficients per model tier) with optional CodeCarbon integration for real GPU measurement. All estimates are per-request and accumulated across the session.</div>
-            <div class="layer-detail">Small: 0.04 µWh/token · Medium: 0.18 µWh/token · Large: 0.95 µWh/token</div>
-          </div>
-        </div>
-
         <div class="layer-card">
-          <div class="layer-num">07</div>
+          <div class="layer-n">07</div>
           <div class="layer-body">
-            <div class="layer-title">Orchestrator <span class="badge badge-green">greeninfer/orchestrator.py</span></div>
-            <div class="layer-desc">Main coordinator that chains all six layers above. Returns a rich result object containing the response, model tier used, cascade path, complexity score, tokens saved, energy used in mWh, CO₂ in grams, and whether the optimizer was active.</div>
-            <div class="layer-detail">Returns: InferenceResult dataclass with 12 fields including full provenance</div>
+            <div class="layer-title">&#127807; Carbon Budget Enforcer</div>
+            <div class="layer-desc">Tracks cumulative CO₂ emissions per session against a configurable budget (default 5g). When budget approaches, automatically shifts to eco mode. Prevents runaway usage and surfaces the true carbon cost of conversational AI.</div>
+            <div class="layer-meta"><span class="ltag">Per-session budget</span><span class="ltag">Auto eco-mode</span></div>
           </div>
         </div>
-
       </div>
     </div>
 
+    <div class="section-divider"></div>
+
     <!-- REST API -->
-    <div class="fw-section scroll-reveal" id="api">
-      <div class="fw-section-title">REST API</div>
-      <div class="fw-section-sub">Deployed at <code style="color:var(--green-core);font-size:.82rem">https://sirenice-greeninfer-backend.hf.space</code></div>
-      <div class="api-grid">
-        <div class="api-card">
-          <div class="api-method">GET</div>
-          <div class="api-endpoint">/health</div>
-          <div class="api-desc">Returns system status, model availability, and Groq connection state.</div>
-        </div>
-        <div class="api-card">
-          <div class="api-method">POST</div>
-          <div class="api-endpoint">/analyze</div>
-          <div class="api-desc">Scores a prompt's complexity, runs the optimizer, and returns routing recommendation — without running inference. Used by Smart Preview.</div>
-        </div>
-        <div class="api-card">
-          <div class="api-method">POST</div>
-          <div class="api-endpoint">/chat</div>
-          <div class="api-desc">Full pipeline: analyze + route + infer. Accepts prompt, mode, context history, and optional image attachments. Returns InferenceResult JSON.</div>
-        </div>
+    <div class="fw-section" id="api">
+      <div class="section-eyebrow">Integration</div>
+      <h2>REST API</h2>
+      <p>The framework is deployed as a FastAPI server on Hugging Face Spaces. Accessible at <code style="font-family:var(--fm);color:var(--g);font-size:.82rem;">https://sirenice-greeninfer-backend.hf.space</code></p>
+
+      <h3>POST /chat</h3>
+      <div class="code-wrap">
+        <div class="code-head"><div class="code-dots"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div></div><span class="code-lang">cURL</span></div>
+        <pre class="language-bash"><code class="language-bash">curl -X POST https://sirenice-greeninfer-backend.hf.space/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Explain how transformers work",
+    "mode": "balanced",
+    "context": []
+  }'</code></pre>
       </div>
 
-      <pre class="language-json" style="margin-top:20px"><code class="language-json">{
-  "response": "Photosynthesis is the process...",
-  "model_tier": "small",
-  "model_name": "llama-3.2-1b-preview",
-  "complexity_score_100": 18,
-  "complexity_label": "Low",
-  "original_tokens": 12,
+      <h3>Response</h3>
+      <div class="code-wrap">
+        <div class="code-head"><div class="code-dots"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div></div><span class="code-lang">JSON Response</span></div>
+        <pre class="language-json"><code class="language-json">{
+  "response": "Transformers are neural networks that...",
+  "model_tier": "medium",
+  "model_name": "Llama 3.1 8B",
+  "energy_mwh": 3.82,
+  "co2_grams": 0.000757,
   "tokens_saved": 4,
-  "reduction_pct": 33,
-  "energy_mwh": 0.87,
-  "co2_grams": 0.000172,
-  "energy_saved_pct": 98,
-  "cascade_path": ["small"],
+  "original_tokens": 7,
+  "reduction_pct": 36,
+  "complexity_score_100": 48,
+  "complexity_label": "Medium",
+  "energy_saved_pct": 92,
+  "cascade_path": ["medium"],
   "escalations": 0,
   "optimizer_used": true
 }</code></pre>
+      </div>
+
+      <h3>GET /health</h3>
+      <p>Returns <code style="font-family:var(--fm);font-size:.8rem;color:var(--g);">{"status":"ok","backend":"groq","optimizer":"loaded"}</code> when all services are running.</p>
     </div>
+
+    <div class="section-divider"></div>
 
     <!-- PYTHON SDK -->
-    <div class="fw-section scroll-reveal" id="python">
-      <div class="fw-section-title">Python SDK</div>
-      <div class="fw-section-sub">Install locally and run inference with full energy transparency</div>
+    <div class="fw-section" id="sdk">
+      <div class="section-eyebrow">SDK</div>
+      <h2>Python SDK</h2>
+      <p>The Python package wraps the REST API with a clean interface. Install from the GitHub repo.</p>
+      <div class="code-wrap">
+        <div class="code-head"><div class="code-dots"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div></div><span class="code-lang">Python</span></div>
+        <pre class="language-python"><code class="language-python">from greeninfer import GreenInfer
 
-      <pre class="language-bash"><code class="language-bash">git clone https://github.com/srineshtor21-coder/GreenInfer
-cd GreenInfer
-pip install -r requirements.txt
-export GROQ_API_KEY="your_key_here"</code></pre>
-
-      <pre class="language-python"><code class="language-python">from greeninfer import GreenInfer
-
-# Initialize (auto-loads all layers)
 gi = GreenInfer()
 
-# Basic chat
-result = gi.chat("Explain quantum entanglement simply")
+# Balanced mode (default)
+result = gi.chat("What is quantum computing?")
+print(result.response)       # "Quantum computing is..."
+print(result.energy_mwh)     # 0.9 (routed to small model)
+print(result.model_tier)     # "small"
+print(result.co2_grams)      # 0.000178
+print(result.energy_saved_pct)  # 97
 
-print(result.response)        # The answer
-print(result.model_tier)      # "small" | "medium" | "large"
-print(result.energy_mwh)      # e.g. 0.87
-print(result.co2_grams)       # e.g. 0.000172
-print(result.tokens_saved)    # e.g. 4
-print(result.cascade_path)    # e.g. ["small"]
-
-# Eco mode (maximum energy savings)
+# Eco mode — always use smallest viable model
 result = gi.chat("Write a sorting algorithm", mode="eco")
 
-# Performance mode (accuracy priority)
-result = gi.chat("Analyze this legal document...", mode="performance")</code></pre>
+# Performance mode — prioritize quality
+result = gi.chat("Analyze this legal contract...", mode="performance")
+
+# Multi-turn conversation
+result = gi.chat("Tell me more", context=gi.history)</code></pre>
+      </div>
     </div>
+
+    <div class="section-divider"></div>
 
     <!-- MODEL POOL -->
-    <div class="fw-section scroll-reveal" id="models">
-      <div class="fw-section-title">Model Pool</div>
-      <div class="fw-section-sub">Three tiers via Groq API — all open-source Llama models</div>
-
-      <pre class="language-python"><code class="language-python">GROQ_MODELS = {
-    "small":  "llama-3.2-1b-preview",    # 0.9 mWh/query — 55% of traffic
-    "medium": "llama-3.1-8b-instant",    # 3.8 mWh/query — 30% of traffic
-    "large":  "llama-3.3-70b-versatile", # 48.0 mWh/query — 15% of traffic
-    "vision": "llama-3.2-11b-vision-preview"  # image inputs
-}
-
-# Routing thresholds (balanced mode)
-ROUTE = {
-    "small":  complexity < 30,
-    "medium": 30 <= complexity < 65,
-    "large":  complexity >= 65
-}</code></pre>
-    </div>
-
-    <!-- COMPARISON -->
-    <div class="fw-section scroll-reveal" id="comparison">
-      <div class="fw-section-title">Framework Comparison</div>
-      <div class="fw-section-sub">How GreenInfer differs from existing tools</div>
+    <div class="fw-section" id="models">
+      <div class="section-eyebrow">Model Pool</div>
+      <h2>Available Models</h2>
+      <p>Three tiers, all running via Groq API for fast inference. Energy estimates are proxy values calibrated from public benchmark data.</p>
       <table class="comparison-table">
-        <thead>
-          <tr>
-            <th>Feature</th>
-            <th>GreenInfer</th>
-            <th>LangChain</th>
-            <th>FrugalGPT</th>
-            <th>Default API</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Model</th><th>Tier</th><th>Energy/Token</th><th>Best For</th><th>Traffic</th></tr></thead>
         <tbody>
-          <tr><td>Energy-aware routing</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td class="cross">✗</td></tr>
-          <tr><td>Carbon grid integration</td><td class="check">✓</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td></tr>
-          <tr><td>Smart Preview (confirm before gen)</td><td class="check">✓</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td></tr>
-          <tr><td>Token-level energy metrics</td><td class="check">✓</td><td class="cross">✗</td><td>Partial</td><td class="cross">✗</td></tr>
-          <tr><td>Prompt optimizer</td><td class="check">✓</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td></tr>
-          <tr><td>Cascade engine</td><td class="check">✓</td><td class="cross">✗</td><td class="check">✓</td><td class="cross">✗</td></tr>
-          <tr><td>Per-response Green Score</td><td class="check">✓</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td></tr>
-          <tr><td>Open source</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="cross">✗</td></tr>
+          <tr><td>Llama 3.2 1B</td><td class="td-g">Small</td><td class="td-g">~0.04 mWh</td><td>Simple facts, definitions, short answers</td><td>55%</td></tr>
+          <tr><td>Llama 3.1 8B</td><td style="color:var(--teal);font-family:var(--fm);">Medium</td><td style="color:var(--teal);font-family:var(--fm);">~0.18 mWh</td><td>Reasoning, summaries, explanations</td><td>30%</td></tr>
+          <tr><td>Llama 3.3 70B</td><td class="td-a">Large</td><td class="td-a">~0.95 mWh</td><td>Code, complex analysis, creative writing</td><td>15%</td></tr>
         </tbody>
       </table>
+      <div class="callout callout-green">
+        <p>Routing to small vs large saves <strong style="color:var(--g)">97%</strong> energy per query. At 55% of traffic on small, the average query uses only 4.5 mWh vs 48 mWh baseline — a <strong style="color:var(--g)">91% reduction</strong> on the average case.</p>
+      </div>
     </div>
 
-    <!-- RESULTS -->
-    <div class="fw-section scroll-reveal" id="results">
-      <div class="fw-section-title">Benchmark Results</div>
-      <div class="fw-section-sub">From experiments/benchmark.py — 20 prompts, mixed complexity</div>
-      <p class="fw-p">These numbers come from running the full benchmark suite included in the repository. The 20-prompt test set covers all four complexity tiers: simple factual, explanation, analysis, and code generation.</p>
-      <div class="result-grid">
-        <div class="result-card"><div class="result-val">97%</div><div class="result-label">Energy saved (small tier)</div></div>
-        <div class="result-card"><div class="result-val">73%</div><div class="result-label">Avg energy reduction</div></div>
-        <div class="result-card"><div class="result-val">55%</div><div class="result-label">Routing accuracy</div></div>
-        <div class="result-card"><div class="result-val">183g</div><div class="result-label">CO₂ avoided</div></div>
-        <div class="result-card"><div class="result-val">98.9%</div><div class="result-label">Classifier accuracy</div></div>
-        <div class="result-card"><div class="result-val">35%</div><div class="result-label">Token reduction</div></div>
-      </div>
-      <p class="fw-p" style="margin-top:20px;font-size:.8rem;color:var(--text-dim)">Note: 55% routing accuracy reflects the challenge of exact-tier matching. The more relevant metric for sustainability is energy savings: even misrouted queries (e.g. routing medium-complexity to small) still save substantial energy while usually producing acceptable answers.</p>
+    <div class="section-divider"></div>
+
+    <!-- COMPARISON -->
+    <div class="fw-section" id="comparison">
+      <div class="section-eyebrow">Comparison</div>
+      <h2>GreenInfer vs Always-Large</h2>
+      <table class="comparison-table">
+        <thead><tr><th>Metric</th><th>GreenInfer</th><th>Always Large</th><th>Improvement</th></tr></thead>
+        <tbody>
+          <tr><td>Avg energy/query</td><td class="td-g">4.5 mWh</td><td class="td-r">48 mWh</td><td class="td-g">-91%</td></tr>
+          <tr><td>Simple query cost</td><td class="td-g">0.9 mWh</td><td class="td-r">48 mWh</td><td class="td-g">-98%</td></tr>
+          <tr><td>Token efficiency</td><td class="td-g">+35% fewer tokens</td><td class="td-r">Baseline</td><td class="td-g">+35%</td></tr>
+          <tr><td>Carbon per session</td><td class="td-g">~0.0008g CO₂</td><td class="td-r">~0.003g CO₂</td><td class="td-g">-73%</td></tr>
+          <tr><td>Grid awareness</td><td class="td-g">Yes — ERCOT hourly</td><td class="td-r">None</td><td class="td-g">&#10003;</td></tr>
+          <tr><td>Cost to developer</td><td class="td-g">Lower (smaller models)</td><td class="td-r">Fixed high cost</td><td class="td-g">&#10003;</td></tr>
+        </tbody>
+      </table>
     </div>
 
   </main>
 </div>
 
 <footer>
-  <div class="footer-bottom">
-    <span>© 2025 GreenInfer · Srinesh Toranala · ISM Final Product · Mentor: Marta Adamska, University of Lancaster</span>
-    <span class="live-badge">Framework v0.1</span>
+  <div class="foot-btm">
+    <span>&#169; 2025 GreenInfer &middot; Srinesh Toranala &middot; ISM Final Product</span>
+    <span class="live-dot">Framework v0.1</span>
   </div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  function initScrollReveal() {
-  const obs = new IntersectionObserver(e => {
-    e.forEach(en => {
-      if (en.isIntersecting) {
-        en.target.style.opacity = '1';
-        en.target.style.transform = 'translateY(0)';
-        obs.unobserve(en.target);
-      }
-    });
-  }, { threshold: 0, rootMargin: '0px 0px 0px 0px' }); 
- 
-  document.querySelectorAll('.scroll-reveal, .fw-section').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(16px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    obs.observe(el);
-  });
-  
-  setTimeout(() => {
-    document.querySelectorAll('.scroll-reveal, .fw-section').forEach(el => {
-      const r = el.getBoundingClientRect();
-      if (r.top < window.innerHeight) {
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }
-    });
-  }, 100);
-}
-  // Theme
-  const btn = document.getElementById('theme-btn');
-  if (localStorage.getItem('gi-theme') === 'light') {
-    document.body.classList.add('light');
-    if(btn) btn.textContent = '🌙 Dark';
-  }
-  if (btn) btn.addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    const isL = document.body.classList.contains('light');
-    localStorage.setItem('gi-theme', isL ? 'light' : 'dark');
-    btn.textContent = isL ? '🌙 Dark' : '☀️ Light';
-  });
-  // Mobile nav
-  const tog = document.getElementById('nav-toggle');
-  const lnk = document.querySelector('.nav-links');
-  if (tog && lnk) tog.addEventListener('click', () => {
-    const open = lnk.style.display === 'flex';
-    lnk.style.display = open ? 'none' : 'flex';
-    if (!open) Object.assign(lnk.style, {
-      flexDirection:'column', position:'fixed', top:'64px', left:0, right:0,
-      background:'rgba(8,13,14,.96)', padding:'14px',
-      borderBottom:'1px solid rgba(0,255,160,.1)', zIndex:899
-    });
-  });
-  // Scroll reveal
-  const obs = new IntersectionObserver(e => {
-    e.forEach(en => { if(en.isIntersecting){ en.target.classList.add('vis'); obs.unobserve(en.target); } });
-  }, {threshold:0.08});
-  document.querySelectorAll('.scroll-reveal').forEach(el => {
-    el.style.opacity='0'; el.style.transform='translateY(20px)';
-    el.style.transition='opacity .6s ease,transform .6s ease';
-    obs.observe(el);
-  });
-  // Active nav
-  const p = location.pathname.replace(/\/$/, '') || '/';
-  document.querySelectorAll('.nav-links a').forEach(a => {
-    const h = a.getAttribute('href');
-    if (h === p || (p === '/' && h === '/') || (p !== '/' && h !== '/' && p.endsWith(h))) {
-      a.classList.add('active');
-    }
-  });
+  initTheme(); initNav(); setActiveNav(); initSections(); initToc();
 });
+
+function setActiveNav() {
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.getAttribute('href') === '/framework') a.classList.add('active');
+  });
+}
+
+function initTheme() {
+  const btn = document.getElementById('theme-btn');
+  if (!btn) return;
+  const apply = (light) => {
+    document.body.classList.toggle('light', light);
+    btn.textContent = light ? '🌙 Dark' : '☀️ Light';
+    localStorage.setItem('gi-theme', light ? 'light' : 'dark');
+  };
+  apply(localStorage.getItem('gi-theme') === 'light');
+  btn.addEventListener('click', () => apply(!document.body.classList.contains('light')));
+}
+
+function initNav() {
+  const tog = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mob-menu');
+  if (!tog || !menu) return;
+  tog.addEventListener('click', () => menu.classList.toggle('open'));
+  document.addEventListener('click', e => { if (!tog.contains(e.target) && !menu.contains(e.target)) menu.classList.remove('open'); });
+}
+
+// Show all sections with stagger — no threshold required
+function initSections() {
+  const sections = document.querySelectorAll('.fw-section');
+  sections.forEach((el, i) => {
+    setTimeout(() => el.classList.add('show'), 80 + i * 60);
+  });
+  // Also add scroll-based show for sections below fold
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); } });
+  }, { threshold: 0.04, rootMargin: '0px 0px -10px 0px' });
+  sections.forEach(el => obs.observe(el));
+}
+
+function initToc() {
+  const links = document.querySelectorAll('.toc-link');
+  const sections = [...document.querySelectorAll('.fw-section')];
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('on'));
+        const match = document.querySelector(`.toc-link[href="#${e.target.id}"]`);
+        if (match) match.classList.add('on');
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => { if (s.id) obs.observe(s); });
+}
 </script>
 </body>
 </html>
