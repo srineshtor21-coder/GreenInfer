@@ -454,21 +454,9 @@ canvas#dash-energy-chart { display:block; width:100%!important; }
 <!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-/* ══════════════════════════════════════════════════
-   GreenInfer Dashboard
-   Supabase: greeninfer.supabase.co
-   Replace SUPABASE_URL and SUPABASE_ANON_KEY below
-   with your actual project values.
-══════════════════════════════════════════════════ */
 
-/* ── Supabase Config ──
-   INSTRUCTIONS:
-   1. Go to https://supabase.com → New project → "greeninfer"
-   2. Settings → API → copy "Project URL" and "anon public" key
-   3. Paste them below
-   4. Run the SQL in supabase-schema.sql to create tables
-*/
-const SUPABASE_URL = 'https://GreenInfer.supabase.co';
+
+const SUPABASE_URL = 'https://ekwuxjhfpembvgcpgtyk.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrd3V4amhmcGVtYnZnY3BndHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNDcwNjQsImV4cCI6MjA5MDkyMzA2NH0.khoSQjZDNukgVdVWavFy_W1ChcoE5go7ZiP8eqmiMD8';
 
 let supabase = null;
