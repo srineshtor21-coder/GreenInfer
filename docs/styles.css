@@ -1,6 +1,5 @@
 /* ============================================================
    GreenInfer — Global Styles
-   Aesthetic: Dark biomorphic tech — deep forest meets silicon
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap');
@@ -633,3 +632,8 @@ body.light .nbtn-g:hover, body.light .btn-primary:hover {
 }
 .nav-mobile-menu a:hover { background: rgba(0,212,132,.08); color: var(--green-core, #00d484); }
 body.light .nav-mobile-menu { background: rgba(247,250,248,0.98); border-color: rgba(0,90,50,.12); }
+.nav-right,
+.nav-actions {
+  min-width: 220px;
+  justify-content: flex-end;
+}
