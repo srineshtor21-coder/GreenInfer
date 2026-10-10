@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GreenInfer | Dashboard</title>
-  <meta name="description" content="Your personal GreenInfer dashboard — track energy savings, chat history, and carbon impact."/>
+  <meta name="description" content="Your personal GreenInfer dashboard - track energy savings, chat history, and carbon impact."/>
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
@@ -63,7 +63,7 @@ a { color:var(--green-core); text-decoration:none; }
 .nav-mobile { display:none; background:none; border:none; color:var(--text-primary); cursor:pointer; padding:7px; }
 @media(max-width:700px) { .nav-links { display:none; } .nav-mobile { display:flex; } }
 
-/* AUTH OVERLAY — shown when not logged in */
+/* AUTH OVERLAY - shown when not logged in */
 .auth-overlay {
   position:fixed; inset:0; background:rgba(8,13,14,.92); z-index:2000;
   display:flex; align-items:center; justify-content:center;
@@ -297,7 +297,7 @@ canvas#dash-energy-chart { display:block; width:100%!important; }
     <div class="dash-user-card">
       <div class="user-avatar" id="user-avatar">?</div>
       <div class="user-name" id="user-name-display">Loading...</div>
-      <div class="user-email" id="user-email-display">—</div>
+      <div class="user-email" id="user-email-display">-</div>
       <div class="user-badge" id="user-plan-badge">&#127807; Free</div>
     </div>
 
@@ -464,7 +464,6 @@ let supabase = null;
 let currentUser = null;
 let isDemoMode = false;
 
-// Try to init Supabase; gracefully degrade if keys aren't set
 try {
   if (!SUPABASE_URL.includes('YOUR_PROJECT_ID')) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -489,9 +488,6 @@ const DEMO_STATS = {
   ]
 };
 
-/* ══════════════
-   AUTH
-══════════════ */
 function switchAuthTab(tab) {
   document.getElementById('tab-login').classList.toggle('on', tab==='login');
   document.getElementById('tab-signup').classList.toggle('on', tab==='signup');
@@ -509,7 +505,6 @@ async function handleLogin() {
   btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>';
 
   if (!supabase) {
-    // No Supabase — use local storage auth
     const stored = JSON.parse(localStorage.getItem('gi-user-acct')||'null');
     if (stored && stored.email===email && stored.pw===pw) {
       currentUser = stored;
@@ -696,7 +691,7 @@ function populateDashboard(s) {
 
   const impStory = s.prompts === 0
     ? 'Complete some conversations to see your personalized impact story.'
-    : `You've sent ${s.prompts} prompts and saved approximately ${saved_mwh.toFixed(1)} mWh by routing ${s.models.s} queries to small models instead of large ones. That's equivalent to ${(saved_mwh/1000).toFixed(4)} kWh — enough to power a phone for ${(saved_mwh/0.014).toFixed(0)} seconds of charging.`;
+    : `You've sent ${s.prompts} prompts and saved approximately ${saved_mwh.toFixed(1)} mWh by routing ${s.models.s} queries to small models instead of large ones. That's equivalent to ${(saved_mwh/1000).toFixed(4)} kWh - enough to power a phone for ${(saved_mwh/0.014).toFixed(0)} seconds of charging.`;
   document.getElementById('impact-desc').textContent = impStory;
 
   // Achievements
@@ -841,8 +836,6 @@ function clearHistory() {
 function confirmDelete() {
   if (!confirm('Delete your account permanently? This cannot be undone.')) return;
   if (supabase && currentUser) {
-    // Would call supabase.auth.admin.deleteUser — requires service key, not doable client-side
-    // Instead: sign out and clear local
   }
   localStorage.clear();
   showToast('Account data cleared. Refresh to sign out.', 'success');
@@ -962,22 +955,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ══════════════════════════════════════════════
-   CHAT → DASHBOARD BRIDGE
-   Call this from chat.html when a session ends:
-   
-   // In chat.js, after final message:
-   GIDashboard.saveSession({
-     title: S.chatTitle,
-     prompt_count: S.prompts,
-     energy_mwh: S.energy,
-     co2_grams: S.co2,
-     tokens_saved: S.tokSaved,
-     avg_saved_pct: avgSaved,
-     dominant_model: topTier,
-     user_id: currentUser?.id
-   });
-══════════════════════════════════════════════ */
 window.GIDashboard = {
   async saveSession(sessionData) {
     // Always save to localStorage
