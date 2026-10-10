@@ -353,6 +353,18 @@ body.light .modal-box{background:var(--raised)}
   .gi-thinking{padding:7px 12px 7px 55px}
   .typing-inner{padding:0 12px 0 55px}
 }
+body.light .mbtn-g,body.light .send-btn,body.light .pbtn-ok,body.light .tour-next,body.light .add-det-sub{color:#fff}
+body.light .mbtn-g:hover,body.light .send-btn:hover,body.light .pbtn-ok:hover,body.light .tour-next:hover{background:var(--gs)}
+body.light .msg-body pre{background:#1d1f21!important;border-color:rgba(0,80,45,.3)}
+body.light .input-box{box-shadow:0 2px 10px rgba(0,60,35,.12)}
+body.light .sb-toggle{box-shadow:2px 0 8px rgba(0,60,35,.15)}
+body.light .modal-ov{background:rgba(12,31,22,.45)}
+body.light .tour-ov{background:rgba(12,31,22,.5)}
+body.light .gi-step{background:rgba(0,95,53,.08);border-color:rgba(0,95,53,.22)}
+body.light .gscore{background:rgba(0,95,53,.05);border-color:rgba(0,95,53,.16)}
+body.light .badge-mode{background:rgba(0,95,53,.08);border-color:rgba(0,95,53,.22)}
+body.light .signup-nudge{background:rgba(0,95,53,.06);border-bottom-color:rgba(0,95,53,.14)}
+body.light .auth-notice{background:rgba(0,95,53,.07);border-color:rgba(0,95,53,.18)}
 </style>
   <link rel="icon" href="../logo.svg" type="image/svg+xml"/>
 </head>
@@ -1509,3 +1521,46 @@ window.exportChat=fmt=>{
   const body=hdr+lines.join('\n\n');
   if (fmt==='html') {
     const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>GreenInfer Chat</title></head><body style="font-family:system-ui;max-width:800px;margin:40px auto;padding:20px"><h2>GreenInfer Conversation</h2><p>Energy: ${S.energy.toFixed(3)} mWh | CO₂: ${S.co2.toFixed(6)}g</p>${S.msgs.map(m=>`<div style="margin:14px 0;padding:12px;border-radius:8px;background:${m.role==='user'?'#e0e0e0':'#d0f0e0'}"><strong>[${m.time}] ${m.role==='user'?'You':'GreenInfer'}</strong><br/>${m.content.replace(/\n/g,'<br/>')}</div>`).join('')}</body></html>
+`;
+    dlFile('greeninfer-chat.html',html,'text/html');
+  } else dlFile('greeninfer-chat.txt',body,'text/plain');
+  closeModal('export-modal');
+};
+function dlFile(name,content,type) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click(); }
+function openShare() { document.getElementById('share-url').textContent=`${location.origin}${location.pathname}?s=${Date.now()}`; openModal('share-modal'); }
+window.copyShare=()=>{ navigator.clipboard.writeText(document.getElementById('share-url').textContent).then(()=>showToast('Link copied!','success')); closeModal('share-modal'); };
+
+const TOUR_STEPS=[
+  {title:'Welcome to GreenInfer',desc:'The carbon-aware AI chat. Every message routes to the most energy-efficient model and shows exactly how much energy was saved.',target:null,pos:'center'},
+  {title:'Routing Chips',desc:'These show which model tier was used, total energy in mWh, and your session savings vs always using the large model.',target:'.ch-chips',pos:'bottom'},
+  {title:'Mode Selector',desc:'Eco routes almost everything to the small model. Balanced is the smart default. Performance prioritizes quality over energy.',target:'.mode-tabs',pos:'right'},
+  {title:'Preview Mode',desc:'For complex queries, see a summary first and confirm before running the full expensive response.',target:'.prev-toggle',pos:'right'},
+  {title:'Carbon Budget',desc:'Tracks total CO₂ for this session. Automatically switches to Eco mode at 90% to keep your footprint low.',target:'.sb-budget',pos:'top'},
+];
+let _tourStep=0;
+function startTour() { _tourStep=0; document.getElementById('tour-ov').classList.add('open'); renderTour(); }
+function endTour() { document.getElementById('tour-ov').classList.remove('open'); localStorage.setItem('gi-tour-done','1'); }
+window.nextTour=()=>{ _tourStep++; if(_tourStep>=TOUR_STEPS.length){endTour();return;} renderTour(); };
+function renderTour() {
+  const step=TOUR_STEPS[_tourStep];
+  document.getElementById('tour-title').textContent=step.title;
+  document.getElementById('tour-desc').textContent=step.desc;
+  document.getElementById('tour-next').textContent=_tourStep===TOUR_STEPS.length-1?'✓ Got it':'Next →';
+  const dots=document.getElementById('tour-dots'); dots.innerHTML='';
+  TOUR_STEPS.forEach((_,i)=>{ const d=document.createElement('div'); d.className='tour-dot'+(i===_tourStep?' on':''); dots.appendChild(d); });
+  const card=document.getElementById('tour-card'); const spot=document.getElementById('tour-spot');
+  if (step.target) {
+    const el=document.querySelector(step.target);
+    if (el) {
+      const r=el.getBoundingClientRect(); const pad=7;
+      spot.style.cssText=`left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;box-shadow:0 0 0 4000px rgba(0,0,0,.65);display:block;`;
+      let cx=r.left; let cy=r.bottom+13;
+      if(step.pos==='right'){cx=r.right+13;cy=r.top;}
+      if(step.pos==='top'){cx=r.left;cy=r.top-170;}
+      card.style.cssText=`left:${Math.max(10,Math.min(cx,window.innerWidth-305))}px;top:${Math.max(10,cy)}px;`;
+    }
+  } else { spot.style.display='none'; card.style.cssText='left:50%;top:50%;transform:translate(-50%,-50%);'; }
+}
+</script>
+</body>
+</html>
