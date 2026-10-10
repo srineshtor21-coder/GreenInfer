@@ -1192,10 +1192,11 @@ async function send(text, skipPrev=false, imgs=null) {
     updateMetrics(data.energy_saved_pct||0, tier);
     if (!S.historyWritten) {
       S.historyWritten = true;
-      addHistItem(S.chatTitle, data.co2_grams||0);
+      addHistItem(S.chatTitle, S.co2);
     } else {
       updateHistCo2(S.co2);
     }
+    saveCurrentChat();
     document.getElementById('live-e').textContent = S.energy.toFixed(3)+' mWh';
     msgEl.querySelectorAll('.msg-meta-row,.eff-toggle,.why-btn').forEach((el,i) => {
       el.style.opacity='0';
@@ -1399,21 +1400,93 @@ function drawEnergyChart() {
   pts.forEach((p,i)=>{ ctx.beginPath(); ctx.arc(p.x,p.y,i===pts.length-1?3:1.5,0,Math.PI*2); ctx.fillStyle=i===pts.length-1?'rgba(0,255,160,1)':'rgba(0,255,160,.5)'; ctx.fill(); });
 }
 
+const CHATS=[];
+let currentChatId=null;
+
+function snapshotState() {
+  return {
+    ctx:S.ctx.slice(), msgs:S.msgs.slice(), energy:S.energy, co2:S.co2,
+    tokSaved:S.tokSaved, tokIn:S.tokIn, prompts:S.prompts, eHist:S.eHist.slice(),
+    models:Object.assign({},S.models), budget:S.budget, savedPctArr:S.savedPctArr.slice(),
+    chatTitle:S.chatTitle
+  };
+}
+
+function saveCurrentChat() {
+  if (!currentChatId || !S.prompts) return;
+  const c=CHATS.find(x=>x.id===currentChatId);
+  if (!c) return;
+  c.title=S.chatTitle;
+  c.html=$msgs.innerHTML;
+  c.state=snapshotState();
+}
+
+function clearPlaceholders() {
+  document.querySelectorAll('#sb-hist .hist-item').forEach(i=>{ if(!i.dataset.id) i.remove(); });
+}
+
 function addHistItem(title, co2) {
   const hist=document.getElementById('sb-hist');
-  hist.querySelectorAll('.hist-item').forEach(i => { if(i.querySelector('.hist-title')?.textContent==='New conversation') i.remove(); });
-  const item=document.createElement('div'); item.className='hist-item on';
-  item.innerHTML=`<div class="hist-title">${esc(title)}</div><div class="hist-meta"><span>Now</span><span id="hist-co2-live">${co2.toFixed(6)}g</span></div><button class="hist-del" onclick="event.stopPropagation();this.closest('.hist-item').remove()">✕</button>`;
-  item.onclick=()=>{ hist.querySelectorAll('.hist-item').forEach(i=>i.classList.remove('on')); item.classList.add('on'); };
+  clearPlaceholders();
+  currentChatId='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  CHATS.push({id:currentChatId,title:title,html:'',state:null});
+  const item=document.createElement('div');
+  item.className='hist-item on';
+  item.dataset.id=currentChatId;
+  item.innerHTML=`<div class="hist-title">${esc(title)}</div><div class="hist-meta"><span>Now</span><span class="hist-co2">${co2.toFixed(6)}g</span></div><button class="hist-del" title="Delete chat">✕</button>`;
+  item.addEventListener('click',()=>loadChat(item.dataset.id));
+  item.querySelector('.hist-del').addEventListener('click',e=>{ e.stopPropagation(); deleteChat(item.dataset.id); });
   hist.querySelectorAll('.hist-item').forEach(i=>i.classList.remove('on'));
   hist.insertBefore(item, hist.firstChild);
 }
+
 function updateHistCo2(totalCo2) {
-  const el=document.querySelector('#hist-co2-live');
-  if(el) el.textContent=totalCo2.toFixed(6)+'g';
+  const el=document.querySelector(`#sb-hist .hist-item[data-id="${currentChatId}"] .hist-co2`);
+  if (el) el.textContent=totalCo2.toFixed(6)+'g';
+}
+
+function loadChat(id) {
+  if (S.generating || id===currentChatId) return;
+  const c=CHATS.find(x=>x.id===id);
+  if (!c || !c.state) return;
+  saveCurrentChat();
+  currentChatId=id;
+  const st=c.state;
+  S.ctx=st.ctx.slice(); S.msgs=st.msgs.slice(); S.energy=st.energy; S.co2=st.co2;
+  S.tokSaved=st.tokSaved; S.tokIn=st.tokIn; S.prompts=st.prompts; S.eHist=st.eHist.slice();
+  S.models=Object.assign({},st.models); S.budget=st.budget; S.savedPctArr=st.savedPctArr.slice();
+  S.chatTitle=st.chatTitle; S.historyWritten=true; S.imgs=[];
+  renderImgStrip();
+  $msgs.innerHTML=c.html;
+  $msgs.querySelectorAll('.msg-meta-row,.eff-toggle,.why-btn').forEach(el=>{ el.style.opacity='1'; });
+  $msgs.querySelectorAll('pre').forEach(pre=>{ pre.querySelectorAll('.copy-btn').forEach(b=>b.remove()); addCopyBtn(pre); });
+  clearPlaceholders();
+  document.querySelectorAll('#sb-hist .hist-item').forEach(i=>i.classList.toggle('on', i.dataset.id===id));
+  document.getElementById('ch-title').textContent=S.chatTitle;
+  const lastAi=[...S.msgs].reverse().find(m=>m.role==='ai');
+  const tier=(lastAi && lastAi.meta && lastAi.meta._tier) || 'small';
+  document.getElementById('bgt-fill').style.background='var(--g)';
+  document.getElementById('bgt-pct').style.color='var(--g)';
+  updateMetrics(S.savedPctArr[S.savedPctArr.length-1]||0, tier);
+  document.getElementById('live-e').textContent=S.energy.toFixed(3)+' mWh';
+  _userScrolled=false;
+  $msgs.scrollTop=$msgs.scrollHeight;
+  if (window.innerWidth<=900) closeSidebarMobile();
+}
+
+function deleteChat(id) {
+  if (S.generating && id===currentChatId) return;
+  const i=CHATS.findIndex(c=>c.id===id);
+  if (i>-1) CHATS.splice(i,1);
+  const el=document.querySelector(`#sb-hist .hist-item[data-id="${id}"]`);
+  if (el) el.remove();
+  if (id===currentChatId) { currentChatId=null; newChat(); }
 }
 
 function newChat() {
+  if (S.generating) return;
+  saveCurrentChat();
+  currentChatId=null;
   $msgs.innerHTML=''; $msgs.appendChild($empty); $empty.style.display='';
   S.ctx=[]; S.msgs=[]; S.imgs=[];
   S.energy=0; S.co2=0; S.tokSaved=0; S.tokIn=0;
@@ -1421,19 +1494,30 @@ function newChat() {
   S.budget=0; S.savedPctArr=[]; S.chatTitle='New conversation';
   S.historyWritten=false;
   document.getElementById('ch-title').textContent='GreenInfer Chat';
+  document.getElementById('live-e').textContent='0 mWh';
   renderImgStrip();
   updateMetrics(0,'small');
+  document.getElementById('cur-model').textContent='-';
   document.getElementById('bgt-fill').style.background='var(--g)';
   document.getElementById('bgt-pct').style.color='var(--g)';
   const hist=document.getElementById('sb-hist');
+  clearPlaceholders();
   hist.querySelectorAll('.hist-item').forEach(i=>i.classList.remove('on'));
   const placeholder=document.createElement('div');
   placeholder.className='hist-item on'; placeholder.id='init-hist-item';
   placeholder.innerHTML='<div class="hist-title">New conversation</div><div class="hist-meta"><span>Now</span><span>0.00000g CO₂</span></div>';
   hist.insertBefore(placeholder, hist.firstChild);
+  $input.focus();
 }
 
 function loadUser() { try { const u=localStorage.getItem('gi-user'); if(u) S.user=JSON.parse(u); } catch {} }
+
+function authMessage(d, fallback) {
+  const raw=String((d && (d.msg || d.error_description || d.message)) || '');
+  if (/not confirmed/i.test(raw)) return 'Please confirm your email first. Check your inbox and spam folder.';
+  if (/invalid login/i.test(raw)) return 'Wrong email or password.';
+  return raw || fallback;
+}
 
 async function handleLogin() {
   const email=document.getElementById('login-email').value.trim();
@@ -1452,12 +1536,9 @@ async function handleLogin() {
       setTimeout(()=>(window.location.href='../dashboard.html'),700);
       return;
     }
-    errEl.textContent=d.error_description||'Login failed. Check credentials.'; errEl.classList.add('show');
+    errEl.textContent=authMessage(d,'Login failed. Check your email and password.'); errEl.classList.add('show');
   } catch {
-    S.user={email,name:email.split('@')[0]};
-    localStorage.setItem('gi-user',JSON.stringify(S.user));
-    closeModal('login-modal'); updateAuthUI();
-    showToast('Logged in!','success');
+    errEl.textContent='Could not reach the sign-in server. Check your connection and try again.'; errEl.classList.add('show');
   }
 }
 
@@ -1472,19 +1553,24 @@ async function handleSignup() {
   try {
     const res=await fetch(`${SUPABASE_URL}/auth/v1/signup`,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({email,password:pw,data:{name}})});
     const d=await res.json();
-    if (d.id||d.access_token) {
-      S.user={email,name,id:d.id||d.user?.id};
+    if (d.access_token) {
+      S.user={email,name,id:d.user?.id,token:d.access_token};
       localStorage.setItem('gi-user',JSON.stringify(S.user));
       closeModal('signup-modal'); updateAuthUI();
       showToast('Account created! Welcome, '+name,'success');
       setTimeout(()=>(window.location.href='../dashboard.html'),800);
       return;
     }
+    if (d.id) {
+      closeModal('signup-modal');
+      openModal('login-modal');
+      showToast('Account created. Confirm your email, then log in.','success');
+      return;
+    }
     if (d.msg?.toLowerCase().includes('already')) { errEl.textContent='Email already registered - try logging in.'; errEl.classList.add('show'); return; }
     errEl.textContent=d.msg||d.error_description||'Signup failed.'; errEl.classList.add('show');
   } catch {
-    S.user={email,name}; localStorage.setItem('gi-user',JSON.stringify(S.user));
-    closeModal('signup-modal'); updateAuthUI(); showToast('Welcome, '+name+'!','success');
+    errEl.textContent='Could not reach the sign-up server. Check your connection and try again.'; errEl.classList.add('show');
   }
 }
 function switchAuth(to) { closeModal(to==='signup'?'login-modal':'signup-modal'); openModal(to==='signup'?'signup-modal':'login-modal'); }

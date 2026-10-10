@@ -11,3 +11,5 @@ fix_paths.py
 fix_polish.py
 .repair_chat_backup/
 repair_chat.py
+.patch_chat_backup/
+patch_chat.py
