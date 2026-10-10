@@ -105,7 +105,7 @@ body.light .toc-sidebar { background:var(--deep); border-color:var(--b0); }
 .gradient-text { background:linear-gradient(135deg,var(--g) 0%,var(--teal) 60%,#a8ffec 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 body.light .gradient-text { background:linear-gradient(135deg,#005f35 0%,#005248 60%,#003830 100%); -webkit-background-clip:text; background-clip:text; }
 
-/* CONTENT SECTIONS — always visible, smooth entry */
+/* CONTENT SECTIONS - always visible, smooth entry */
 .fw-section { margin-bottom:64px; opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
 .fw-section.show { opacity:1; transform:translateY(0); }
 
@@ -401,10 +401,10 @@ print(result.model_tier)     # "small"
 print(result.co2_grams)      # 0.000178
 print(result.energy_saved_pct)  # 97
 
-# Eco mode — always use smallest viable model
+# Eco mode - always use smallest viable model
 result = gi.chat("Write a sorting algorithm", mode="eco")
 
-# Performance mode — prioritize quality
+# Performance mode - prioritize quality
 result = gi.chat("Analyze this legal contract...", mode="performance")
 
 # Multi-turn conversation
@@ -428,7 +428,7 @@ result = gi.chat("Tell me more", context=gi.history)</code></pre>
         </tbody>
       </table>
       <div class="callout callout-green">
-        <p>Routing to small vs large saves <strong style="color:var(--g)">97%</strong> energy per query. At 55% of traffic on small, the average query uses only 4.5 mWh vs 48 mWh baseline — a <strong style="color:var(--g)">91% reduction</strong> on the average case.</p>
+        <p>Routing to small vs large saves <strong style="color:var(--g)">97%</strong> energy per query. At 55% of traffic on small, the average query uses only 4.5 mWh vs 48 mWh baseline: a <strong style="color:var(--g)">91% reduction</strong> on the average case.</p>
       </div>
     </div>
 
@@ -445,7 +445,7 @@ result = gi.chat("Tell me more", context=gi.history)</code></pre>
           <tr><td>Simple query cost</td><td class="td-g">0.9 mWh</td><td class="td-r">48 mWh</td><td class="td-g">-98%</td></tr>
           <tr><td>Token efficiency</td><td class="td-g">+35% fewer tokens</td><td class="td-r">Baseline</td><td class="td-g">+35%</td></tr>
           <tr><td>Carbon per session</td><td class="td-g">~0.0008g CO₂</td><td class="td-r">~0.003g CO₂</td><td class="td-g">-73%</td></tr>
-          <tr><td>Grid awareness</td><td class="td-g">Yes — ERCOT hourly</td><td class="td-r">None</td><td class="td-g">&#10003;</td></tr>
+          <tr><td>Grid awareness</td><td class="td-g">Yes - ERCOT hourly</td><td class="td-r">None</td><td class="td-g">&#10003;</td></tr>
           <tr><td>Cost to developer</td><td class="td-g">Lower (smaller models)</td><td class="td-r">Fixed high cost</td><td class="td-g">&#10003;</td></tr>
         </tbody>
       </table>
@@ -496,13 +496,11 @@ function initNav() {
   document.addEventListener('click', e => { if (!tog.contains(e.target) && !menu.contains(e.target)) menu.classList.remove('open'); });
 }
 
-// Show all sections with stagger — no threshold required
 function initSections() {
   const sections = document.querySelectorAll('.fw-section');
   sections.forEach((el, i) => {
     setTimeout(() => el.classList.add('show'), 80 + i * 60);
   });
-  // Also add scroll-based show for sections below fold
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); } });
   }, { threshold: 0.04, rootMargin: '0px 0px -10px 0px' });
