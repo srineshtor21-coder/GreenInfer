@@ -174,7 +174,7 @@ python train_complexity.py           # trains DistilBERT classifier
 
 ## Live Demo
 
-[greeninfer.github.io](https://srineshtor21-coder.github.io/GreenInfer)
+[https://srineshtor21-coder.github.io/GreenInfer/](https://srineshtor21-coder.github.io/GreenInfer)
 
 ## License
 

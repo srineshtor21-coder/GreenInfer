@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GreenInfer — About the Project</title>
+  <title>GreenInfer | About the Project</title>
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
@@ -134,25 +134,26 @@ body.light .badge-t { background:rgba(0,82,72,.1); border-color:rgba(0,82,72,.25
 footer { background:var(--deep); border-top:1px solid var(--b0); padding:36px 22px 24px; margin-top:48px; transition:background .25s; }
 .foot-btm { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; font-size:.76rem; color:var(--t4); font-family:var(--fm); }
   </style>
+  <link rel="icon" href="../logo.svg" type="image/svg+xml"/>
 </head>
 <body>
 
 <nav class="site-nav">
   <div class="nav-in">
-    <a href="/" class="nav-logo"><img src="/logo.svg" alt="GreenInfer"/><span class="nav-logo-txt">Green<span>Infer</span></span></a>
+    <a href="../" class="nav-logo"><img src="../logo.svg" alt="GreenInfer"/><span class="nav-logo-txt">Green<span>Infer</span></span></a>
     <ul class="nav-links">
-      <li><a href="/">Home</a></li><li><a href="/chat">Chat</a></li><li><a href="/framework">Framework</a></li>
-      <li><a href="/impact">Impact</a></li><li><a href="/about" class="active">About</a></li>
+      <li><a href="../">Home</a></li><li><a href="../chat/">Chat</a></li><li><a href="../framework/">Framework</a></li>
+      <li><a href="../impact/">Impact</a></li><li><a href="../about/" class="active">About</a></li>
     </ul>
     <div class="nav-right">
       <button class="nbtn" id="theme-btn">&#9728;&#65039; Light</button>
-      <a href="/chat" class="nbtn nbtn-g">Launch Chat</a>
+      <a href="../chat/" class="nbtn nbtn-g">Launch Chat</a>
     </div>
     <button class="nav-mobile" id="nav-toggle"><svg width="19" height="19" viewBox="0 0 22 22" fill="currentColor"><rect y="3" width="22" height="2" rx="1"/><rect y="10" width="22" height="2" rx="1"/><rect y="17" width="22" height="2" rx="1"/></svg></button>
   </div>
 </nav>
 <div class="nav-mob-menu" id="mob-menu">
-  <a href="/">Home</a><a href="/chat">Chat</a><a href="/framework">Framework</a><a href="/impact">Impact</a><a href="/about">About</a>
+  <a href="../">Home</a><a href="../chat/">Chat</a><a href="../framework/">Framework</a><a href="../impact/">Impact</a><a href="../about/">About</a>
 </div>
 
 <section class="about-hero">
@@ -291,8 +292,8 @@ footer { background:var(--deep); border-top:1px solid var(--b0); padding:36px 22
       <h2 style="margin-bottom:14px;">Open source. Open science.</h2>
       <p style="max-width:440px;margin:0 auto 28px;font-size:.88rem;">GreenInfer is built to be shared. The framework is on GitHub for any developer to use, extend, or build on top of.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="/chat" style="display:inline-flex;align-items:center;gap:7px;padding:9px 22px;border-radius:var(--r4);font-size:.9rem;font-weight:600;font-family:var(--fb);background:var(--g);color:#080d0e;border:none;cursor:pointer;transition:all .2s;text-decoration:none;">Try the Chat</a>
-        <a href="/framework" style="display:inline-flex;align-items:center;gap:7px;padding:9px 22px;border-radius:var(--r4);font-size:.9rem;font-weight:500;font-family:var(--fb);background:transparent;color:var(--t2);border:1px solid var(--b1);cursor:pointer;transition:all .2s;text-decoration:none;">Read the Docs</a>
+        <a href="../chat/" style="display:inline-flex;align-items:center;gap:7px;padding:9px 22px;border-radius:var(--r4);font-size:.9rem;font-weight:600;font-family:var(--fb);background:var(--g);color:#080d0e;border:none;cursor:pointer;transition:all .2s;text-decoration:none;">Try the Chat</a>
+        <a href="../framework/" style="display:inline-flex;align-items:center;gap:7px;padding:9px 22px;border-radius:var(--r4);font-size:.9rem;font-weight:500;font-family:var(--fb);background:transparent;color:var(--t2);border:1px solid var(--b1);cursor:pointer;transition:all .2s;text-decoration:none;">Read the Docs</a>
       </div>
     </div>
   </div>
@@ -300,7 +301,7 @@ footer { background:var(--deep); border-top:1px solid var(--b0); padding:36px 22
 
 <footer>
   <div class="foot-btm">
-    <span>&#169; 2025 GreenInfer &middot; Srinesh Toranala &middot; ISM Final Product</span>
+    <span>&#169; 2026 GreenInfer &middot; Srinesh Toranala &middot; ISM Final Product</span>
     <span class="live-dot">Framework v0.1</span>
   </div>
 </footer>
@@ -311,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 function setActiveNav() {
   document.querySelectorAll('.nav-links a').forEach(a => {
-    if (a.getAttribute('href') === '/about') a.classList.add('active');
+    if (a.getAttribute('href') === '../about/') a.classList.add('active');
   });
 }
 function initTheme() {

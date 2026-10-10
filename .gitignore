@@ -5,3 +5,7 @@ __pycache__/
 models/
 data/
 experiments/results/
+.fix_paths_backup/
+.fix_polish_backup/
+fix_paths.py
+fix_polish.py

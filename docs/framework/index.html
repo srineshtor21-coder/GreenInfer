@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GreenInfer — Framework Architecture</title>
+  <title>GreenInfer | Framework Architecture</title>
   <meta name="description" content="The Green Orchestration Framework: a 7-layer pipeline for sustainable AI inference."/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
   <style>
@@ -183,25 +183,26 @@ footer { background:var(--deep); border-top:1px solid var(--b0); padding:36px 22
 
 @media(max-width:600px) { .stats-row { grid-template-columns:1fr 1fr; } .page-wrap { flex-direction:column; } }
   </style>
+  <link rel="icon" href="../logo.svg" type="image/svg+xml"/>
 </head>
 <body>
 
 <nav class="site-nav">
   <div class="nav-in">
-    <a href="/" class="nav-logo">
-      <img src="/logo.svg" alt="GreenInfer"/>
+    <a href="../" class="nav-logo">
+      <img src="../logo.svg" alt="GreenInfer"/>
       <span class="nav-logo-txt">Green<span>Infer</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/chat">Chat</a></li>
-      <li><a href="/framework" class="active">Framework</a></li>
-      <li><a href="/impact">Impact</a></li>
-      <li><a href="/about">About</a></li>
+      <li><a href="../">Home</a></li>
+      <li><a href="../chat/">Chat</a></li>
+      <li><a href="../framework/" class="active">Framework</a></li>
+      <li><a href="../impact/">Impact</a></li>
+      <li><a href="../about/">About</a></li>
     </ul>
     <div class="nav-right">
       <button class="nbtn" id="theme-btn">&#9728;&#65039; Light</button>
-      <a href="/chat" class="nbtn nbtn-g">Try Chat &#10003;</a>
+      <a href="../chat/" class="nbtn nbtn-g">Try Chat &#10003;</a>
     </div>
     <button class="nav-mobile" id="nav-toggle">
       <svg width="19" height="19" viewBox="0 0 22 22" fill="currentColor"><rect y="3" width="22" height="2" rx="1"/><rect y="10" width="22" height="2" rx="1"/><rect y="17" width="22" height="2" rx="1"/></svg>
@@ -209,8 +210,8 @@ footer { background:var(--deep); border-top:1px solid var(--b0); padding:36px 22
   </div>
 </nav>
 <div class="nav-mob-menu" id="mob-menu">
-  <a href="/">Home</a><a href="/chat">Chat</a><a href="/framework">Framework</a>
-  <a href="/impact">Impact</a><a href="/about">About</a>
+  <a href="../">Home</a><a href="../chat/">Chat</a><a href="../framework/">Framework</a>
+  <a href="../impact/">Impact</a><a href="../about/">About</a>
 </div>
 
 <div class="page-wrap">
@@ -455,7 +456,7 @@ result = gi.chat("Tell me more", context=gi.history)</code></pre>
 
 <footer>
   <div class="foot-btm">
-    <span>&#169; 2025 GreenInfer &middot; Srinesh Toranala &middot; ISM Final Product</span>
+    <span>&#169; 2026 GreenInfer &middot; Srinesh Toranala &middot; ISM Final Product</span>
     <span class="live-dot">Framework v0.1</span>
   </div>
 </footer>
@@ -471,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function setActiveNav() {
   document.querySelectorAll('.nav-links a').forEach(a => {
-    if (a.getAttribute('href') === '/framework') a.classList.add('active');
+    if (a.getAttribute('href') === '../framework/') a.classList.add('active');
   });
 }
 
