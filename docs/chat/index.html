@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GreenInfer | Chat</title>
-  <meta name="description" content="Chat with GreenInfer — sustainable AI that routes every prompt to the most energy-efficient model."/>
+  <meta name="description" content="Chat with GreenInfer - sustainable AI that routes every prompt to the most energy-efficient model."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
@@ -42,7 +42,7 @@ a{color:var(--g);text-decoration:none}
 @keyframes logo-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(.75)}}
 @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(0,255,160,.4)}70%{box-shadow:0 0 0 8px rgba(0,255,160,0)}100%{box-shadow:0 0 0 0 rgba(0,255,160,0)}}
 
-/* NAV — fixed width right side: min-width:200px matches impact/home/about/framework */
+/* NAV - fixed width right side: min-width:200px matches impact/home/about/framework */
 .site-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav);background:rgba(8,13,14,.88);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--b0);display:flex;align-items:center;transition:background .25s}
 body.light .site-nav{background:rgba(245,249,247,.95);border-color:var(--b0)}
 .nav-in{width:100%;max-width:1280px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
@@ -53,8 +53,8 @@ body.light .site-nav{background:rgba(245,249,247,.95);border-color:var(--b0)}
 .nav-links{display:flex;align-items:center;gap:1px;list-style:none}
 .nav-links a{padding:5px 12px;border-radius:var(--r2);color:var(--t2);font-size:.86rem;transition:all .15s}
 .nav-links a:hover,.nav-links a.active{background:var(--gd);color:var(--g)}
-/* KEY FIX: 200px matches impact page — all pages now identical */
-.nav-right{display:flex;align-items:center;gap:7px;flex-shrink:0;min-width:200px;justify-content:flex-end}
+
+  .nav-right{display:flex;align-items:center;gap:7px;flex-shrink:0;min-width:200px;justify-content:flex-end}
 .nbtn{background:none;border:1px solid var(--b1);color:var(--t2);cursor:pointer;padding:5px 12px;border-radius:var(--r2);font-size:.82rem;font-family:var(--fb);transition:all .15s;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center}
 .nbtn:hover{border-color:var(--g);color:var(--g);background:var(--gd)}
 .nbtn-g{background:var(--g);color:#080d0e;border:none;font-weight:600;padding:6px 16px;border-radius:var(--r4);min-width:120px;justify-content:center}
@@ -71,7 +71,7 @@ body.light .nav-mob-menu{background:rgba(245,249,247,.98)}
 /* LAYOUT */
 .chat-layout{display:flex;height:100vh;padding-top:var(--nav)}
 
-/* SIDEBAR — overflow:visible so toggle arrow is never clipped */
+/* SIDEBAR - overflow:visible so toggle arrow is never clipped */
 .sidebar{width:var(--sb-w);flex-shrink:0;background:var(--deep);border-right:1px solid var(--b0);display:flex;flex-direction:column;overflow:visible;transition:width .22s ease,opacity .22s ease;position:relative}
 .sidebar.collapsed{width:0;opacity:0;pointer-events:none}
 .sb-toggle{position:absolute;right:-15px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--card);border:1px solid var(--b1);color:var(--t1);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:200;font-size:.85rem;font-weight:700;transition:all .15s;box-shadow:2px 0 8px rgba(0,0,0,.4);flex-shrink:0}
@@ -190,7 +190,7 @@ body.light .user-bubble{background:var(--g);color:#fff;border-color:var(--gs)}
 .gscore-bar-wrap{height:3px;background:var(--raised);border-radius:2px;overflow:hidden}
 .gscore-bar{height:100%;border-radius:2px}
 .gscore-tip{font-size:.69rem;color:var(--t2);margin-top:4px}
-/* Why button — bright green, always visible */
+/* Why button - bright green, always visible */
 .why-btn{background:none;border:1px solid var(--g);color:var(--g)!important;cursor:pointer;padding:3px 9px;border-radius:var(--r1);font-size:.7rem;font-family:var(--fm);margin-top:4px;transition:all .15s}
 .why-btn:hover{background:var(--gd)}
 .why-panel{background:var(--raised);border:1px solid var(--b0);border-radius:var(--r2);padding:9px 13px;margin-top:5px;font-size:.76rem;line-height:1.68;color:var(--t2);display:none}
@@ -265,7 +265,7 @@ body.light .input-box{background:var(--card)}
 .send-btn{width:35px;height:35px;border-radius:50%;border:none;background:var(--g);color:#080d0e;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
 .send-btn:hover{background:#1fff9e;transform:scale(1.08)}
 .send-btn:disabled{background:var(--raised);color:var(--t4);transform:none;cursor:not-allowed}
-/* Input footer — brighter, always readable */
+/* Input footer - brighter, always readable */
 .in-footer{display:flex;justify-content:space-between;align-items:center;margin-top:5px;padding:0 4px;font-size:.67rem;color:var(--t2);font-family:var(--fm)}
 #tok-prev{color:var(--g)}
 .coach{color:var(--amber);display:none;cursor:pointer}
@@ -444,7 +444,7 @@ body.light .modal-box{background:var(--raised)}
       <button style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:.81rem;" onclick="document.getElementById('signup-nudge').classList.add('gone')">✕</button>
     </div>
     <div class="status-banner gone" id="status-banner">
-      <span>⚠</span><span id="status-msg">Backend warming up — responses may use demo mode.</span>
+      <span>⚠</span><span id="status-msg">Backend warming up - responses may use demo mode.</span>
       <button style="background:none;border:none;color:var(--amber);cursor:pointer;margin-left:auto;font-size:.79rem;" onclick="retryBackend()">Retry</button>
     </div>
     <div class="chat-header">
@@ -459,7 +459,7 @@ body.light .modal-box{background:var(--raised)}
           <span style="width:5px;height:5px;border-radius:50%;background:var(--g);"></span>
           <span id="live-e" style="font-family:var(--fm);font-size:.69rem;color:var(--g);">0 mWh</span>
         </div>
-        <div class="m-chip"><span class="lbl">Model:</span><span class="val" id="cur-model">—</span></div>
+        <div class="m-chip"><span class="lbl">Model:</span><span class="val" id="cur-model">-</span></div>
         <div class="m-chip"><span class="lbl">Saved:</span><span class="val" id="ses-saved">0%</span></div>
       </div>
       <div class="ch-acts">
@@ -472,7 +472,7 @@ body.light .modal-box{background:var(--raised)}
       <div class="chat-empty" id="chat-empty">
         <img src="../logo.svg" alt="GreenInfer" class="empty-logo"/>
         <div class="empty-title">How can I help you?</div>
-        <div class="empty-sub">GreenInfer routes your prompt to the most energy-efficient model — every response shows exactly how much energy was saved.</div>
+        <div class="empty-sub">GreenInfer routes your prompt to the most energy-efficient model - every response shows exactly how much energy was saved.</div>
         <div class="sug-grid">
           <div class="sug-card" onclick="useSug('Explain how climate change works and what causes it')"><span class="sug-icon">🌍</span><span class="sug-txt"><strong>Explain a concept</strong>How climate change works</span></div>
           <div class="sug-card" onclick="useSug('Write a Python function for binary search with comments')"><span class="sug-icon">💻</span><span class="sug-txt"><strong>Write code</strong>Python binary search</span></div>
@@ -517,7 +517,7 @@ body.light .modal-box{background:var(--raised)}
     <div class="m-row"><span class="k">Tokens saved</span><span class="v" id="p-tsaved">0</span></div>
     <div class="m-row"><span class="k">Energy</span><span class="v" id="p-energy">0 mWh</span></div>
     <div class="m-row"><span class="k">CO₂</span><span class="v" id="p-co2">0.00000g</span></div>
-    <div class="m-row"><span class="k">Avg saved</span><span class="v" id="p-avg">—</span></div>
+    <div class="m-row"><span class="k">Avg saved</span><span class="v" id="p-avg">-</span></div>
     <div class="panel-ttl" style="margin-top:12px;">Energy / Msg <span class="info-circle" data-tip="Each point = one message.">i</span></div>
     <canvas id="e-line-chart" height="52" style="width:100%;"></canvas>
     <div style="display:flex;justify-content:space-between;font-size:.59rem;color:var(--t4);font-family:var(--fm);margin-bottom:2px;"><span>oldest</span><span>newest →</span></div>
@@ -631,8 +631,8 @@ const SUPABASE_URL = 'https://ekwuxjhfpembvgcpgtyk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrd3V4amhmcGVtYnZnY3BndHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNDcwNjQsImV4cCI6MjA5MDkyMzA2NH0.khoSQjZDNukgVdVWavFy_W1ChcoE5go7ZiP8eqmiMD8';
 
 const ENERGY_PER_TOKEN = { small: 0.00090, medium: 0.00380, large: 0.04800 };
-// FIX: Full model names instead of "1B/8B/70B"
-const MODEL_NAMES = { small: 'Llama 1B', medium: 'Llama 8B', large: 'Llama 70B' };
+
+  const MODEL_NAMES = { small: 'Llama 1B', medium: 'Llama 8B', large: 'Llama 70B' };
 
 const ROUTE_THRESH = {
   eco:         { small: 70, medium: 90 },
@@ -688,7 +688,7 @@ async function checkBackend() {
     else throw new Error('not ok');
   } catch {
     S.backendOk = false;
-    showStatus('Backend starting up — first response may take 30s.');
+    showStatus('Backend starting up - first response may take 30s.');
   }
 }
 async function retryBackend() {
@@ -875,30 +875,21 @@ function autoOpt() {
   showToast('Prompt optimized','success');
 }
 
-/* ═══════════════════════════════════════
-   COMPLEXITY SCORING — PATCHED
-   FIX: added * × x operators, "what is N op N" patterns
-═══════════════════════════════════════ */
 function scoreComplexity(text) {
   const clean = text.trim();
   const words = clean.split(/\s+/).filter(Boolean);
   const len = words.length;
 
-  // FIX 1: pure arithmetic — covers 2*2, 2 * 2, 2×2, 2x2
   if (/^[\d\s\+\-\*\/\^\(\)\.×÷x=?]+$/.test(clean)) return 2;
   if (/^\d+\s*[\*×x]\s*\d+\s*[=?]?\s*$/.test(clean)) return 2;
 
-  // FIX 2: "N times/plus/minus N" patterns
   if (/^\s*\d+\s*(times|plus|minus|divided by|multiplied by|squared|cubed)\s*\d*\s*[?]?\s*$/i.test(clean)) return 2;
 
-  // FIX 3: "what is 2 * 2" / "what is 2 times 2"
   if (/^(what\s+is|what'?s)\s+[\d\s\+\-\*\/\^×÷x]+[=?]?\s*$/i.test(clean)) return 2;
   if (/^(what\s+is|what'?s)\s+\d+\s*(times|plus|minus|divided by)\s*\d+/i.test(clean)) return 2;
 
-  // Short simple factual lookups
   if (/^(what is|what'?s|who is|who'?s|when (did|was|is)|where is|how many|define |spell )/i.test(clean) && len <= 8) return Math.max(len * 0.5, 5);
 
-  // Base score from length
   let score = Math.min(len * 0.8, 18);
 
   // Code/technical
@@ -944,16 +935,11 @@ function greenScore(energyMwh, tokSaved, complexity) {
   return Math.min(Math.round(ef + tf + cb), 100);
 }
 
-/* ═══════════════════════════════════════
-   ERCOT GRID — FIX: no "Est" label shown
-   Source silently determines accuracy;
-   UI always shows clean label only.
-═══════════════════════════════════════ */
 async function updateGrid() {
   const hr = new Date().getHours();
   const estimate = ERCOT_HOURLY[hr] || 220;
 
-  const CO2_KEY = '';  // Paste your free co2signal.com key here for live data
+  const CO2_KEY = ''; 
   if (CO2_KEY) {
     try {
       const r = await fetch('https://api.co2signal.com/v1/latest?countryCode=US-TEX', {
@@ -975,7 +961,6 @@ async function updateGrid() {
   setGridUI(estimate);
 }
 
-/* FIX: removed source parameter — no "Est" or "Live" shown in UI */
 function setGridUI(v) {
   const label = v < 200 ? 'Clean' : v < 320 ? 'Moderate' : 'Heavy';
   const dotColor = v < 200 ? 'var(--g)' : v < 320 ? 'var(--amber)' : 'var(--red)';
@@ -1032,11 +1017,11 @@ function buildLocalPreview(prompt) {
 }
 
 function demoResponse(text) {
-  if (/climate|global warming|greenhouse/i.test(text)) return `**How Climate Change Works**\n\nClimate change is driven by greenhouse gases trapping heat in Earth's atmosphere. Human activities — primarily burning fossil fuels — release CO₂ and methane, raising global temperatures over time.\n\n**Key effects:** rising sea levels, more extreme weather, ocean acidification.\n\n*Routed to small model — factual query — ~97% energy savings vs large.*`;
-  if (/binary search|algorithm|python|javascript|function|code/i.test(text)) return `Here's a clean Python binary search:\n\n\`\`\`python\ndef binary_search(arr: list, target: int) -> int:\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid = left + (right - left) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1\n\`\`\`\n\n**Complexity:** O(log n) time, O(1) space. Routed to medium model — code task.`;
+  if (/climate|global warming|greenhouse/i.test(text)) return `**How Climate Change Works**\n\nClimate change is driven by greenhouse gases trapping heat in Earth's atmosphere. Human activities - primarily burning fossil fuels - release CO₂ and methane, raising global temperatures over time.\n\n**Key effects:** rising sea levels, more extreme weather, ocean acidification.\n\n*Routed to small model - factual query - ~97% energy savings vs large.*`;
+  if (/binary search|algorithm|python|javascript|function|code/i.test(text)) return `Here's a clean Python binary search:\n\n\`\`\`python\ndef binary_search(arr: list, target: int) -> int:\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid = left + (right - left) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1\n\`\`\`\n\n**Complexity:** O(log n) time, O(1) space. Routed to medium model - code task.`;
   const c = scoreComplexity(text);
   const tier = routeTier(c);
-  return `I analyzed your query (complexity: **${c}/100**) and routed it to the **${tier}** model tier.\n\nThe pipeline:\n1. Complexity scored at ${c}/100\n2. T5 optimizer checked for redundant tokens\n3. ERCOT grid: ${S.gridIntensity} gCO₂/kWh\n4. Routed to ${tier} tier in ${S.mode} mode\n\n*Demo mode — backend is warming up.*`;
+  return `I analyzed your query (complexity: **${c}/100**) and routed it to the **${tier}** model tier.\n\nThe pipeline:\n1. Complexity scored at ${c}/100\n2. T5 optimizer checked for redundant tokens\n3. ERCOT grid: ${S.gridIntensity} gCO₂/kWh\n4. Routed to ${tier} tier in ${S.mode} mode\n\n*Demo mode - backend is warming up.*`;
 }
 function buildDemoMeta(text) {
   const c = scoreComplexity(text); const tier = routeTier(c);
@@ -1207,7 +1192,7 @@ async function send(text, skipPrev=false, imgs=null) {
   });
 
   if (S.budget >= S.budgetLim * 0.9) {
-    showToast('Carbon budget at 90% — switching to Eco mode','warn');
+    showToast('Carbon budget at 90% - switching to Eco mode','warn');
     S.mode='eco';
     document.querySelectorAll('.mode-tab').forEach(t => t.classList.toggle('on', t.dataset.mode==='eco'));
     document.getElementById('mode-badge').textContent='🌿 Eco';
@@ -1259,7 +1244,7 @@ function mkUserMsg(text, imgs) {
 function mkPreview(prev, prompt, imgs) {
   const w=document.createElement('div'); w.style.padding='14px 22px';
   const enc=btoa(encodeURIComponent(prompt));
-  w.innerHTML=`<div class="prev-box"><div class="prev-inner"><div class="prev-lbl">🌿 Preview — ${prev.label} complexity — ~${prev.saved} tokens saved</div><div class="prev-summary">${prev.summary}</div><ul class="prev-outline">${prev.outline.map(i=>`<li>${i}</li>`).join('')}</ul><div class="prev-acts"><button class="pbtn pbtn-ok" onclick="confirmPrev(this,'${enc}')">✓ Expand full answer</button><button class="pbtn pbtn-re" onclick="regenPrev(this,'${enc}')">↺ Different angle</button><button class="pbtn pbtn-add" onclick="addDetail(this)">+ Add detail</button></div><div class="add-det-wrap" id="aw-${enc.substring(0,8)}"><input class="add-det-in" type="text" placeholder="e.g. include code example..."/><button class="add-det-sub" onclick="subDetail(this,'${enc}')">Send</button></div></div></div>`;
+  w.innerHTML=`<div class="prev-box"><div class="prev-inner"><div class="prev-lbl">🌿 Preview - ${prev.label} complexity - ~${prev.saved} tokens saved</div><div class="prev-summary">${prev.summary}</div><ul class="prev-outline">${prev.outline.map(i=>`<li>${i}</li>`).join('')}</ul><div class="prev-acts"><button class="pbtn pbtn-ok" onclick="confirmPrev(this,'${enc}')">✓ Expand full answer</button><button class="pbtn pbtn-re" onclick="regenPrev(this,'${enc}')">↺ Different angle</button><button class="pbtn pbtn-add" onclick="addDetail(this)">+ Add detail</button></div><div class="add-det-wrap" id="aw-${enc.substring(0,8)}"><input class="add-det-in" type="text" placeholder="e.g. include code example..."/><button class="add-det-sub" onclick="subDetail(this,'${enc}')">Send</button></div></div></div>`;
   return w;
 }
 window.confirmPrev=(btn,enc)=>{ btn.closest('[style]').remove(); send(decodeURIComponent(atob(enc)),true); };
@@ -1272,7 +1257,7 @@ function mkAiMsg(data, gs, tier) {
   const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   const cascade=(data.cascade_path||[tier]).join(' → ');
   const gsc=gs>=70?'var(--g)':gs>=40?'var(--amber)':'var(--red)';
-  const gstip=gs>=70?'Great efficiency!':gs>=40?'Good — try a shorter prompt.':'High energy. Break into steps.';
+  const gstip=gs>=70?'Great efficiency!':gs>=40?'Good - try a shorter prompt.':'High energy. Break into steps.';
   const savedPct=data.energy_saved_pct||0;
   const outTok = (data.response||'').split(/\s+/).filter(Boolean).length||20;
   const displayEnergy = (data.energy_mwh||0).toFixed(4);
@@ -1315,7 +1300,7 @@ function mkAiMsg(data, gs, tier) {
         <div class="why-row">Large model baseline: <span style="color:var(--amber);font-family:var(--fm)">${baselineEnergy} mWh</span></div>
         <div class="why-row">Energy saved vs baseline: <span class="why-energy">${savedPct}%</span></div>
         <div class="why-row">Grid: ${S.gridIntensity} gCO₂/kWh → ${displayCo2}g CO₂</div>
-        ${!S.backendOk?'<div class="why-row" style="color:var(--amber)">Demo mode — backend warming up</div>':''}
+        ${!S.backendOk?'<div class="why-row" style="color:var(--amber)">Demo mode - backend warming up</div>':''}
       </div>
     </div>
   </div>`;
@@ -1483,7 +1468,7 @@ async function handleSignup() {
       setTimeout(()=>(window.location.href='../dashboard.html'),800);
       return;
     }
-    if (d.msg?.toLowerCase().includes('already')) { errEl.textContent='Email already registered — try logging in.'; errEl.classList.add('show'); return; }
+    if (d.msg?.toLowerCase().includes('already')) { errEl.textContent='Email already registered - try logging in.'; errEl.classList.add('show'); return; }
     errEl.textContent=d.msg||d.error_description||'Signup failed.'; errEl.classList.add('show');
   } catch {
     S.user={email,name}; localStorage.setItem('gi-user',JSON.stringify(S.user));
