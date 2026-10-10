@@ -41,7 +41,6 @@ p{color:var(--t2);line-height:1.75}
 .gradient-text{background:linear-gradient(135deg,var(--g) 0%,var(--teal) 60%,#a8ffec 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 body.light .gradient-text{background:linear-gradient(135deg,#005f35 0%,#005248 60%,#003830 100%);-webkit-background-clip:text;background-clip:text}
 
-/* NAV — fixed width right section, identical across all pages */
 .site-nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--nav);background:rgba(8,13,14,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--b0);display:flex;align-items:center;transition:background .25s}
 body.light .site-nav{background:rgba(245,249,247,.95);border-color:var(--b0)}
 .nav-in{width:100%;max-width:1200px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
@@ -52,8 +51,8 @@ body.light .site-nav{background:rgba(245,249,247,.95);border-color:var(--b0)}
 .nav-links{display:flex;align-items:center;gap:1px;list-style:none}
 .nav-links a{padding:5px 12px;border-radius:var(--r2);color:var(--t2);font-size:.86rem;transition:all .15s}
 .nav-links a:hover,.nav-links a.active{background:var(--gd);color:var(--g)}
-/* Fixed right section — same min-width on every page prevents layout shift */
-.nav-right{display:flex;align-items:center;gap:7px;flex-shrink:0;min-width:200px;justify-content:flex-end}
+
+    .nav-right{display:flex;align-items:center;gap:7px;flex-shrink:0;min-width:200px;justify-content:flex-end}
 .nbtn{background:none;border:1px solid var(--b1);color:var(--t2);cursor:pointer;padding:5px 12px;border-radius:var(--r2);font-size:.82rem;font-family:var(--fb);transition:all .15s;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center}
 .nbtn:hover{border-color:var(--g);color:var(--g);background:var(--gd)}
 .nbtn-g{background:var(--g);color:#080d0e;border:none;font-weight:600;padding:6px 16px;border-radius:var(--r4);min-width:120px;justify-content:center}
@@ -147,7 +146,7 @@ canvas{display:block;width:100%!important}
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
 .reveal.vis{opacity:1;transform:translateY(0)}
 
-/* FOOTER — full grid matching home page */
+/* FOOTER */
 footer{background:var(--deep);border-top:1px solid var(--b0);padding:44px 22px 26px;margin-top:48px;transition:background .25s}
 body.light footer{background:var(--deep);border-color:var(--b0)}
 .foot-in{max-width:1100px;margin:0 auto}
@@ -260,12 +259,12 @@ body.light footer{background:var(--deep);border-color:var(--b0)}
   <div class="container">
     <div class="grid-2">
       <div class="chart-container reveal">
-        <div class="chart-title">Pareto Frontier — Accuracy vs Energy</div>
+        <div class="chart-title">Pareto Frontier -Accuracy vs Energy</div>
         <div class="chart-subtitle">Optimal routing curve across model tiers</div>
         <div class="pareto-canvas-wrap"><canvas id="pareto-canvas"></canvas></div>
       </div>
       <div class="chart-container reveal">
-        <div class="chart-title">CO&#8322; — GreenInfer vs Baseline</div>
+        <div class="chart-title">CO&#8322; -GreenInfer vs Baseline</div>
         <div class="chart-subtitle">Across 20 benchmark queries</div>
         <div class="timeline-chart"><div class="timeline-bars" id="timeline-bars"></div></div>
         <div class="timeline-legend">
@@ -292,10 +291,10 @@ body.light footer{background:var(--deep);border-color:var(--b0)}
       <div class="grid-panel reveal">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <span style="font-family:var(--fm);font-size:.76rem;color:var(--t3)">CURRENT INTENSITY</span>
-          <!-- Live dot shown, no "Estimated" label — source is internal -->
+          <!-- Live dot shown, no "Estimated" label -source is internal -->
           <span class="live-badge" style="font-size:.68rem;">Live</span>
         </div>
-        <div style="font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--g)" id="grid-value">— <span style="font-size:1rem;color:var(--t3)">gCO&#8322;/kWh</span></div>
+        <div style="font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--g)" id="grid-value">-<span style="font-size:1rem;color:var(--t3)">gCO&#8322;/kWh</span></div>
         <div class="grid-intensity-bar"><div class="grid-intensity-marker" id="grid-marker" style="left:25%"></div></div>
         <div class="grid-labels"><span>0 (Clean)</span><span>400 (Moderate)</span><span>800+ (Heavy)</span></div>
         <div style="margin-top:14px;padding:10px;background:rgba(0,255,160,.06);border:1px solid rgba(0,255,160,.14);border-radius:var(--r2);" id="grid-status-box">
@@ -315,7 +314,7 @@ body.light footer{background:var(--deep);border-color:var(--b0)}
   </div>
 </section>
 
-<!-- FOOTER — full grid, matches home page -->
+<!-- FOOTER -full grid, matches home page -->
 <footer>
   <div class="foot-in">
     <div class="foot-top">
@@ -411,7 +410,7 @@ function initStats() {
 const ACTIVITIES = [
   {color:'#00ffa0',text:'User in Texas routed 3 queries to small model, saved 0.14 Wh',time:'2m ago'},
   {color:'#00e5cc',text:'Prompt optimized: 47 tokens removed (38% reduction)',time:'5m ago'},
-  {color:'#00ffa0',text:'Carbon budget reached — eco mode auto-activated',time:'8m ago'},
+  {color:'#00ffa0',text:'Carbon budget reached -eco mode auto-activated',time:'8m ago'},
   {color:'#f5a623',text:'Complex coding query escalated to medium model',time:'12m ago'},
   {color:'#00ffa0',text:'New user registered from Germany',time:'15m ago'},
   {color:'#00e5cc',text:'Session: 0.0042g CO₂ vs 0.023g baseline',time:'18m ago'},
@@ -434,16 +433,14 @@ function animateBars() {
   }, 500);
 }
 
-/* ── ERCOT grid — tries live CO2Signal API, falls back to hourly table silently ── */
+/* ── ERCOT grid -tries live CO2Signal API, falls back to hourly table silently ── */
 const ERCOT_HOURLY = {
   0:285,1:292,2:295,3:298,4:300,5:302,6:295,7:275,8:245,9:210,
   10:185,11:168,12:162,13:158,14:162,15:175,16:192,17:215,
   18:248,19:268,20:278,21:282,22:284,23:285
 };
-/* Add your free co2signal.com API key here to enable live data.
-   Get a free key at: https://www.co2signal.com/
-   This is a read-only frontend key — safe to include client-side. */
-const CO2_SIGNAL_KEY = '';
+
+const CO2_SIGNAL_KEY = 'https://api.electricitymaps.com/v4/price-day-ahead/latest?zone=DE';
 
 async function updateGrid() {
   let intensity = null;
@@ -473,9 +470,9 @@ function setGridUI(v) {
   document.getElementById('grid-value').innerHTML = `${v} <span style="font-size:1rem;color:var(--t3)">gCO₂/kWh</span>`;
   document.getElementById('grid-marker').style.left = Math.min((v / 800) * 100, 95) + '%';
 
-  const label = v < 200 ? 'Clean — renewable energy dominant'
-               : v < 320 ? 'Moderate — balanced routing active'
-               : 'Heavy — eco mode recommended';
+  const label = v < 200 ? 'Clean -renewable energy dominant'
+               : v < 320 ? 'Moderate -balanced routing active'
+               : 'Heavy -eco mode recommended';
   document.getElementById('grid-status-lbl').textContent = label;
 
   const statusBox = document.getElementById('grid-status-box');
